@@ -28,6 +28,9 @@
     <delegateAnalysisEngine key="SimpleTokenAndSentenceAnnotator">
       <import name="WhitespaceTokenizer"/>
     </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="SnowballAnnotator">
+      <import name="SnowballAnnotator"/>
+    </delegateAnalysisEngine>
     <delegateAnalysisEngine key="HmmTagger">
       <import name="HmmTagger"/>
     </delegateAnalysisEngine>
@@ -60,6 +63,7 @@
     <flowConstraints>
       <fixedFlow>
         <node>SimpleTokenAndSentenceAnnotator</node>
+        <node>SnowballAnnotator</node>
         <node>HmmTagger</node>
         <node>ChunkerAE</node>
         <node>ParserAE</node>

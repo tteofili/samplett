@@ -59,6 +59,12 @@
           <boolean>true</boolean>
         </value>
       </nameValuePair>
+      <nameValuePair>
+        <name>Language</name>
+        <value>
+          <string>x-unspecified</string>
+        </value>
+      </nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
