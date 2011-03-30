@@ -1,4 +1,4 @@
-package com.github.samplett.giw1011;
+package com.github.samplett.giw1011.annotator;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;

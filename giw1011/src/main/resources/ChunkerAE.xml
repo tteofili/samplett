@@ -28,7 +28,7 @@
   </frameworkImplementation>
   <primitive>true</primitive>
   <annotatorImplementationName>
-    com.github.samplett.giw1011.ChunkerAnnotator
+    com.github.samplett.giw1011.annotator.ChunkerAnnotator
   </annotatorImplementationName>
 
   <analysisEngineMetaData>

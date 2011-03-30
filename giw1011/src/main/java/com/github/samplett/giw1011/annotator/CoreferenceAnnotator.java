@@ -1,13 +1,13 @@
-package com.github.samplett.giw1011;
+package com.github.samplett.giw1011.annotator;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 
 /**
- * A chunker
+ * Discovers coreferences in text
  */
-public class ChunkerAnnotator extends JCasAnnotator_ImplBase{
+public class CoreferenceAnnotator extends JCasAnnotator_ImplBase{
   @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
   }

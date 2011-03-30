@@ -28,7 +28,7 @@
   </frameworkImplementation>
   <primitive>true</primitive>
   <annotatorImplementationName>
-    com.github.samplett.giw1011.ParserAnnotator
+    com.github.samplett.giw1011.annotator.ParserAnnotator
   </annotatorImplementationName>
 
   <analysisEngineMetaData>
