@@ -21,7 +21,7 @@ public class SimpleCPETest {
   @Test
   public void testSimpleCPEExec() {
     try {
-      runCPE("/Users/tommasoteofili/Documents/workspaces/github/samplett/giw1011/src/main/resources/SimpleCPE.xml");
+      runCPE("src/main/resources/SimpleCPE.xml");
     } catch (Exception e) {
       e.printStackTrace();
       fail(e.getLocalizedMessage());
