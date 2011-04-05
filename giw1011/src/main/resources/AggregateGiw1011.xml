@@ -34,6 +34,9 @@
     <delegateAnalysisEngine key="HmmTagger">
       <import name="HmmTagger"/>
     </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="NameAnnotator">
+      <import name="NameAnnotatorAEDescriptor"/>
+    </delegateAnalysisEngine>
     <delegateAnalysisEngine key="AnnotationLoggerAE">
       <import name="AnnotationLoggerAE"/>
     </delegateAnalysisEngine>
@@ -65,6 +68,7 @@
         <node>SimpleTokenAndSentenceAnnotator</node>
         <node>SnowballAnnotator</node>
         <node>HmmTagger</node>
+        <node>NameAnnotator</node>
         <node>ChunkerAE</node>
         <node>ParserAE</node>
         <node>AnaphoraAE</node>
