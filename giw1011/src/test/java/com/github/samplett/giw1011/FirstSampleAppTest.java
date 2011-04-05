@@ -12,7 +12,7 @@ public class FirstSampleAppTest {
   @Test
   public void testAppExecution() {
     try {
-      FirstSampleApp.runAnalysisEngineDescriptor("src/main/resources/AggregateGiw1011.xml","the big brow fox jumped on the tree");
+      FirstSampleApp.runAnalysisEngineDescriptor("src/main/resources/AggregateGiw1011.xml","the big brown fox jumped on the tree");
     } catch (Exception e) {
       e.printStackTrace();
       fail(e.getLocalizedMessage());
