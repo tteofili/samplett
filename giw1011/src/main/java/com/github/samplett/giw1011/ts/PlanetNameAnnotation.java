@@ -1,6 +1,6 @@
 
 
-/* First created by JCasGen Tue Apr 05 11:32:00 CEST 2011 */
+/* First created by JCasGen Mon Apr 18 12:31:51 CEST 2011 */
 package com.github.samplett.giw1011.ts;
 
 import org.apache.uima.jcas.JCas;
@@ -9,15 +9,15 @@ import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
-/** annotation for a first name
- * Updated by JCasGen Wed Apr 27 15:13:03 CEST 2011
- * XML source: /Users/tommasoteofili/Documents/workspaces/github/samplett/giw1011/src/main/resources/AggregateGiw1011.xml
+/** 
+ * Updated by JCasGen Mon Apr 18 12:31:51 CEST 2011
+ * XML source: /Users/tommasoteofili/Documents/workspaces/github/samplett/giw1011/src/main/resources/PlanetDictionaryAnnotator.xml
  * @generated */
-public class NameAnnotation extends Annotation {
+public class PlanetNameAnnotation extends Annotation {
   /** @generated
    * @ordered 
    */
-  public final static int typeIndexID = JCasRegistry.register(NameAnnotation.class);
+  public final static int typeIndexID = JCasRegistry.register(PlanetNameAnnotation.class);
   /** @generated
    * @ordered 
    */
@@ -27,23 +27,23 @@ public class NameAnnotation extends Annotation {
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected NameAnnotation() {}
+  protected PlanetNameAnnotation() {}
     
   /** Internal - constructor used by generator 
    * @generated */
-  public NameAnnotation(int addr, TOP_Type type) {
+  public PlanetNameAnnotation(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
   
   /** @generated */
-  public NameAnnotation(JCas jcas) {
+  public PlanetNameAnnotation(JCas jcas) {
     super(jcas);
     readObject();   
   } 
 
   /** @generated */  
-  public NameAnnotation(JCas jcas, int begin, int end) {
+  public PlanetNameAnnotation(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);

@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Tue Apr 05 11:32:00 CEST 2011 */
+/* First created by JCasGen Mon Apr 18 12:31:51 CEST 2011 */
 package com.github.samplett.giw1011.ts;
 
 import org.apache.uima.cas.FeatureStructure;
@@ -11,39 +11,39 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-/** annotation for a first name
- * Updated by JCasGen Wed Apr 27 15:13:03 CEST 2011
+/** 
+ * Updated by JCasGen Mon Apr 18 12:31:51 CEST 2011
  * @generated */
-public class NameAnnotation_Type extends Annotation_Type {
+public class PlanetNameAnnotation_Type extends Annotation_Type {
   /** @generated */
   protected FSGenerator getFSGenerator() {return fsGenerator;}
   /** @generated */
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
       public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (NameAnnotation_Type.this.useExistingInstance) {
+  			 if (PlanetNameAnnotation_Type.this.useExistingInstance) {
   			   // Return eq fs instance if already created
-  		     FeatureStructure fs = NameAnnotation_Type.this.jcas.getJfsFromCaddr(addr);
+  		     FeatureStructure fs = PlanetNameAnnotation_Type.this.jcas.getJfsFromCaddr(addr);
   		     if (null == fs) {
-  		       fs = new NameAnnotation(addr, NameAnnotation_Type.this);
-  			   NameAnnotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
+  		       fs = new PlanetNameAnnotation(addr, PlanetNameAnnotation_Type.this);
+  			   PlanetNameAnnotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
   			   return fs;
   		     }
   		     return fs;
-        } else return new NameAnnotation(addr, NameAnnotation_Type.this);
+        } else return new PlanetNameAnnotation(addr, PlanetNameAnnotation_Type.this);
   	  }
     };
   /** @generated */
-  public final static int typeIndexID = NameAnnotation.typeIndexID;
+  public final static int typeIndexID = PlanetNameAnnotation.typeIndexID;
   /** @generated 
      @modifiable */
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("com.github.samplett.giw1011.ts.NameAnnotation");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("com.github.samplett.giw1011.ts.PlanetNameAnnotation");
 
 
 
   /** initialize variables to correspond with Cas Type and Features
 	* @generated */
-  public NameAnnotation_Type(JCas jcas, Type casType) {
+  public PlanetNameAnnotation_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 

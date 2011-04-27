@@ -1,7 +1,7 @@
 
 
-/* First created by JCasGen Tue Apr 05 11:32:00 CEST 2011 */
-package com.github.samplett.giw1011.ts;
+/* First created by JCasGen Wed Apr 27 15:13:03 CEST 2011 */
+package org.apache.uima;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -9,15 +9,15 @@ import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
-/** annotation for a first name
+/** sentence annotation
  * Updated by JCasGen Wed Apr 27 15:13:03 CEST 2011
  * XML source: /Users/tommasoteofili/Documents/workspaces/github/samplett/giw1011/src/main/resources/AggregateGiw1011.xml
  * @generated */
-public class NameAnnotation extends Annotation {
+public class SentenceAnnotation extends Annotation {
   /** @generated
    * @ordered 
    */
-  public final static int typeIndexID = JCasRegistry.register(NameAnnotation.class);
+  public final static int typeIndexID = JCasRegistry.register(SentenceAnnotation.class);
   /** @generated
    * @ordered 
    */
@@ -27,23 +27,23 @@ public class NameAnnotation extends Annotation {
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected NameAnnotation() {}
+  protected SentenceAnnotation() {}
     
   /** Internal - constructor used by generator 
    * @generated */
-  public NameAnnotation(int addr, TOP_Type type) {
+  public SentenceAnnotation(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
   
   /** @generated */
-  public NameAnnotation(JCas jcas) {
+  public SentenceAnnotation(JCas jcas) {
     super(jcas);
     readObject();   
   } 
 
   /** @generated */  
-  public NameAnnotation(JCas jcas, int begin, int end) {
+  public SentenceAnnotation(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);

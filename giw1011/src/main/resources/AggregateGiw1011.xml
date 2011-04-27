@@ -66,7 +66,7 @@
     <flowConstraints>
       <fixedFlow>
         <node>SimpleTokenAndSentenceAnnotator</node>
-<!--         <node>SnowballAnnotator</node> -->
+        <node>SnowballAnnotator</node>
         <node>HmmTagger</node>
         <node>NameAnnotator</node>
         <node>ChunkerAE</node>
