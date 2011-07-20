@@ -32,7 +32,7 @@
       <import name="SnowballAnnotator"/>
     </delegateAnalysisEngine>
     <delegateAnalysisEngine key="HmmTagger">
-      <import name="HmmTagger"/>
+      <import location="HmmTagger.xml"/>
     </delegateAnalysisEngine>
     <delegateAnalysisEngine key="NameAnnotator">
       <import name="NameAnnotatorAEDescriptor"/>
