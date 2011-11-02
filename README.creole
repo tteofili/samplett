@@ -1,0 +1,1 @@
+this is a collector repository for small projects whose aim is to demonstrate / test approaches, technologies, etc.
