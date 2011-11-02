@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -16,9 +14,6 @@ import java.util.concurrent.Future;
  * @author tommaso
  */
 public abstract class WSRVBaseServlet extends HttpServlet {
-
-  private final Map<String, WSRVResource> cache = new WeakHashMap<String, WSRVResource>();
-
 
   @Override
   public void init() throws ServletException {
@@ -30,6 +25,7 @@ public abstract class WSRVBaseServlet extends HttpServlet {
     // handle HTTP request and params
     System.err.println(request);
     // check the cache
+    WSRVResourceCache<String, WSRVResource> cache = WSRVResourceCacheProvider.getInstance().getCache("in-memory");
     WSRVResource desiredResource = cache.get(request.getServletPath());
     if (desiredResource != null) {
       System.err.println("hit the cache!");

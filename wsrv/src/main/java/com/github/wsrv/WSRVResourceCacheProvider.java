@@ -20,7 +20,7 @@ public class WSRVResourceCacheProvider {
     return instance;
   }
 
-  public WSRVResourceCache getCache(String cacheType) {
+  public WSRVResourceCache<String, WSRVResource> getCache(String cacheType) {
     return cacheMap.get(cacheType);
   }
 }
