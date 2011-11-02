@@ -9,8 +9,8 @@ import java.util.concurrent.Callable;
 /**
  * @author tommaso
  */
-public class FSRequestHandlerThread implements Callable<WSRVResource> {
-  private String resourcePath;
+class FSRequestHandlerThread implements Callable<WSRVResource> {
+  private final String resourcePath;
 
   public FSRequestHandlerThread(String resourcePath) {
     this.resourcePath = resourcePath;

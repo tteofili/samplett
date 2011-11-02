@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 public class ThreadExecutorProvider {
   private static ThreadExecutorProvider instance = new ThreadExecutorProvider();
 
-  private ExecutorService executor;
+  private final ExecutorService executor;
 
   public static ThreadExecutorProvider getInstance() {
     return instance;

@@ -16,9 +16,10 @@ import java.util.concurrent.Future;
  * @author tommaso
  */
 public abstract class WSRVBaseServlet extends HttpServlet {
+
   static final String BASE_DIR_PARAMETER = "repo-root";
   private static final String POOL_SIZE_PARAMETER = "pool-size";
-  private Map<String, WSRVResource> cache = new WeakHashMap<String, WSRVResource>();
+  private final Map<String, WSRVResource> cache = new WeakHashMap<String, WSRVResource>();
 
 
   @Override

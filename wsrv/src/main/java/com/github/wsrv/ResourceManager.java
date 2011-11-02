@@ -7,7 +7,7 @@ package com.github.wsrv;
 public class ResourceManager {
   private static ResourceManager ourInstance = new ResourceManager();
 
-  private ResourceRepository resourceRepository = new FileSystemResourceRepository();
+  private final ResourceRepository resourceRepository = new FileSystemResourceRepository();
 
   public static ResourceManager getInstance() {
     return ourInstance;
