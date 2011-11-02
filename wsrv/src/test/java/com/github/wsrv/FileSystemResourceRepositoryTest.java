@@ -16,7 +16,7 @@ public class FileSystemResourceRepositoryTest {
     try {
       FileSystemResourceRepository fileSystemResourceRepository = new FileSystemResourceRepository();
       fileSystemResourceRepository.initialize("");
-      URL resourceURL = this.getClass().getResource("/wiki.html");
+      URL resourceURL = getClass().getResource("/wiki.html");
       WSRVResource wsrvResource = fileSystemResourceRepository.getResource(resourceURL.getFile());
       assertNotNull(wsrvResource);
     } catch (Exception e) {
