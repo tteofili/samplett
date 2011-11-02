@@ -1,6 +1,9 @@
 package com.github.wsrv;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +18,8 @@ import java.util.concurrent.Future;
  */
 public abstract class WSRVBaseServlet extends HttpServlet {
 
+  private final Logger log = LoggerFactory.getLogger(WSRVBaseServlet.class);
+
   @Override
   public void init() throws ServletException {
     ThreadExecutorProvider.initialize(Integer.valueOf(getInitParameter(ServletParams.POOL_SIZE_PARAMETER)));
@@ -23,17 +28,20 @@ public abstract class WSRVBaseServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // handle HTTP request and params
-    System.err.println(request);
+    if (log.isDebugEnabled())
+      log.debug(request.toString());
     // check the cache
     WSRVResourceCache<String, WSRVResource> cache = WSRVResourceCacheProvider.getInstance().getCache("in-memory");
     WSRVResource desiredResource = cache.get(request.getServletPath());
     if (desiredResource != null) {
-      System.err.println("hit the cache!");
+      if (log.isDebugEnabled())
+        log.debug("hit the cache!");
     } else {
       // look for the desired resource
       ExecutorService executorService = ThreadExecutorProvider.getInstance().getExecutor();
       String resourceName = request.getServletPath() != null ? request.getServletPath() : "";
-      System.err.println(new StringBuilder("looking for ").append(resourceName).toString());
+      if (log.isDebugEnabled())
+        log.debug(new StringBuilder("looking for ").append(resourceName).toString());
       Future<WSRVResource> fut = executorService.submit(getRequestHandlerThread(resourceName));
       try {
         // eventually get the desired resource
@@ -50,7 +58,8 @@ public abstract class WSRVBaseServlet extends HttpServlet {
     }
 
     // return proper HTTP response
-    System.err.println(response);
+    if (log.isDebugEnabled())
+      log.debug(response.toString());
   }
 
   protected abstract Callable<WSRVResource> getRequestHandlerThread(String resourceName);

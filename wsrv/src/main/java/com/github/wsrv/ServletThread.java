@@ -1,5 +1,8 @@
 package com.github.wsrv;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.Callable;
@@ -13,6 +16,8 @@ class ServletThread implements Callable<HttpServletResponse> {
   private transient HttpServletRequest request;
   private transient HttpServletResponse response;
   private transient String baseDir;
+  private final Logger log = LoggerFactory.getLogger(ServletThread.class);
+
 
   public ServletThread(String baseDir, HttpServletRequest request, HttpServletResponse response) {
     this.baseDir = baseDir;
@@ -23,17 +28,20 @@ class ServletThread implements Callable<HttpServletResponse> {
   @Override
   public HttpServletResponse call() throws Exception {
     // handle HTTP request and params
-    System.err.println(request);
+    if (log.isDebugEnabled())
+      log.debug(request.toString());
     // check the cache
     WSRVResourceCache<String, WSRVResource> cache = WSRVResourceCacheProvider.getInstance().getCache("in-memory");
     WSRVResource desiredResource = cache.get(request.getServletPath());
     if (desiredResource != null) {
-      System.err.println("hit the cache!");
+      if (log.isDebugEnabled())
+        log.debug("hit the cache!");
     } else {
       // look for the desired resource
       ExecutorService executorService = ThreadExecutorProvider.getInstance().getExecutor();
       String resourceName = request.getServletPath() != null ? request.getServletPath() : "";
-      System.err.println(new StringBuilder("looking for ").append(resourceName).toString());
+      if (log.isDebugEnabled())
+        log.debug(new StringBuilder("looking for ").append(resourceName).toString());
       Future<WSRVResource> fut = executorService.submit(new FSRequestHandlerThread(new StringBuilder(baseDir).
               append(resourceName).toString()));
       try {
@@ -51,7 +59,8 @@ class ServletThread implements Callable<HttpServletResponse> {
     }
 
     // return proper HTTP response
-    System.err.println(response);
+    if (log.isDebugEnabled())
+      log.debug(response.toString());
     return response;
   }
 }

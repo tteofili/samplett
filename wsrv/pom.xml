@@ -20,6 +20,11 @@
       <version>2.0.1</version>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.6.3</version>
+    </dependency>
+    <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
       <version>6.1.8</version>
