@@ -5,10 +5,10 @@ import java.util.concurrent.Callable;
 /**
  * @author tommaso
  */
-public class RequestHandlerThread implements Callable<WSRVResource> {
+public class RepositoryDelegatorRequestHandlerThread implements Callable<WSRVResource> {
   private String resourceName;
 
-  public RequestHandlerThread(String resourceName) {
+  public RepositoryDelegatorRequestHandlerThread(String resourceName) {
     this.resourceName = resourceName;
   }
 
