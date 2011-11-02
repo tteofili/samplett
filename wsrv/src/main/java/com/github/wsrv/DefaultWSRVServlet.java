@@ -5,7 +5,6 @@ import java.util.concurrent.Callable;
 
 /**
  * @author tommaso
- * @version $Id$
  */
 public class DefaultWSRVServlet extends WSRVBaseServlet {
 

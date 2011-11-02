@@ -2,7 +2,6 @@ package com.github.wsrv;
 
 /**
  * @author tommaso
- * @version $Id$
  */
 public class WSRVResourceManager {
   private static WSRVResourceManager ourInstance = new WSRVResourceManager();
