@@ -17,12 +17,20 @@ class FSRequestHandlerThread implements Callable<WSRVResource> {
   }
 
   public WSRVResource call() throws Exception {
-    File file = new File(resourcePath);
     final byte[] byteStream;
-    try {
-      byteStream = IOUtils.toByteArray(new FileInputStream(file));
-    } catch (Exception e) {
-      throw new ResourceNotFoundException(e);
+    File file = new File(resourcePath);
+    if (file.isFile()) {
+      try {
+        byteStream = IOUtils.toByteArray(new FileInputStream(file));
+      } catch (Exception e) {
+        throw new ResourceNotFoundException(e);
+      }
+    } else {
+      StringBuilder sb = new StringBuilder();
+      for (File f : file.listFiles()) {
+        sb.append(f.getName()).append("\n");
+      }
+      byteStream = sb.toString().getBytes();
     }
     return new WSRVResource() {
       @Override

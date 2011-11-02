@@ -20,12 +20,20 @@ public class FileSystemResourceRepository implements ResourceRepository {
   @Override
   public WSRVResource getResource(String resourceName) throws ResourceNotFoundException {
     String pathName = new StringBuilder(baseDir).append(resourceName).toString();
-    File file = new File(pathName);
     final byte[] byteStream;
-    try {
-      byteStream = IOUtils.toByteArray(new FileInputStream(file));
-    } catch (Exception e) {
-      throw new ResourceNotFoundException(e);
+    File file = new File(pathName);
+    if (file.isFile()) {
+      try {
+        byteStream = IOUtils.toByteArray(new FileInputStream(file));
+      } catch (Exception e) {
+        throw new ResourceNotFoundException(e);
+      }
+    } else {
+      StringBuilder sb = new StringBuilder();
+      for (File f : file.listFiles()) {
+        sb.append(f.getName()).append("\n");
+      }
+      byteStream = sb.toString().getBytes();
     }
     return new WSRVResource() {
       @Override
