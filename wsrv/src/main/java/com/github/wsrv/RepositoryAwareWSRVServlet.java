@@ -12,7 +12,7 @@ public class RepositoryAwareWSRVServlet extends WSRVBaseServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    ResourceManager.getInstance().setResourceRoot(String.valueOf(getInitParameter(BASE_DIR_PARAMETER)));
+    WSRVResourceManager.getInstance().setResourceRoot(String.valueOf(getInitParameter(BASE_DIR_PARAMETER)));
   }
 
   @Override

@@ -4,16 +4,16 @@ package com.github.wsrv;
  * @author tommaso
  * @version $Id$
  */
-public class ResourceManager {
-  private static ResourceManager ourInstance = new ResourceManager();
+public class WSRVResourceManager {
+  private static WSRVResourceManager ourInstance = new WSRVResourceManager();
 
   private final ResourceRepository resourceRepository = new FileSystemResourceRepository();
 
-  public static ResourceManager getInstance() {
+  public static WSRVResourceManager getInstance() {
     return ourInstance;
   }
 
-  private ResourceManager() {
+  private WSRVResourceManager() {
   }
 
   public void setResourceRoot(String root) {

@@ -13,6 +13,6 @@ class RepositoryDelegatorRequestHandlerThread implements Callable<WSRVResource> 
   }
 
   public WSRVResource call() throws Exception {
-    return ResourceManager.getInstance().getResourceRepository().getResource(resourceName);
+    return WSRVResourceManager.getInstance().getResourceRepository().getResource(resourceName);
   }
 }
