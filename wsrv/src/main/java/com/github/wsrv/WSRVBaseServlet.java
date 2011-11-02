@@ -32,13 +32,13 @@ public abstract class WSRVBaseServlet extends HttpServlet {
     // handle HTTP request and params
     System.err.println(request);
     // check the cache
-    WSRVResource desiredResource = cache.get(request.getQueryString());
+    WSRVResource desiredResource = cache.get(request.getServletPath());
     if (desiredResource != null) {
       System.err.println("hit the cache!");
     } else {
       // look for the desired resource
       ExecutorService executorService = ThreadExecutorProvider.getInstance().getExecutor();
-      String resourceName = request.getQueryString() != null ? request.getQueryString() : "";
+      String resourceName = request.getServletPath() != null ? request.getServletPath() : "";
       System.err.println(new StringBuilder("looking for ").append(resourceName).toString());
       Future<WSRVResource> fut = executorService.submit(getRequestHandlerThread(resourceName));
       try {

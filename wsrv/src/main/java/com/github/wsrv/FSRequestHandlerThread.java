@@ -19,6 +19,9 @@ class FSRequestHandlerThread implements Callable<WSRVResource> {
   public WSRVResource call() throws Exception {
     final byte[] byteStream;
     File file = new File(resourcePath);
+    if (!file.exists()) {
+      throw new ResourceNotFoundException(new StringBuilder(resourcePath).append(" not found").toString());
+    }
     if (file.isFile()) {
       try {
         byteStream = IOUtils.toByteArray(new FileInputStream(file));

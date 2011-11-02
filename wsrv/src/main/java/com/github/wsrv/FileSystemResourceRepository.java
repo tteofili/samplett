@@ -22,6 +22,9 @@ public class FileSystemResourceRepository implements ResourceRepository {
     String pathName = new StringBuilder(baseDir).append(resourceName).toString();
     final byte[] byteStream;
     File file = new File(pathName);
+    if (!file.exists()) {
+      throw new ResourceNotFoundException(new StringBuilder(pathName).append(" not found").toString());
+    }
     if (file.isFile()) {
       try {
         byteStream = IOUtils.toByteArray(new FileInputStream(file));
