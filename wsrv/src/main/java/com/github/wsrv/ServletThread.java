@@ -1,13 +1,7 @@
 package com.github.wsrv;
 
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -15,21 +9,23 @@ import java.util.concurrent.Future;
 /**
  * @author tommaso
  */
-public abstract class WSRVBaseServlet extends HttpServlet {
+class ServletThread implements Callable<HttpServletResponse> {
+  private transient HttpServletRequest request;
+  private transient HttpServletResponse response;
+  private transient String baseDir;
 
-  private final Map<String, WSRVResource> cache = new WeakHashMap<String, WSRVResource>();
-
-
-  @Override
-  public void init() throws ServletException {
-    ThreadExecutorProvider.initialize(Integer.valueOf(getInitParameter(ServletParams.POOL_SIZE_PARAMETER)));
+  public ServletThread(String baseDir, HttpServletRequest request, HttpServletResponse response) {
+    this.baseDir = baseDir;
+    this.request = request;
+    this.response = response;
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public HttpServletResponse call() throws Exception {
     // handle HTTP request and params
     System.err.println(request);
     // check the cache
+    WSRVResourceCache<String, WSRVResource> cache = WSRVResourceCacheProvider.getInstance().getCache("in-memory");
     WSRVResource desiredResource = cache.get(request.getServletPath());
     if (desiredResource != null) {
       System.err.println("hit the cache!");
@@ -38,7 +34,8 @@ public abstract class WSRVBaseServlet extends HttpServlet {
       ExecutorService executorService = ThreadExecutorProvider.getInstance().getExecutor();
       String resourceName = request.getServletPath() != null ? request.getServletPath() : "";
       System.err.println(new StringBuilder("looking for ").append(resourceName).toString());
-      Future<WSRVResource> fut = executorService.submit(getRequestHandlerThread(resourceName));
+      Future<WSRVResource> fut = executorService.submit(new FSRequestHandlerThread(new StringBuilder(baseDir).
+              append(resourceName).toString()));
       try {
         // eventually get the desired resource
         desiredResource = fut.get();
@@ -50,16 +47,11 @@ public abstract class WSRVBaseServlet extends HttpServlet {
     }
 
     if (desiredResource != null) {
-      writeResource(response, desiredResource);
+      response.getWriter().println(new String(desiredResource.getBytes()));
     }
 
     // return proper HTTP response
     System.err.println(response);
-  }
-
-  protected abstract Callable<WSRVResource> getRequestHandlerThread(String resourceName);
-
-  private void writeResource(HttpServletResponse response, WSRVResource desiredResource) throws IOException {
-    response.getWriter().append(new String(desiredResource.getBytes()));
+    return response;
   }
 }

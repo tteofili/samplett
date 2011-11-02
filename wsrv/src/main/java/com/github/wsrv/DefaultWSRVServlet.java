@@ -13,7 +13,7 @@ public class DefaultWSRVServlet extends WSRVBaseServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    this.baseDir = String.valueOf(getInitParameter(BASE_DIR_PARAMETER));
+    this.baseDir = String.valueOf(getInitParameter(ServletParams.ROOT_PARAMETER));
   }
 
   @Override
