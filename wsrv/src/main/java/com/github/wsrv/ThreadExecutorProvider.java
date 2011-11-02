@@ -1,6 +1,6 @@
 package com.github.wsrv;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 public class ThreadExecutorProvider {
   private static ThreadExecutorProvider instance = new ThreadExecutorProvider();
 
-  private Executor executor;
+  private ExecutorService executor;
 
   public static ThreadExecutorProvider getInstance() {
     return instance;
@@ -27,7 +27,7 @@ public class ThreadExecutorProvider {
     executor = Executors.newFixedThreadPool(poolSize);
   }
 
-  public Executor getExecutor() {
+  public ExecutorService getExecutor() {
     return executor;
   }
 }

@@ -32,14 +32,10 @@
       <param-name>pool-size</param-name>
       <param-value>10</param-value>
     </init-param>
-    <!--<init-param>-->
-    <!--<param-name>PearInstallPath</param-name> &lt;!&ndash; optional &ndash;&gt;-->
-    <!--<param-value>./</param-value> &lt;!&ndash; relative path names are evaluated relative to the PEAR file location &ndash;&gt;-->
-    <!--</init-param>-->
-    <!--<init-param>-->
-    <!--<param-name>ResultSpecFile</param-name>-->
-    <!--<param-value>resources/WhitespaceTokenizer.xml</param-value>-->
-    <!--</init-param>-->
+    <init-param>
+      <param-name>repo-root</param-name>
+      <param-value>/tmp/</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>BaseRequestHandler</servlet-name>
