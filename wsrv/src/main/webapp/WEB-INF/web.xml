@@ -34,7 +34,7 @@
     </init-param>
     <init-param>
       <param-name>repo-root</param-name>
-      <param-value>/tmp/</param-value>
+      <param-value>./</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
