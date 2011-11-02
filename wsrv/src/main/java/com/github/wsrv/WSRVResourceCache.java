@@ -3,8 +3,8 @@ package com.github.wsrv;
 /**
  * @author tommaso
  */
-public interface WSRVResourceCache<K, V> {
-  public V get(K key);
+public interface WSRVResourceCache<K, WSRVResource> {
+  public WSRVResource get(K key);
 
-  public V put(K key, V value);
+  public WSRVResource put(K key, WSRVResource value);
 }
