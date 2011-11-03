@@ -9,7 +9,7 @@
   <modules>
     <module>giw1011</module>
     <module>gbeanc</module>
-    <!--<module>wsrv</module>-->
+    <module>wsrv</module>
     <!--<module>pg</module>-->
     <!--<module>uhama</module>-->
   </modules>
