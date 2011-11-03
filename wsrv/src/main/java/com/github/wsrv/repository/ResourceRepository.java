@@ -1,4 +1,6 @@
-package com.github.wsrv;
+package com.github.wsrv.repository;
+
+import com.github.wsrv.WSRVResource;
 
 /**
  * @author tommaso

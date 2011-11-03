@@ -1,4 +1,8 @@
-package com.github.wsrv;
+package com.github.wsrv.servlet;
+
+import com.github.wsrv.WSRVResource;
+import com.github.wsrv.WSRVResourceManager;
+import com.github.wsrv.repository.RepositoryDelegatorRequestHandlerThread;
 
 import javax.servlet.ServletException;
 import java.util.concurrent.Callable;

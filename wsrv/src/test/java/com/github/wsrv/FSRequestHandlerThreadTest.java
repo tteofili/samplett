@@ -1,5 +1,6 @@
 package com.github.wsrv;
 
+import com.github.wsrv.repository.FSRequestHandlerThread;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;

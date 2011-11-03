@@ -1,5 +1,8 @@
 package com.github.wsrv;
 
+import com.github.wsrv.repository.FileSystemResourceRepository;
+import com.github.wsrv.repository.ResourceRepository;
+
 /**
  * @author tommaso
  */

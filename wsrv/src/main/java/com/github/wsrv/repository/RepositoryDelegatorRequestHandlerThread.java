@@ -1,14 +1,17 @@
-package com.github.wsrv;
+package com.github.wsrv.repository;
+
+import com.github.wsrv.WSRVResource;
+import com.github.wsrv.WSRVResourceManager;
 
 import java.util.concurrent.Callable;
 
 /**
  * @author tommaso
  */
-class RepositoryDelegatorRequestHandlerThread implements Callable<WSRVResource> {
+public class RepositoryDelegatorRequestHandlerThread implements Callable<WSRVResource> {
   private final String resourceName;
 
-  RepositoryDelegatorRequestHandlerThread(String resourceName) {
+  public RepositoryDelegatorRequestHandlerThread(String resourceName) {
     this.resourceName = resourceName;
   }
 

@@ -27,7 +27,7 @@
 
   <servlet>
     <servlet-name>BaseRequestHandler</servlet-name>
-    <servlet-class>com.github.wsrv.WSRVThreadedBaseServlet</servlet-class>
+    <servlet-class>com.github.wsrv.servlet.WSRVThreadedBaseServlet</servlet-class>
     <init-param>
       <param-name>pool-size</param-name>
       <param-value>10</param-value>

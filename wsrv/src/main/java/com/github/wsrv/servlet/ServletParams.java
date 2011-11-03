@@ -1,4 +1,4 @@
-package com.github.wsrv;
+package com.github.wsrv.servlet;
 
 /**
  * @author tommaso

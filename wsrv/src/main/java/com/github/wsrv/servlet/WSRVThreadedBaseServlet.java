@@ -1,4 +1,6 @@
-package com.github.wsrv;
+package com.github.wsrv.servlet;
+
+import com.github.wsrv.ThreadExecutorProvider;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

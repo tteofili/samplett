@@ -1,6 +1,10 @@
-package com.github.wsrv;
+package com.github.wsrv.servlet;
 
 
+import com.github.wsrv.ThreadExecutorProvider;
+import com.github.wsrv.WSRVResource;
+import com.github.wsrv.cache.WSRVResourceCache;
+import com.github.wsrv.cache.WSRVResourceCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

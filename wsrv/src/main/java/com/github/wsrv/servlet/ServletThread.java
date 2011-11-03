@@ -1,5 +1,10 @@
-package com.github.wsrv;
+package com.github.wsrv.servlet;
 
+import com.github.wsrv.ThreadExecutorProvider;
+import com.github.wsrv.WSRVResource;
+import com.github.wsrv.cache.WSRVResourceCache;
+import com.github.wsrv.cache.WSRVResourceCacheProvider;
+import com.github.wsrv.repository.FSRequestHandlerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +53,7 @@ class ServletThread implements Callable<HttpServletResponse> {
         // eventually get the desired resource
         desiredResource = fut.get();
         // update the cache
-        cache.put(request.getQueryString(), desiredResource);
+        cache.put(request.getServletPath(), desiredResource);
       } catch (Exception e) {
         response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
       }

@@ -1,5 +1,6 @@
-package com.github.wsrv;
+package com.github.wsrv.repository;
 
+import com.github.wsrv.WSRVResource;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -9,7 +10,7 @@ import java.util.concurrent.Callable;
 /**
  * @author tommaso
  */
-class FSRequestHandlerThread implements Callable<WSRVResource> {
+public class FSRequestHandlerThread implements Callable<WSRVResource> {
   private final String resourcePath;
 
   public FSRequestHandlerThread(String resourcePath) {
