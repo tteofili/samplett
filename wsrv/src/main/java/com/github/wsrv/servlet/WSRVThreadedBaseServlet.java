@@ -23,11 +23,12 @@ public class WSRVThreadedBaseServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Future<HttpServletResponse> fut = ThreadExecutorProvider.getInstance().getExecutor().submit(new ServletThread(
-            baseDir, request, response));
     try {
+      Future<HttpServletResponse> fut = ThreadExecutorProvider.getInstance().getExecutor().submit(new ServletThread(
+              baseDir, request, response));
       response = fut.get();
     } catch (Exception e) {
+      e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }

@@ -18,10 +18,11 @@ import java.util.concurrent.Future;
  * @author tommaso
  */
 class ServletThread implements Callable<HttpServletResponse> {
+  private final Logger log = LoggerFactory.getLogger(ServletThread.class);
+
   private transient HttpServletRequest request;
   private transient HttpServletResponse response;
   private transient String baseDir;
-  private final Logger log = LoggerFactory.getLogger(ServletThread.class);
 
 
   public ServletThread(String baseDir, HttpServletRequest request, HttpServletResponse response) {
@@ -55,7 +56,7 @@ class ServletThread implements Callable<HttpServletResponse> {
         // update the cache
         cache.put(request.getServletPath(), desiredResource);
       } catch (Exception e) {
-        response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
       }
     }
 
