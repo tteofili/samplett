@@ -26,9 +26,7 @@ public class WSRVThreadedBaseServlet extends HttpServlet {
     try {
       Future<HttpServletResponse> fut = ThreadExecutorProvider.getInstance().getExecutor().submit(new ServletThread(
               baseDir, request, response));
-      response = fut.get();
     } catch (Exception e) {
-      e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
