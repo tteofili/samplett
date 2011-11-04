@@ -56,7 +56,7 @@ class ServletThread implements Callable<HttpServletResponse> {
         // update the cache
         cache.put(request.getServletPath(), desiredResource);
       } catch (Exception e) {
-        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       }
     }
 
