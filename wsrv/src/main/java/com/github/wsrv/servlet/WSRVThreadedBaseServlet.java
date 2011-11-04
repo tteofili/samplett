@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.concurrent.Future;
 
 /**
  * @author tommaso
@@ -24,8 +23,7 @@ public class WSRVThreadedBaseServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
-      Future<HttpServletResponse> fut = ThreadExecutorProvider.getInstance().getExecutor().submit(new ServletThread(
-              baseDir, request, response));
+      ThreadExecutorProvider.getInstance().getExecutor().submit(new ServletThread(baseDir, request, response)).get();
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
