@@ -1,4 +1,4 @@
-package com.github.wsrv.cache;
+package com.github.wsrv.jetty.cache;
 
 import java.util.Map;
 import java.util.WeakHashMap;

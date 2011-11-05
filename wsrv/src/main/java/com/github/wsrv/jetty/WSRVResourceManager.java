@@ -1,7 +1,7 @@
-package com.github.wsrv;
+package com.github.wsrv.jetty;
 
-import com.github.wsrv.repository.FileSystemResourceRepository;
-import com.github.wsrv.repository.ResourceRepository;
+import com.github.wsrv.jetty.repository.FileSystemResourceRepository;
+import com.github.wsrv.jetty.repository.ResourceRepository;
 
 /**
  * @author tommaso

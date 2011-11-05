@@ -1,27 +1,30 @@
-package com.github.wsrv.repository;
+package com.github.wsrv.jetty.repository;
 
-import com.github.wsrv.WSRVResource;
+
+import com.github.wsrv.jetty.WSRVResource;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.concurrent.Callable;
 
 /**
  * @author tommaso
  */
-public class FSRequestHandlerThread implements Callable<WSRVResource> {
-  private final String resourcePath;
+public class FileSystemResourceRepository implements ResourceRepository {
+  private String baseDir;
 
-  public FSRequestHandlerThread(String resourcePath) {
-    this.resourcePath = resourcePath;
+  @Override
+  public void initialize(String root) {
+    this.baseDir = root;
   }
 
-  public WSRVResource call() throws Exception {
+  @Override
+  public WSRVResource getResource(String resourceName) throws ResourceNotFoundException {
+    String pathName = new StringBuilder(baseDir).append(resourceName).toString();
     final byte[] byteStream;
-    File file = new File(resourcePath);
+    File file = new File(pathName);
     if (!file.exists()) {
-      throw new ResourceNotFoundException(new StringBuilder(resourcePath).append(" not found").toString());
+      throw new ResourceNotFoundException(new StringBuilder(pathName).append(" not found").toString());
     }
     if (file.isFile()) {
       try {

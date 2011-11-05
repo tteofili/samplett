@@ -1,8 +1,8 @@
-package com.github.wsrv.servlet;
+package com.github.wsrv.jetty.servlet;
 
-import com.github.wsrv.WSRVResource;
-import com.github.wsrv.WSRVResourceManager;
-import com.github.wsrv.repository.RepositoryDelegatorRequestHandlerThread;
+import com.github.wsrv.jetty.WSRVResource;
+import com.github.wsrv.jetty.WSRVResourceManager;
+import com.github.wsrv.jetty.repository.RepositoryDelegatorRequestHandlerThread;
 
 import javax.servlet.ServletException;
 import java.util.concurrent.Callable;
