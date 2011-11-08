@@ -1,7 +1,7 @@
 package com.github.wsrv.jetty.repository;
 
 
-import com.github.wsrv.jetty.WSRVResource;
+import com.github.wsrv.WSRVResource;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

@@ -1,6 +1,5 @@
 package com.github.wsrv;
 
-import com.github.wsrv.jetty.WSRVResource;
 import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
 import org.testng.annotations.Test;
 

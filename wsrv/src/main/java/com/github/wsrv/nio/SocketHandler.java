@@ -1,8 +1,8 @@
 package com.github.wsrv.nio;
 
+import com.github.wsrv.WSRVResource;
 import com.github.wsrv.cache.WSRVResourceCache;
 import com.github.wsrv.cache.WSRVResourceCacheProvider;
-import com.github.wsrv.jetty.WSRVResource;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

@@ -1,6 +1,6 @@
 package com.github.wsrv.jetty.repository;
 
-import com.github.wsrv.jetty.WSRVResource;
+import com.github.wsrv.WSRVResource;
 import com.github.wsrv.jetty.WSRVResourceManager;
 
 import java.util.concurrent.Callable;

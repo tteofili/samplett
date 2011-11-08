@@ -1,4 +1,4 @@
-package com.github.wsrv.jetty;
+package com.github.wsrv;
 
 /**
  * @author tommaso

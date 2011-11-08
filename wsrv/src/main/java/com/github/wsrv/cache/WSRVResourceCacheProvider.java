@@ -1,6 +1,6 @@
 package com.github.wsrv.cache;
 
-import com.github.wsrv.jetty.WSRVResource;
+import com.github.wsrv.WSRVResource;
 
 import java.util.HashMap;
 import java.util.Map;

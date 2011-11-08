@@ -1,6 +1,6 @@
 package com.github.wsrv.jetty.servlet;
 
-import com.github.wsrv.jetty.WSRVResource;
+import com.github.wsrv.WSRVResource;
 import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
 
 import javax.servlet.ServletException;
