@@ -54,12 +54,13 @@ public class SocketHandler implements Callable<Object> {
         }
         byteStream = sb.toString().getBytes();
       }
-      return new Resource() {
+      resource = new Resource() {
         @Override
         public byte[] getBytes() {
           return byteStream;
         }
       };
+      cache.put(httpRequest, resource);
     }
     byteBuffer.clear(); //make buffer ready for writing
     HttpResponse httpResponse = new HttpResponse();
