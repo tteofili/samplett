@@ -1,4 +1,4 @@
-package com.github.wsrv.jetty.cache;
+package com.github.wsrv.cache;
 
 import com.github.wsrv.jetty.WSRVResource;
 
