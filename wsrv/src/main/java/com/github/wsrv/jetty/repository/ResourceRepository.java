@@ -1,6 +1,6 @@
 package com.github.wsrv.jetty.repository;
 
-import com.github.wsrv.WSRVResource;
+import com.github.wsrv.Resource;
 
 /**
  * @author tommaso
@@ -8,5 +8,5 @@ import com.github.wsrv.WSRVResource;
 public interface ResourceRepository {
   void initialize(String root);
 
-  WSRVResource getResource(String resourceName) throws ResourceNotFoundException;
+  Resource getResource(String resourceName) throws ResourceNotFoundException;
 }

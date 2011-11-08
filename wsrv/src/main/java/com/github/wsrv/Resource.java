@@ -3,6 +3,6 @@ package com.github.wsrv;
 /**
  * @author tommaso
  */
-public interface WSRVResource {
+public interface Resource {
   byte[] getBytes();
 }

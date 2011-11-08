@@ -1,9 +1,9 @@
 package com.github.wsrv.jetty.servlet;
 
 
-import com.github.wsrv.WSRVResource;
-import com.github.wsrv.cache.WSRVResourceCache;
-import com.github.wsrv.cache.WSRVResourceCacheProvider;
+import com.github.wsrv.Resource;
+import com.github.wsrv.cache.ResourceCache;
+import com.github.wsrv.cache.ResourceCacheProvider;
 import com.github.wsrv.jetty.ThreadExecutorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +35,8 @@ public abstract class WSRVBaseServlet extends HttpServlet {
     if (log.isDebugEnabled())
       log.debug(request.toString());
     // check the cache
-    WSRVResourceCache<String, WSRVResource> cache = WSRVResourceCacheProvider.getInstance().getCache("in-memory");
-    WSRVResource desiredResource = cache.get(request.getServletPath());
+    ResourceCache<String, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
+    Resource desiredResource = cache.get(request.getServletPath());
     if (desiredResource != null) {
       if (log.isDebugEnabled())
         log.debug("hit the cache!");
@@ -46,7 +46,7 @@ public abstract class WSRVBaseServlet extends HttpServlet {
       String resourceName = request.getServletPath() != null ? request.getServletPath() : "";
       if (log.isDebugEnabled())
         log.debug(new StringBuilder("looking for ").append(resourceName).toString());
-      Future<WSRVResource> fut = executorService.submit(getRequestHandlerThread(resourceName));
+      Future<Resource> fut = executorService.submit(getRequestHandlerThread(resourceName));
       try {
         // eventually get the desired resource
         desiredResource = fut.get();
@@ -66,9 +66,9 @@ public abstract class WSRVBaseServlet extends HttpServlet {
       log.debug(response.toString());
   }
 
-  protected abstract Callable<WSRVResource> getRequestHandlerThread(String resourceName);
+  protected abstract Callable<Resource> getRequestHandlerThread(String resourceName);
 
-  private void writeResource(HttpServletResponse response, WSRVResource desiredResource) throws IOException {
+  private void writeResource(HttpServletResponse response, Resource desiredResource) throws IOException {
     response.getWriter().append(new String(desiredResource.getBytes()));
   }
 }

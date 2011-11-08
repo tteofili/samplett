@@ -1,6 +1,6 @@
 package com.github.wsrv.jetty.servlet;
 
-import com.github.wsrv.WSRVResource;
+import com.github.wsrv.Resource;
 import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
 
 import javax.servlet.ServletException;
@@ -20,7 +20,7 @@ public class DefaultWSRVServlet extends WSRVBaseServlet {
   }
 
   @Override
-  protected Callable<WSRVResource> getRequestHandlerThread(String resourceName) {
+  protected Callable<Resource> getRequestHandlerThread(String resourceName) {
     return new FSRequestHandlerThread(new StringBuilder(baseDir).
             append(resourceName).toString());
   }

@@ -1,6 +1,6 @@
 package com.github.wsrv.jetty.repository;
 
-import com.github.wsrv.WSRVResource;
+import com.github.wsrv.Resource;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -10,14 +10,14 @@ import java.util.concurrent.Callable;
 /**
  * @author tommaso
  */
-public class FSRequestHandlerThread implements Callable<WSRVResource> {
+public class FSRequestHandlerThread implements Callable<Resource> {
   private final String resourcePath;
 
   public FSRequestHandlerThread(String resourcePath) {
     this.resourcePath = resourcePath;
   }
 
-  public WSRVResource call() throws Exception {
+  public Resource call() throws Exception {
     final byte[] byteStream;
     File file = new File(resourcePath);
     if (!file.exists()) {
@@ -36,7 +36,7 @@ public class FSRequestHandlerThread implements Callable<WSRVResource> {
       }
       byteStream = sb.toString().getBytes();
     }
-    return new WSRVResource() {
+    return new Resource() {
       @Override
       public byte[] getBytes() {
         return byteStream;

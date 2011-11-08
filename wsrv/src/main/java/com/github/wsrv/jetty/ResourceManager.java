@@ -6,16 +6,16 @@ import com.github.wsrv.jetty.repository.ResourceRepository;
 /**
  * @author tommaso
  */
-public class WSRVResourceManager {
-  private static WSRVResourceManager ourInstance = new WSRVResourceManager();
+public class ResourceManager {
+  private static ResourceManager ourInstance = new ResourceManager();
 
   private final ResourceRepository resourceRepository = new FileSystemResourceRepository();
 
-  public static WSRVResourceManager getInstance() {
+  public static ResourceManager getInstance() {
     return ourInstance;
   }
 
-  private WSRVResourceManager() {
+  private ResourceManager() {
   }
 
   public void setResourceRoot(String root) {

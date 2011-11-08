@@ -6,7 +6,7 @@ import java.util.WeakHashMap;
 /**
  * @author tommaso
  */
-public class InMemoryResourceCache<K, V> implements WSRVResourceCache<K, V> {
+public class InMemoryResourceCache<K, V> implements ResourceCache<K, V> {
 
   private Map<K, V> cache = new WeakHashMap<K, V>();
 

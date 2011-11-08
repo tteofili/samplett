@@ -1,8 +1,8 @@
 package com.github.wsrv.jetty.servlet;
 
-import com.github.wsrv.WSRVResource;
-import com.github.wsrv.cache.WSRVResourceCache;
-import com.github.wsrv.cache.WSRVResourceCacheProvider;
+import com.github.wsrv.Resource;
+import com.github.wsrv.cache.ResourceCache;
+import com.github.wsrv.cache.ResourceCacheProvider;
 import com.github.wsrv.jetty.ThreadExecutorProvider;
 import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
 import org.slf4j.Logger;
@@ -37,8 +37,8 @@ class ServletThread implements Callable<HttpServletResponse> {
     if (log.isDebugEnabled())
       log.debug(request.toString());
     // check the cache
-    WSRVResourceCache<String, WSRVResource> cache = WSRVResourceCacheProvider.getInstance().getCache("in-memory");
-    WSRVResource desiredResource = cache.get(request.getServletPath());
+    ResourceCache<String, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
+    Resource desiredResource = cache.get(request.getServletPath());
     if (desiredResource != null) {
       if (log.isDebugEnabled())
         log.debug("hit the cache!");
@@ -48,7 +48,7 @@ class ServletThread implements Callable<HttpServletResponse> {
       String resourceName = request.getServletPath() != null ? request.getServletPath() : "";
       if (log.isDebugEnabled())
         log.debug(new StringBuilder("looking for ").append(resourceName).toString());
-      Future<WSRVResource> fut = executorService.submit(new FSRequestHandlerThread(new StringBuilder(baseDir).
+      Future<Resource> fut = executorService.submit(new FSRequestHandlerThread(new StringBuilder(baseDir).
               append(resourceName).toString()));
       try {
         // eventually get the desired resource

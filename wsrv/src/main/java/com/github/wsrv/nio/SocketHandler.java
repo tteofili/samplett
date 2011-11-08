@@ -1,8 +1,8 @@
 package com.github.wsrv.nio;
 
-import com.github.wsrv.WSRVResource;
-import com.github.wsrv.cache.WSRVResourceCache;
-import com.github.wsrv.cache.WSRVResourceCacheProvider;
+import com.github.wsrv.Resource;
+import com.github.wsrv.cache.ResourceCache;
+import com.github.wsrv.cache.ResourceCacheProvider;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -31,8 +31,8 @@ public class SocketHandler implements Callable<Object> {
     HttpRequestParser httpRequestParser = new HttpRequestParser();
     HttpRequest httpRequest = httpRequestParser.parse(requestString);
     // check the cache
-    WSRVResourceCache<HttpRequest, WSRVResource> cache = WSRVResourceCacheProvider.getInstance().getCache("in-memory");
-    WSRVResource resource = cache.get(httpRequest);
+    ResourceCache<HttpRequest, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
+    Resource resource = cache.get(httpRequest);
     if (resource == null) {
       // retrieve the resource
       final byte[] byteStream;
@@ -54,7 +54,7 @@ public class SocketHandler implements Callable<Object> {
         }
         byteStream = sb.toString().getBytes();
       }
-      return new WSRVResource() {
+      return new Resource() {
         @Override
         public byte[] getBytes() {
           return byteStream;

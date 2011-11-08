@@ -1,7 +1,7 @@
 package com.github.wsrv.jetty.repository;
 
 
-import com.github.wsrv.WSRVResource;
+import com.github.wsrv.Resource;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -19,7 +19,7 @@ public class FileSystemResourceRepository implements ResourceRepository {
   }
 
   @Override
-  public WSRVResource getResource(String resourceName) throws ResourceNotFoundException {
+  public Resource getResource(String resourceName) throws ResourceNotFoundException {
     String pathName = new StringBuilder(baseDir).append(resourceName).toString();
     final byte[] byteStream;
     File file = new File(pathName);
@@ -39,7 +39,7 @@ public class FileSystemResourceRepository implements ResourceRepository {
       }
       byteStream = sb.toString().getBytes();
     }
-    return new WSRVResource() {
+    return new Resource() {
       @Override
       public byte[] getBytes() {
         return byteStream;

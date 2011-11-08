@@ -14,7 +14,7 @@ public class FSRequestHandlerThreadTest {
   public void testResourceFetch() {
     try {
       FSRequestHandlerThread fsRequestHandlerThreadTest = new FSRequestHandlerThread("./");
-      WSRVResource resource = fsRequestHandlerThreadTest.call();
+      Resource resource = fsRequestHandlerThreadTest.call();
       assertNotNull(resource);
     } catch (Exception e) {
       fail(e.getLocalizedMessage());
