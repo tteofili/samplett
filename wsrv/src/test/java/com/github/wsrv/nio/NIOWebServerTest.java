@@ -25,6 +25,7 @@ public class NIOWebServerTest {
       server.init(new ServerConfiguration(10, "./"));
       server.run();
     } catch (Exception e) {
+      e.printStackTrace();
       fail(e.getLocalizedMessage());
     }
   }

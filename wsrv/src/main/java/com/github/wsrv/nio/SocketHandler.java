@@ -4,6 +4,8 @@ import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
 import com.github.wsrv.cache.ResourceCacheProvider;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +18,8 @@ import java.util.concurrent.Callable;
  * @author tommaso
  */
 public class SocketHandler implements Callable<Object> {
+  private final Logger log = LoggerFactory.getLogger(SocketHandler.class);
+
   private SocketChannel socket;
 
   public SocketHandler(SocketChannel socket) {
@@ -27,9 +31,11 @@ public class SocketHandler implements Callable<Object> {
     ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     socket.read(byteBuffer);
     byteBuffer.flip();
+    // parse the http request
     String requestString = new String(byteBuffer.array());
     HttpRequestParser httpRequestParser = new HttpRequestParser();
     HttpRequest httpRequest = httpRequestParser.parse(requestString);
+    log.info("parsed request :\n " + httpRequest.toString());
     // check the cache
     ResourceCache<HttpRequest, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
     Resource resource = cache.get(httpRequest);
@@ -63,6 +69,8 @@ public class SocketHandler implements Callable<Object> {
       cache.put(httpRequest, resource);
     }
     byteBuffer.clear(); //make buffer ready for writing
+
+    // write response
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setHeader("ETag", String.valueOf(resource.hashCode()));
     httpResponse.setResource(String.valueOf(resource.getBytes()));

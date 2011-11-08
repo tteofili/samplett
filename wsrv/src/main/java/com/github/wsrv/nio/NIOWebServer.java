@@ -7,6 +7,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,7 +44,9 @@ public class NIOWebServer {
   public void run() throws IOException {
     while (selector.select() > 0) {
       Set<SelectionKey> selectedKeys = selector.selectedKeys();
-      for (SelectionKey k : selectedKeys) {
+      Iterator<SelectionKey> selectionKeyIterator = selectedKeys.iterator();
+      while (selectionKeyIterator.hasNext()) {
+        SelectionKey k = selectionKeyIterator.next();
         // handle I/O event
         if ((k.readyOps() & SelectionKey.OP_ACCEPT) == SelectionKey.OP_ACCEPT) {
           // accept the new connection
@@ -55,7 +58,7 @@ public class NIOWebServer {
           SocketChannel rsc = (SocketChannel) newKey.channel();
           requestHandlerService.submit(new SocketHandler(rsc));
           // remove the accepting key from the selected keys
-          selectedKeys.remove(k);
+          selectionKeyIterator.remove();
         } else {
           k.interestOps(0);
         }
