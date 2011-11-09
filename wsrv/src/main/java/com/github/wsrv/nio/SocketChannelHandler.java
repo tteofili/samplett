@@ -4,19 +4,19 @@ import com.github.wsrv.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.util.concurrent.Callable;
 
 /**
  * @author tommaso
  */
-public class SocketHandler implements Callable<Object> {
-  private final Logger log = LoggerFactory.getLogger(SocketHandler.class);
+public class SocketChannelHandler implements Callable<Object> {
+  private final Logger log = LoggerFactory.getLogger(SocketChannelHandler.class);
 
-  private Socket socket;
+  private SocketChannel socket;
 
-  public SocketHandler(Socket socket) {
+  public SocketChannelHandler(SocketChannel socket) {
     this.socket = socket;
   }
 
@@ -24,16 +24,17 @@ public class SocketHandler implements Callable<Object> {
   public Object call() throws Exception {
     try {
       ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-      socket.getChannel().read(byteBuffer);
+      socket.read(byteBuffer);
       byteBuffer.flip();
       // parse the http request
       String requestString = new String(byteBuffer.array());
-      HttpRequestParser httpRequestParser = new HttpRequestParser();
-      HttpRequest httpRequest = httpRequestParser.parse(requestString);
       if (requestString.length() > 20 && requestString.startsWith("GET")) {
+        HttpRequestParser httpRequestParser = new HttpRequestParser();
+        HttpRequest httpRequest = httpRequestParser.parse(requestString);
         byteBuffer.clear(); //make buffer ready for writing
         log.info("parsed HTTP request :\n{}", httpRequest);
         Resource resource = null;
+//    log.info("parsed request :\n " + httpRequest.toString());
         // check the cache
 //    ResourceCache<HttpRequest, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
 //    Resource resource = cache.get(httpRequest);
@@ -71,14 +72,14 @@ public class SocketHandler implements Callable<Object> {
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setStatusCode(200);
         httpResponse.setVersion(httpRequest.getVersion());
-        httpResponse.addHeader("ETag", String.valueOf(httpResponse.hashCode()));
-        httpResponse.addHeader("Content-Length", String.valueOf(resource.getBytes().length));
+        httpResponse.addHeader("ETag", "111");
         httpResponse.setResource(resource);
-        log.info("parsed HTTP response :\n{}", httpResponse);
+        log.info("parsed HTTP response :\n  {}", httpResponse);
         byteBuffer.put(httpResponse.toString().getBytes());
-        socket.getChannel().write(byteBuffer);
+        socket.write(byteBuffer);
       }
     } catch (Exception e) {
+      e.printStackTrace();
       socket.close();
       throw e;
     }

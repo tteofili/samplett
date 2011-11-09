@@ -44,17 +44,17 @@ public class HttpRequest {
     return this.version;
   }
 
-  @Override
-  public String toString() {
-    return "HttpRequest{" +
-            "path='" + path + '\'' +
-            ", headers=" + headers +
-            ", method='" + method + '\'' +
-            ", version='" + version + '\'' +
-            '}';
-  }
-
   public Map<String, String> getHeaders() {
     return headers;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder(method).append(" ").append(path).append(" ").append(version).append("\n");
+    for (String k : headers.keySet()) {
+      builder.append(k).append(":").append(" ").append(headers.get(k)).append("\n");
+    }
+    return builder.toString();
+  }
+
 }
