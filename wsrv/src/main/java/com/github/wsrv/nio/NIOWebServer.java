@@ -58,8 +58,9 @@ public class NIOWebServer {
             // accept the new connection
             ServerSocketChannel ssc = (ServerSocketChannel) k.channel();
             SocketChannel sc = ssc.accept();
-            Socket s = sc.socket();
 //            sc.configureBlocking(false);
+            Socket s = sc.socket();
+
 //            requestHandlerService.submit(new SocketChannelHandler((SocketChannel) k.channel()));
             requestHandlerService.submit(new SocketHandler(s));
 

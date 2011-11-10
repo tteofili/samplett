@@ -1,6 +1,7 @@
 package com.github.wsrv.nio;
 
 import com.github.wsrv.Resource;
+import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,49 +24,26 @@ public class SocketHandler implements Callable<Object> {
   @Override
   public Object call() throws Exception {
     try {
-      ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+      // allocate the buffer
+      ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
+      // read the request into the buffer
       socket.getChannel().read(byteBuffer);
+      // make the buffer available for read
       byteBuffer.flip();
-      // parse the http request
-      String requestString = new String(byteBuffer.array());
+      // read the buffer
+      byte[] requestInByte = new byte[byteBuffer.limit()];
+      for (int i = 0; byteBuffer.hasRemaining(); i++) {
+        requestInByte[i] = byteBuffer.get();
+      }
+      String requestString = new String(requestInByte);
+//      String requestString = IOUtils.toString(socket.getInputStream());
       HttpRequestParser httpRequestParser = new HttpRequestParser();
       HttpRequest httpRequest = httpRequestParser.parse(requestString);
       if (requestString.length() > 20 && requestString.startsWith("GET")) {
         byteBuffer.clear(); //make buffer ready for writing
         log.info("parsed HTTP request :\n{}", httpRequest);
-        Resource resource = null;
         // check the cache
-//    ResourceCache<HttpRequest, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
-//    Resource resource = cache.get(httpRequest);
-//    if (resource == null) {
-//      // retrieve the resource
-//      final byte[] byteStream;
-//      String path = httpRequest.getPath();
-//      File file = new File(path);
-//      if (!file.exists()) {
-//        throw new FileNotFoundException(new StringBuilder(path).append(" not found").toString());
-//      }
-//      if (file.isFile()) {
-//        try {
-//          byteStream = IOUtils.toByteArray(new FileInputStream(file));
-//        } catch (Exception e) {
-//          throw new FileNotFoundException(e.getLocalizedMessage());
-//        }
-//      } else {
-//        StringBuilder sb = new StringBuilder();
-//        for (File f : file.listFiles()) {
-//          sb.append(f.getName()).append("\n");
-//        }
-//        byteStream = sb.toString().getBytes();
-//      }
-//      resource = new Resource() {
-//        @Override
-//        public byte[] getBytes() {
-//          return byteStream;
-//        }
-//      };
-//      cache.put(httpRequest, resource);
-//    }
+        Resource resource = new FSRequestHandlerThread("." + httpRequest.getPath()).call();
 
         // write response
         HttpResponse httpResponse = new HttpResponse();
@@ -76,11 +54,16 @@ public class SocketHandler implements Callable<Object> {
         httpResponse.setResource(resource);
         log.info("parsed HTTP response :\n{}", httpResponse);
         byteBuffer.put(httpResponse.toString().getBytes());
+//        byteBuffer.flip();
         socket.getChannel().write(byteBuffer);
+        byteBuffer.clear();
       }
     } catch (Exception e) {
+      e.printStackTrace();
       socket.close();
       throw e;
+    } finally {
+      socket.close();
     }
     return null;
   }

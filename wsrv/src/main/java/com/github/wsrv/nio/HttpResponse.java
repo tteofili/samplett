@@ -16,6 +16,12 @@ public class HttpResponse {
   private String version;
   private String statusMessage;
 
+  public HttpResponse() {
+    this.headers = new HashMap<String, String>();
+    this.statusMessage = "";
+  }
+
+
   public Map<String, String> getHeaders() {
     return headers;
   }
@@ -41,10 +47,6 @@ public class HttpResponse {
   }
 
 
-  public HttpResponse() {
-    this.headers = new HashMap<String, String>();
-  }
-
   public void addHeader(String name, String value) {
     headers.put(name, value);
   }
@@ -59,10 +61,13 @@ public class HttpResponse {
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder(version).append(" ").append(statusCode).append(statusMessage).append("\n");
+    StringBuilder builder = new StringBuilder(version).append(" ").append(statusCode).append(" ").
+            append(statusMessage).append("\n");
     for (String k : headers.keySet()) {
       builder.append(k).append(":").append(" ").append(headers.get(k)).append("\n");
     }
+    builder.append("\n");
+    builder.append(new String(resource.getBytes()));
     return builder.toString();
   }
 }

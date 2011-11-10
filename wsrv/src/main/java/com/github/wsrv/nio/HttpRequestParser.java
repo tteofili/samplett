@@ -8,10 +8,8 @@ public class HttpRequestParser {
   public HttpRequest parse(String requestString) {
     int endFirstLine = requestString.indexOf("\n");
     String initialLine = requestString.substring(0, endFirstLine);
-    System.err.println(initialLine);
     final HttpRequest httpRequest = new HttpRequest();
     String[] initalLineTokens = initialLine.split("\\s");
-    System.err.println(initalLineTokens[0] + " " + initalLineTokens[1] + " " + initalLineTokens[2]);
     httpRequest.setMethod(initalLineTokens[0]);
     httpRequest.setPath(initalLineTokens[1]);
     httpRequest.setVersion(initalLineTokens[2]);
