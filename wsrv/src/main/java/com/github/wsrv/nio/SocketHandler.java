@@ -59,7 +59,6 @@ public class SocketHandler implements Callable<Object> {
         byteBuffer.clear();
       }
     } catch (Exception e) {
-      e.printStackTrace();
       socket.close();
       throw e;
     } finally {
