@@ -1,5 +1,7 @@
 package com.github.wsrv.nio;
 
+import com.github.wsrv.nio.request.HttpRequest;
+import com.github.wsrv.nio.request.HttpRequestParser;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;

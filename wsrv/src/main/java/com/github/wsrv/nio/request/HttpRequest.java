@@ -1,4 +1,4 @@
-package com.github.wsrv.nio;
+package com.github.wsrv.nio.request;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,6 +2,9 @@ package com.github.wsrv.nio;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
+import com.github.wsrv.nio.request.HttpRequest;
+import com.github.wsrv.nio.request.HttpRequestParser;
+import com.github.wsrv.nio.response.HttpResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

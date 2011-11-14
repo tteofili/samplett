@@ -1,5 +1,7 @@
 package com.github.wsrv.nio;
 
+import com.github.wsrv.nio.configuration.ServerConfiguration;
+
 import java.io.IOException;
 
 /**

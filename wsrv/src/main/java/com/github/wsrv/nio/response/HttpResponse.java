@@ -1,4 +1,4 @@
-package com.github.wsrv.nio;
+package com.github.wsrv.nio.response;
 
 import com.github.wsrv.Resource;
 

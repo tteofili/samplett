@@ -1,5 +1,7 @@
 package com.github.wsrv.nio;
 
+import com.github.wsrv.nio.configuration.ServerConfiguration;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;

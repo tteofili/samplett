@@ -1,5 +1,6 @@
 package com.github.wsrv.nio;
 
+import com.github.wsrv.nio.configuration.ServerConfiguration;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.Executors;

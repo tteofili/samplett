@@ -1,8 +1,9 @@
-package com.github.wsrv.nio;
+package com.github.wsrv.nio.advanced;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
 import com.github.wsrv.cache.ResourceCacheProvider;
+import com.github.wsrv.nio.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
