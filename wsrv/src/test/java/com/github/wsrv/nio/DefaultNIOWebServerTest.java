@@ -35,6 +35,28 @@ public class DefaultNIOWebServerTest {
     }
   }
 
+  @Test
+  public void testRunWithMissingInitialization() {
+    DefaultNIOWebServer serverDefault = new DefaultNIOWebServer();
+    try {
+      serverDefault.run();
+      fail("should not run if server is not initialized");
+    } catch (Exception e) {
+      // everything ok
+    }
+  }
+
+  @Test
+  public void testStopWithMissingInitialization() {
+    DefaultNIOWebServer serverDefault = new DefaultNIOWebServer();
+    try {
+      serverDefault.stop();
+      fail("should not stop if server is not initialized");
+    } catch (Exception e) {
+      // everything ok
+    }
+  }
+
   private class ServerRunnerThread implements Runnable {
     private DefaultNIOWebServer defaultNioWebServer;
 
