@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * @author tommaso
  */
-public class HTTPStatusCodeNameMapper {
+class HTTPStatusCodeNameMapper {
 
   private static final Map<Integer, String> codeStatusMap = new HashMap<Integer, String>() {{
     put(100, "Continue");

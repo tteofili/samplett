@@ -4,8 +4,8 @@ package com.github.wsrv.nio.configuration;
  * @author tommaso
  */
 public class ServerConfiguration {
-  private String root;
-  private Integer poolSize;
+  private final String root;
+  private final Integer poolSize;
 
   public ServerConfiguration(Integer poolSize, String root) {
     this.poolSize = poolSize;

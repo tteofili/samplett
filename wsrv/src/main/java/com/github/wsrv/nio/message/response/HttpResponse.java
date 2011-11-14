@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class HttpResponse {
 
-  private Map<String, String> headers;
+  private final Map<String, String> headers;
   private Integer statusCode;
   private Resource resource;
   private String version;

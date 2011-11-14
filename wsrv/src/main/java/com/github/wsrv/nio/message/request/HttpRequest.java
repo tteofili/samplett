@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class HttpRequest {
   private String path;
-  private Map<String, String> headers;
+  private final Map<String, String> headers;
   private String method;
   private String version;
 

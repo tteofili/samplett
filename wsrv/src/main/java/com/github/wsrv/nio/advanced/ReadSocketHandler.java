@@ -17,11 +17,11 @@ import java.util.concurrent.Future;
 /**
  * @author tommaso
  */
-public class ReadSocketHandler implements Callable<Object> {
+class ReadSocketHandler implements Callable<Object> {
 
   private final Logger log = LoggerFactory.getLogger(ReadSocketHandler.class);
 
-  private Socket socket;
+  private final Socket socket;
 
   public ReadSocketHandler(Socket socket) {
     this.socket = socket;
@@ -55,8 +55,6 @@ public class ReadSocketHandler implements Callable<Object> {
     } catch (Exception e) {
       e.printStackTrace();
       throw e;
-    } finally {
-//      socket.close();
     }
     return null;
   }

@@ -17,13 +17,16 @@ import java.util.concurrent.Callable;
 /**
  * @author tommaso
  */
-public class SocketHandler implements Callable<Long> {
+class SocketHandler implements Callable<Long> {
   private final Logger log = LoggerFactory.getLogger(SocketHandler.class);
 
-  private Socket socket;
+  private final Socket socket;
+
+  private Boolean persistentConnection;
 
   public SocketHandler(Socket socket) {
     this.socket = socket;
+    persistentConnection = true;
   }
 
   @Override
@@ -33,19 +36,17 @@ public class SocketHandler implements Callable<Long> {
       run();
       long e = System.nanoTime();
       return e - s;
-    } catch (Exception e) {
-      throw e;
     } finally {
       log.info("finished running");
     }
   }
 
-  public void run() {
+  void run() {
     try {
       // read from the socket inpustream
-      Boolean persistentConnection = true;
       while (persistentConnection) {
         InputStream socketInputStream = socket.getInputStream();
+        // TODO : change this as 2048 could be not enough for large resources
         byte[] b = new byte[2048];
         socketInputStream.read(b);
         String requestString = new String(b);
@@ -59,13 +60,7 @@ public class SocketHandler implements Callable<Long> {
           HttpResponse httpResponse = HttpResponseFactory.createResponse(httpRequest);
 
           // handle Connection : keep-alive header
-          String connectionHeaderValue = httpRequest.getHeaders().get(Headers.CONNECTION);
-          if (connectionHeaderValue == null || !connectionHeaderValue.trim().equalsIgnoreCase(Headers.KEEP_ALIVE)) {
-            persistentConnection = false;
-          }
-          if (persistentConnection) {
-            httpResponse.addHeader(Headers.CONNECTION, Headers.KEEP_ALIVE);
-          }
+          handleKeepAlive(httpRequest, httpResponse);
           log.info("parsed HTTP response :\n{}", httpResponse);
 
 
@@ -80,6 +75,16 @@ public class SocketHandler implements Callable<Long> {
       } catch (IOException e) {
         // do nothing
       }
+    }
+  }
+
+  private void handleKeepAlive(HttpRequest httpRequest, HttpResponse httpResponse) {
+    String connectionHeaderValue = httpRequest.getHeaders().get(Headers.CONNECTION);
+    if (connectionHeaderValue == null || !connectionHeaderValue.trim().equalsIgnoreCase(Headers.KEEP_ALIVE)) {
+      persistentConnection = false;
+    }
+    if (persistentConnection) {
+      httpResponse.addHeader(Headers.CONNECTION, Headers.KEEP_ALIVE);
     }
   }
 }

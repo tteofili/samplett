@@ -15,10 +15,10 @@ import java.util.concurrent.Callable;
 /**
  * @author tommaso
  */
-public class WriteSocketHandler implements Callable<Object> {
+class WriteSocketHandler implements Callable<Object> {
   private final Logger log = LoggerFactory.getLogger(WriteSocketHandler.class);
 
-  private Socket socket;
+  private final Socket socket;
 
   public WriteSocketHandler(Socket socket) {
     this.socket = socket;
