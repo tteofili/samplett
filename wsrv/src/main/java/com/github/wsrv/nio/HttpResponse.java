@@ -21,6 +21,9 @@ public class HttpResponse {
     this.statusMessage = "";
   }
 
+  public void setStatusMessage(String statusMessage) {
+    this.statusMessage = statusMessage;
+  }
 
   public Map<String, String> getHeaders() {
     return headers;
@@ -67,7 +70,9 @@ public class HttpResponse {
       builder.append(k).append(":").append(" ").append(headers.get(k)).append("\n");
     }
     builder.append("\n");
-    builder.append(new String(resource.getBytes()));
+    for (Byte b : resource.getBytes()) {
+      builder.append(b);
+    }
     return builder.toString();
   }
 }
