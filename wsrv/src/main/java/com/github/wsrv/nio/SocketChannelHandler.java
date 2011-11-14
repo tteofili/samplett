@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 /**
  * @author tommaso
  */
+@Deprecated
 public class SocketChannelHandler implements Callable<Object> {
   private final Logger log = LoggerFactory.getLogger(SocketChannelHandler.class);
 
