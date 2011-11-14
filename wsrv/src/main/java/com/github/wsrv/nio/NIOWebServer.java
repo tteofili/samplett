@@ -25,9 +25,11 @@ public class NIOWebServer {
 
     requestHandlerService = Executors.newFixedThreadPool(configuration.getPoolSize());
 
+    // register a selector on the server socket channel
+    selector = SelectorProvider.provider().openSelector();
+
     // create a new (non blocking) server socket channel
     ServerSocketChannel ssc = ServerSocketChannel.open();
-    ssc.configureBlocking(false);
 
     // get a server socket
     ServerSocket ss = ssc.socket();
@@ -35,8 +37,7 @@ public class NIOWebServer {
     InetSocketAddress address = new InetSocketAddress(8080);
     ss.bind(address);
 
-    // register a selector on the server socket channel
-    selector = SelectorProvider.provider().openSelector();
+    ssc.configureBlocking(false);
 
     // register accept operations on the registered selector
     ssc.register(selector, SelectionKey.OP_ACCEPT);
@@ -53,26 +54,16 @@ public class NIOWebServer {
         selectionKeyIterator.remove();
         // handle I/O event
         if (k.isValid()) {
-          if ((k.readyOps() & SelectionKey.OP_ACCEPT)
-                  == SelectionKey.OP_ACCEPT) {
+          if (k.isAcceptable()) {
             // accept the new connection
             ServerSocketChannel ssc = (ServerSocketChannel) k.channel();
             SocketChannel sc = ssc.accept();
 //            sc.configureBlocking(false);
             Socket s = sc.socket();
-
-//            requestHandlerService.submit(new SocketChannelHandler((SocketChannel) k.channel()));
             requestHandlerService.submit(new SocketHandler(s));
-
-            // register the channel for reading
-//            sc.register(selector, SelectionKey.OP_READ);
           } else if (k.isReadable() || k.isWritable()) {
             k.interestOps(0);
           }
-//          else if ((k.readyOps() & SelectionKey.OP_READ)
-//                  == SelectionKey.OP_READ) {
-//            requestHandlerService.submit(new SocketChannelHandler((SocketChannel) k.channel()));
-//          }
         }
       }
     }
