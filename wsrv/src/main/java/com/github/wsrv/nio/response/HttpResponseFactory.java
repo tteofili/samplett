@@ -5,6 +5,7 @@ import com.github.wsrv.cache.ResourceCache;
 import com.github.wsrv.cache.ResourceCacheProvider;
 import com.github.wsrv.nio.request.HttpRequest;
 import com.github.wsrv.repository.FSRequestHandlerThread;
+import com.github.wsrv.repository.NotReadableResourceException;
 import com.github.wsrv.repository.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,18 +31,31 @@ public class HttpResponseFactory {
         try {
           resource = new FSRequestHandlerThread("." + httpRequest.getPath()).call();
         } catch (ResourceNotFoundException e) {
-          // then this should return 404
+          httpResponse.setStatusCode(404);
+        } catch (NotReadableResourceException e) {
+          httpResponse.setStatusCode(403);
+        } catch (Exception e) {
+          httpResponse.setStatusCode(503);
         }
       }
 
-      // create the response
-      httpResponse.setStatusCode(200);
       httpResponse.setVersion(httpRequest.getVersion());
-      httpResponse.addHeader("ETag", String.valueOf(httpResponse.hashCode()));
-      httpResponse.addHeader("Content-Length", String.valueOf(resource.getBytes().length));
-      httpResponse.setResource(resource);
+
+      if (httpResponse.getStatusCode() != null) {
+        // there was some error retrieving the resource
+      } else if (resource != null && resource.getBytes() != null && resource.getBytes().length > 0) {
+        httpResponse.setStatusCode(200);
+        httpResponse.addHeader("ETag", String.valueOf(httpResponse.hashCode()));
+        httpResponse.addHeader("Content-Length", String.valueOf(resource.getBytes().length));
+        httpResponse.setResource(resource);
+      }
+
     } catch (Exception e) {
+      e.printStackTrace();
+      httpResponse.setStatusCode(503);
       log.error(e.getLocalizedMessage());
+    } finally {
+      httpResponse.setStatusMessage(StatusCodeMapper.map(httpResponse.getStatusCode()));
     }
     return httpResponse;
   }

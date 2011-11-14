@@ -23,6 +23,9 @@ public class FSRequestHandlerThread implements Callable<Resource> {
     if (!file.exists()) {
       throw new ResourceNotFoundException(new StringBuilder(resourcePath).append(" not found").toString());
     }
+    if (!file.canRead()) {
+      throw new NotReadableResourceException(new StringBuffer(resourcePath).append(" cannot be read").toString());
+    }
     if (file.isFile()) {
       try {
         byteStream = IOUtils.toByteArray(new FileInputStream(file));

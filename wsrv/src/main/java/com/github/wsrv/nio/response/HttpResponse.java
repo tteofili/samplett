@@ -70,7 +70,8 @@ public class HttpResponse {
       builder.append(k).append(":").append(" ").append(headers.get(k)).append("\n");
     }
     builder.append("\n");
-    builder.append(new String(resource.getBytes()));
+    if (resource != null)
+      builder.append(new String(resource.getBytes()));
     return builder.toString();
   }
 }
