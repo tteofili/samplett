@@ -60,6 +60,7 @@ public class NIOWebServer {
             ServerSocketChannel ssc = (ServerSocketChannel) k.channel();
             SocketChannel sc = ssc.accept();
             Socket s = sc.socket();
+            // delegate the request/response handling to a socket handler thread
             requestHandlerService.submit(new SocketHandler(s));
           } else if (k.isReadable() || k.isWritable()) {
             k.interestOps(0);
