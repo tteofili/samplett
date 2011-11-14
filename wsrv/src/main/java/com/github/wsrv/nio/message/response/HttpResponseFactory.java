@@ -57,7 +57,6 @@ public class HttpResponseFactory {
 
     } catch (Exception e) {
       httpResponse.setStatusCode(500);
-      log.error(e.getLocalizedMessage());
     } finally {
       httpResponse.setStatusMessage(HTTPStatusCodeNameMapper.map(httpResponse.getStatusCode()));
       if (httpResponse.getStatusCode() >= 400) {
