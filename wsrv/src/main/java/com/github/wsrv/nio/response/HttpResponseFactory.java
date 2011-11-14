@@ -19,6 +19,7 @@ public class HttpResponseFactory {
 
   public static HttpResponse createResponse(HttpRequest httpRequest) {
     HttpResponse httpResponse = new HttpResponse();
+    httpResponse.setVersion(httpRequest.getVersion());
     try {
       // check the cache
       ResourceCache<String, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
@@ -33,29 +34,31 @@ public class HttpResponseFactory {
         } catch (ResourceNotFoundException e) {
           httpResponse.setStatusCode(404);
         } catch (NotReadableResourceException e) {
+          // the resource cannot be readable for a number of reasons, assuming here it is for lack of permissions
           httpResponse.setStatusCode(403);
         } catch (Exception e) {
           httpResponse.setStatusCode(503);
         }
       }
 
-      httpResponse.setVersion(httpRequest.getVersion());
-
       if (httpResponse.getStatusCode() != null) {
         // there was some error retrieving the resource
-      } else if (resource != null && resource.getBytes() != null && resource.getBytes().length > 0) {
-        httpResponse.setStatusCode(200);
-        httpResponse.addHeader("ETag", String.valueOf(httpResponse.hashCode()));
-        httpResponse.addHeader("Content-Length", String.valueOf(resource.getBytes().length));
-        httpResponse.setResource(resource);
+      } else if (resource != null) {
+        if (resource.getBytes() != null && resource.getBytes().length > 0) {
+          httpResponse.setStatusCode(200);
+          httpResponse.addHeader("ETag", String.valueOf(httpResponse.hashCode()));
+          httpResponse.addHeader("Content-Length", String.valueOf(resource.getBytes().length));
+          httpResponse.setResource(resource);
+        } else {
+          httpResponse.setStatusCode(204);
+        }
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
-      httpResponse.setStatusCode(503);
+      httpResponse.setStatusCode(500);
       log.error(e.getLocalizedMessage());
     } finally {
-      httpResponse.setStatusMessage(StatusCodeMapper.map(httpResponse.getStatusCode()));
+      httpResponse.setStatusMessage(HTTPStatusCodeNameMapper.map(httpResponse.getStatusCode()));
     }
     return httpResponse;
   }
