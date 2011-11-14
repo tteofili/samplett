@@ -2,7 +2,7 @@ package com.github.wsrv.nio.message.response;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
-import com.github.wsrv.cache.ResourceCacheProvider;
+import com.github.wsrv.cache.StringBasedResourceCacheProvider;
 import com.github.wsrv.nio.message.Headers;
 import com.github.wsrv.nio.message.request.HttpRequest;
 import com.github.wsrv.repository.FSRequestHandlerThread;
@@ -23,7 +23,7 @@ public class HttpResponseFactory {
     httpResponse.setVersion(httpRequest.getVersion());
     try {
       // check the cache
-      ResourceCache<String, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
+      ResourceCache<String, Resource> cache = StringBasedResourceCacheProvider.getInstance().getCache("in-memory");
       Resource resource = cache.get(httpRequest.getPath());
       if (resource != null) {
         if (log.isDebugEnabled())

@@ -1,7 +1,7 @@
 package com.github.wsrv.nio.advanced;
 
 import com.github.wsrv.Resource;
-import com.github.wsrv.cache.ResourceCacheProvider;
+import com.github.wsrv.cache.StringBasedResourceCacheProvider;
 import com.github.wsrv.nio.message.request.HttpRequest;
 import com.github.wsrv.nio.message.request.HttpRequestParser;
 import com.github.wsrv.repository.FSRequestHandlerThread;
@@ -49,7 +49,7 @@ class ReadSocketHandler implements Callable<Object> {
 //        log.info("parsed HTTP request :\n{}", httpRequest);
         Future<Resource> fut = Executors.newCachedThreadPool().submit(new FSRequestHandlerThread("." + httpRequest.getPath()));
         Resource r = fut.get();
-        ResourceCacheProvider.getInstance().getCache("in-memory").put("11", r);
+        StringBasedResourceCacheProvider.getInstance().getCache("in-memory").put("11", r);
 //        log.info(new StringBuilder("retrieved resource ").append(r.getBytes()).toString());
       }
     } catch (Exception e) {

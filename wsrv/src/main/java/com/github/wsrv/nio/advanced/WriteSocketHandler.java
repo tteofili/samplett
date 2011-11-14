@@ -2,7 +2,7 @@ package com.github.wsrv.nio.advanced;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
-import com.github.wsrv.cache.ResourceCacheProvider;
+import com.github.wsrv.cache.StringBasedResourceCacheProvider;
 import com.github.wsrv.nio.message.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ class WriteSocketHandler implements Callable<Object> {
     try {
       if (socket.getChannel().isConnected()) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
-        ResourceCache<String, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
+        ResourceCache<String, Resource> cache = StringBasedResourceCacheProvider.getInstance().getCache("in-memory");
         Resource r = cache.get("11");
         if (r != null) {
           // write response

@@ -2,7 +2,7 @@ package com.github.wsrv.jetty.servlet;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
-import com.github.wsrv.cache.ResourceCacheProvider;
+import com.github.wsrv.cache.StringBasedResourceCacheProvider;
 import com.github.wsrv.jetty.ThreadExecutorProvider;
 import com.github.wsrv.repository.FSRequestHandlerThread;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ class ServletThread implements Callable<HttpServletResponse> {
     if (log.isDebugEnabled())
       log.debug(request.toString());
     // check the cache
-    ResourceCache<String, Resource> cache = ResourceCacheProvider.getInstance().getCache("in-memory");
+    ResourceCache<String, Resource> cache = StringBasedResourceCacheProvider.getInstance().getCache("in-memory");
     Resource desiredResource = cache.get(request.getServletPath());
     if (desiredResource != null) {
       if (log.isDebugEnabled())
