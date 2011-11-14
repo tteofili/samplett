@@ -1,6 +1,7 @@
 package com.github.wsrv.nio.message.response;
 
 import com.github.wsrv.Resource;
+import com.github.wsrv.nio.message.Headers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,14 +34,6 @@ public class HttpResponse {
     return statusCode;
   }
 
-  public Resource getResource() {
-    return resource;
-  }
-
-  public String getVersion() {
-    return version;
-  }
-
   public String getStatusMessage() {
     return statusMessage;
   }
@@ -60,6 +53,11 @@ public class HttpResponse {
 
   public void setStatusCode(int statusCode) {
     this.statusCode = statusCode;
+  }
+
+  public Boolean keepAlive() {
+    String keepAliveValue = getHeaders().get(Headers.CONNECTION);
+    return keepAliveValue != null && keepAliveValue.equals(Headers.KEEP_ALIVE);
   }
 
   @Override

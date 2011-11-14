@@ -1,6 +1,5 @@
 package com.github.wsrv.nio;
 
-import com.github.wsrv.nio.message.Headers;
 import com.github.wsrv.nio.message.request.HttpRequest;
 import com.github.wsrv.nio.message.request.HttpRequestParser;
 import com.github.wsrv.nio.message.response.HttpResponse;
@@ -58,11 +57,10 @@ class SocketHandler implements Callable<Long> {
 
           // create the response
           HttpResponse httpResponse = HttpResponseFactory.createResponse(httpRequest);
-
-          // handle Connection : keep-alive header
-          handleKeepAlive(httpRequest, httpResponse);
           log.info("parsed HTTP response :\n{}", httpResponse);
 
+          // handle connection persistence
+          persistentConnection = httpResponse.keepAlive();
 
           IOUtils.write(httpResponse.toString(), socket.getOutputStream());
         }
@@ -78,13 +76,4 @@ class SocketHandler implements Callable<Long> {
     }
   }
 
-  private void handleKeepAlive(HttpRequest httpRequest, HttpResponse httpResponse) {
-    String connectionHeaderValue = httpRequest.getHeaders().get(Headers.CONNECTION);
-    if (connectionHeaderValue == null || !connectionHeaderValue.trim().equalsIgnoreCase(Headers.KEEP_ALIVE)) {
-      persistentConnection = false;
-    }
-    if (persistentConnection) {
-      httpResponse.addHeader(Headers.CONNECTION, Headers.KEEP_ALIVE);
-    }
-  }
 }

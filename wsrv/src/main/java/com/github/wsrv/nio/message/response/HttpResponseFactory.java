@@ -42,6 +42,12 @@ public class HttpResponseFactory {
         }
       }
 
+      // handle connection : keep-alive header
+      String connectionHeaderValue = httpRequest.getHeaders().get(Headers.CONNECTION);
+      if (connectionHeaderValue != null && connectionHeaderValue.trim().equalsIgnoreCase(Headers.KEEP_ALIVE)) {
+        httpResponse.addHeader(Headers.CONNECTION, Headers.KEEP_ALIVE);
+      }
+
       if (httpResponse.getStatusCode() != null) {
         // there was some error retrieving the resource
       } else if (resource != null) {
