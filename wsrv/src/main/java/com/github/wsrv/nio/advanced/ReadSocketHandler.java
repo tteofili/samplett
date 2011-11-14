@@ -2,8 +2,8 @@ package com.github.wsrv.nio.advanced;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCacheProvider;
-import com.github.wsrv.nio.request.HttpRequest;
-import com.github.wsrv.nio.request.HttpRequestParser;
+import com.github.wsrv.nio.message.request.HttpRequest;
+import com.github.wsrv.nio.message.request.HttpRequestParser;
 import com.github.wsrv.repository.FSRequestHandlerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

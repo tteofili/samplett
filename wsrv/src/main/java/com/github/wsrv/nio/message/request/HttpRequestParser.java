@@ -1,4 +1,4 @@
-package com.github.wsrv.nio.request;
+package com.github.wsrv.nio.message.request;
 
 /**
  * @author tommaso

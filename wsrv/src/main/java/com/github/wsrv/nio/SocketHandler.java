@@ -1,9 +1,9 @@
 package com.github.wsrv.nio;
 
-import com.github.wsrv.nio.request.HttpRequest;
-import com.github.wsrv.nio.request.HttpRequestParser;
-import com.github.wsrv.nio.response.HttpResponse;
-import com.github.wsrv.nio.response.HttpResponseFactory;
+import com.github.wsrv.nio.message.request.HttpRequest;
+import com.github.wsrv.nio.message.request.HttpRequestParser;
+import com.github.wsrv.nio.message.response.HttpResponse;
+import com.github.wsrv.nio.message.response.HttpResponseFactory;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

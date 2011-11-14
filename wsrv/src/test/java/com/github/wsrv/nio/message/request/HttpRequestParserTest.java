@@ -1,4 +1,4 @@
-package com.github.wsrv.nio.request;
+package com.github.wsrv.nio.message.request;
 
 import org.testng.annotations.Test;
 

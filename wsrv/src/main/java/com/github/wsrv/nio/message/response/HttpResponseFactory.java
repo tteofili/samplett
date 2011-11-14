@@ -1,9 +1,10 @@
-package com.github.wsrv.nio.response;
+package com.github.wsrv.nio.message.response;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
 import com.github.wsrv.cache.ResourceCacheProvider;
-import com.github.wsrv.nio.request.HttpRequest;
+import com.github.wsrv.nio.message.Headers;
+import com.github.wsrv.nio.message.request.HttpRequest;
 import com.github.wsrv.repository.FSRequestHandlerThread;
 import com.github.wsrv.repository.NotReadableResourceException;
 import com.github.wsrv.repository.ResourceNotFoundException;
@@ -46,8 +47,8 @@ public class HttpResponseFactory {
       } else if (resource != null) {
         if (resource.getBytes() != null && resource.getBytes().length > 0) {
           httpResponse.setStatusCode(200);
-          httpResponse.addHeader("ETag", String.valueOf(httpResponse.hashCode()));
-          httpResponse.addHeader("Content-Length", String.valueOf(resource.getBytes().length));
+          httpResponse.addHeader(Headers.ETAG, String.valueOf(httpResponse.hashCode()));
+          httpResponse.addHeader(Headers.CONTENT_LENGTH, String.valueOf(resource.getBytes().length));
           httpResponse.setResource(resource);
         } else {
           httpResponse.setStatusCode(204);

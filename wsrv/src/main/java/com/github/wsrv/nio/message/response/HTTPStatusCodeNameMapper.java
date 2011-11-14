@@ -1,4 +1,4 @@
-package com.github.wsrv.nio.response;
+package com.github.wsrv.nio.message.response;
 
 import java.util.HashMap;
 import java.util.Map;
