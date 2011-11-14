@@ -5,7 +5,7 @@ package com.github.wsrv.nio;
  */
 public class HttpRequestParser {
 
-  public HttpRequest parse(String requestString) throws UnparsableRequest {
+  public HttpRequest parse(String requestString) throws UnparsableRequestException {
     try {
       int endFirstLine = requestString.indexOf("\n");
       String initialLine = requestString.substring(0, endFirstLine);
@@ -25,7 +25,7 @@ public class HttpRequestParser {
       }
       return httpRequest;
     } catch (Exception e) {
-      throw new UnparsableRequest(e);
+      throw new UnparsableRequestException(e);
     }
   }
 }
