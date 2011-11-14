@@ -70,4 +70,8 @@ public class NIOWebServer {
 
 
   }
+
+  public void stop() throws IOException {
+    selector.close();
+  }
 }
