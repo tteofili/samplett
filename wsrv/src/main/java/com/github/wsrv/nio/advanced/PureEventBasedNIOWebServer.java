@@ -1,5 +1,6 @@
 package com.github.wsrv.nio.advanced;
 
+import com.github.wsrv.nio.WebServer;
 import com.github.wsrv.nio.configuration.ServerConfiguration;
 
 import java.io.IOException;
@@ -19,7 +20,8 @@ import java.util.concurrent.Future;
 /**
  * @author tommaso
  */
-public class PureEventBasedNIOWebServer {
+public class PureEventBasedNIOWebServer implements WebServer {
+  private ServerSocketChannel ssc;
   private Selector selector;
   private ExecutorService requestHandlerService;
 
@@ -28,7 +30,7 @@ public class PureEventBasedNIOWebServer {
     requestHandlerService = Executors.newFixedThreadPool(configuration.getPoolSize());
 
     // create a new (non blocking) server socket channel
-    ServerSocketChannel ssc = ServerSocketChannel.open();
+    ssc = ServerSocketChannel.open();
     ssc.configureBlocking(false);
 
     // get a server socket
@@ -96,5 +98,11 @@ public class PureEventBasedNIOWebServer {
     }
 
 
+  }
+
+  @Override
+  public void stop() throws IOException {
+    selector.close();
+    ssc.close();
   }
 }

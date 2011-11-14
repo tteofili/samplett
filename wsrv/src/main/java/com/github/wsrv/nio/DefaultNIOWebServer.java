@@ -19,8 +19,9 @@ import java.util.concurrent.Executors;
 /**
  * @author tommaso
  */
-public class NIOWebServer {
+public class DefaultNIOWebServer implements WebServer {
   private Selector selector;
+  private ServerSocketChannel ssc;
   private ExecutorService requestHandlerService;
 
   public void init(ServerConfiguration configuration) throws Exception {
@@ -31,7 +32,7 @@ public class NIOWebServer {
     selector = SelectorProvider.provider().openSelector();
 
     // create a new (non blocking) server socket channel
-    ServerSocketChannel ssc = ServerSocketChannel.open();
+    ssc = ServerSocketChannel.open();
 
     // get a server socket
     ServerSocket ss = ssc.socket();
@@ -76,5 +77,6 @@ public class NIOWebServer {
 
   public void stop() throws IOException {
     selector.close();
+    ssc.close();
   }
 }

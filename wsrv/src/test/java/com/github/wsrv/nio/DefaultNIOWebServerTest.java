@@ -10,12 +10,13 @@ import static org.testng.Assert.fail;
 /**
  * @author tommaso
  */
-public class NIOWebServerTest {
+public class DefaultNIOWebServerTest {
   @Test
   public void testInitialization() {
     try {
-      NIOWebServer server = new NIOWebServer();
-      server.init(new ServerConfiguration(10, "./"));
+      DefaultNIOWebServer serverDefault = new DefaultNIOWebServer();
+      serverDefault.init(new ServerConfiguration(10, "./"));
+      serverDefault.stop();
     } catch (Exception e) {
       fail(e.getLocalizedMessage());
     }
@@ -24,27 +25,27 @@ public class NIOWebServerTest {
   @Test
   public void testStartAndStop() {
     try {
-      NIOWebServer server = new NIOWebServer();
-      server.init(new ServerConfiguration(10, "./"));
-      Executors.newCachedThreadPool().submit(new ServerRunnerThread(server));
+      DefaultNIOWebServer serverDefault = new DefaultNIOWebServer();
+      serverDefault.init(new ServerConfiguration(10, "./"));
+      Executors.newCachedThreadPool().submit(new ServerRunnerThread(serverDefault));
       Thread.sleep(2000);
-      server.stop();
+      serverDefault.stop();
     } catch (Exception e) {
       fail(e.getLocalizedMessage());
     }
   }
 
   private class ServerRunnerThread implements Runnable {
-    private NIOWebServer nioWebServer;
+    private DefaultNIOWebServer defaultNioWebServer;
 
-    private ServerRunnerThread(NIOWebServer nioWebServer) {
-      this.nioWebServer = nioWebServer;
+    private ServerRunnerThread(DefaultNIOWebServer defaultNioWebServer) {
+      this.defaultNioWebServer = defaultNioWebServer;
     }
 
     @Override
     public void run() {
       try {
-        nioWebServer.run();
+        defaultNioWebServer.run();
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
