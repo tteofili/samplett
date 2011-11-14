@@ -4,7 +4,7 @@ import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
 import com.github.wsrv.cache.ResourceCacheProvider;
 import com.github.wsrv.jetty.ThreadExecutorProvider;
-import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
+import com.github.wsrv.repository.FSRequestHandlerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

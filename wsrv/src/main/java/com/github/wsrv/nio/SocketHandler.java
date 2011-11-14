@@ -1,7 +1,5 @@
 package com.github.wsrv.nio;
 
-import com.github.wsrv.Resource;
-import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
 import com.github.wsrv.nio.request.HttpRequest;
 import com.github.wsrv.nio.request.HttpRequestParser;
 import com.github.wsrv.nio.response.HttpResponse;
@@ -48,12 +46,11 @@ public class SocketHandler implements Callable<Long> {
       String requestString = new String(b);
       if (requestString.length() > 20) {
         HttpRequestParser httpRequestParser = new HttpRequestParser();
+        // parse the request
         HttpRequest httpRequest = httpRequestParser.parse(requestString);
         log.info("parsed HTTP request :\n{}", httpRequest);
-        // check the cache
-        Resource resource = new FSRequestHandlerThread("." + httpRequest.getPath()).call();
-        // write response
-        HttpResponse httpResponse = HttpResponseFactory.createResponse(httpRequest, resource);
+        // create the response
+        HttpResponse httpResponse = HttpResponseFactory.createResponse(httpRequest);
         log.info("parsed HTTP response :\n{}", httpResponse);
         IOUtils.write(httpResponse.toString(), socket.getOutputStream());
       }

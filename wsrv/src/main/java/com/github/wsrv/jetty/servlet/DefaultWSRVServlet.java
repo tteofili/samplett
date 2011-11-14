@@ -1,7 +1,7 @@
 package com.github.wsrv.jetty.servlet;
 
 import com.github.wsrv.Resource;
-import com.github.wsrv.jetty.repository.FSRequestHandlerThread;
+import com.github.wsrv.repository.FSRequestHandlerThread;
 
 import javax.servlet.ServletException;
 import java.util.concurrent.Callable;

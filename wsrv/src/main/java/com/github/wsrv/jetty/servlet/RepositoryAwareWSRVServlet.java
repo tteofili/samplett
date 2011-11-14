@@ -2,7 +2,7 @@ package com.github.wsrv.jetty.servlet;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.jetty.ResourceManager;
-import com.github.wsrv.jetty.repository.RepositoryDelegatorRequestHandlerThread;
+import com.github.wsrv.repository.RepositoryDelegatorRequestHandlerThread;
 
 import javax.servlet.ServletException;
 import java.util.concurrent.Callable;

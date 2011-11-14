@@ -1,4 +1,4 @@
-package com.github.wsrv.jetty.repository;
+package com.github.wsrv.repository;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.jetty.ResourceManager;
