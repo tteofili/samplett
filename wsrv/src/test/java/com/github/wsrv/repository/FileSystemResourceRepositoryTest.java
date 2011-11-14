@@ -1,6 +1,6 @@
-package com.github.wsrv;
+package com.github.wsrv.repository;
 
-import com.github.wsrv.repository.FileSystemResourceRepository;
+import com.github.wsrv.Resource;
 import org.testng.annotations.Test;
 
 import java.net.URL;
