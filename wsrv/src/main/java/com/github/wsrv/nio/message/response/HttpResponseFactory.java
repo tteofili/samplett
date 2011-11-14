@@ -19,7 +19,7 @@ public class HttpResponseFactory {
   private static final Logger log = LoggerFactory.getLogger(HttpResponseFactory.class);
 
   public static HttpResponse createResponse(HttpRequest httpRequest) {
-    HttpResponse httpResponse = new HttpResponse();
+    final HttpResponse httpResponse = new HttpResponse();
     httpResponse.setVersion(httpRequest.getVersion());
     try {
       // check the cache
@@ -60,6 +60,15 @@ public class HttpResponseFactory {
       log.error(e.getLocalizedMessage());
     } finally {
       httpResponse.setStatusMessage(HTTPStatusCodeNameMapper.map(httpResponse.getStatusCode()));
+      if (httpResponse.getStatusCode() >= 400) {
+        httpResponse.setResource(new Resource() {
+          @Override
+          public byte[] getBytes() {
+            return new StringBuilder("Server returned:\n").append(httpResponse.getStatusCode())
+                    .append(" - ").append(httpResponse.getStatusMessage()).toString().getBytes();
+          }
+        });
+      }
     }
     return httpResponse;
   }
