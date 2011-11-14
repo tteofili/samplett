@@ -33,6 +33,7 @@ public class NIOWebServer {
 
     // get a server socket
     ServerSocket ss = ssc.socket();
+
     // bind the address
     InetSocketAddress address = new InetSocketAddress(8080);
     ss.bind(address);
@@ -58,7 +59,6 @@ public class NIOWebServer {
             // accept the new connection
             ServerSocketChannel ssc = (ServerSocketChannel) k.channel();
             SocketChannel sc = ssc.accept();
-//            sc.configureBlocking(false);
             Socket s = sc.socket();
             requestHandlerService.submit(new SocketHandler(s));
           } else if (k.isReadable() || k.isWritable()) {
