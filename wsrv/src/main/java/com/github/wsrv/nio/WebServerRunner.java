@@ -19,7 +19,7 @@ public class WebServerRunner {
     WebServer server = new DefaultNIOWebServer();
     try {
       ServerInitializationParameters parameters = parseInitializationParameters(args);
-      ServerConfiguration.initialize(parameters.getPoolSize(), parameters.getRepositoryRootNode());
+      ServerConfiguration.initialize(parameters.getPoolSize(), parameters.getRepositoryType(), parameters.getRepositoryRootNode());
       server.init();
       server.run();
     } catch (Exception e) {

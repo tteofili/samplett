@@ -1,7 +1,7 @@
 package com.github.wsrv.repository;
 
 import com.github.wsrv.Resource;
-import com.github.wsrv.jetty.ResourceManager;
+import com.github.wsrv.nio.configuration.ServerConfiguration;
 
 import java.util.concurrent.Callable;
 
@@ -16,6 +16,7 @@ public class RepositoryDelegatorRequestHandlerThread implements Callable<Resourc
   }
 
   public Resource call() throws Exception {
-    return ResourceManager.getInstance().getResourceRepository().getResource(resourceName);
+    String repoType = ServerConfiguration.getInstance().getRepoType();
+    return ResourceRepositoryManager.getInstance().getResourceRepository(repoType).getResource(resourceName);
   }
 }
