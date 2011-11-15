@@ -3,6 +3,8 @@ package com.github.wsrv.nio.message.response;
 import com.github.wsrv.Resource;
 import com.github.wsrv.nio.configuration.ServerConfiguration;
 import com.github.wsrv.nio.message.request.HttpRequest;
+import com.github.wsrv.nio.message.response.method.HttpGETMethodHandler;
+import com.github.wsrv.nio.message.response.method.HttpMethodHandler;
 
 /**
  * A class responsible for creating an {@link HttpResponse} from the given {@link HttpResponse}

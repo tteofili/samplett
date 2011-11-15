@@ -1,4 +1,4 @@
-package com.github.wsrv.nio.message.response;
+package com.github.wsrv.nio.message.response.method;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.nio.message.request.HttpRequest;

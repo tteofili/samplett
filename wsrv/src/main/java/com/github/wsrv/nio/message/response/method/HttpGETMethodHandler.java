@@ -1,10 +1,11 @@
-package com.github.wsrv.nio.message.response;
+package com.github.wsrv.nio.message.response.method;
 
 import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
 import com.github.wsrv.cache.StringBasedResourceCacheProvider;
 import com.github.wsrv.nio.message.Headers;
 import com.github.wsrv.nio.message.request.HttpRequest;
+import com.github.wsrv.nio.message.response.HttpResponse;
 import com.github.wsrv.repository.NotReadableResourceException;
 import com.github.wsrv.repository.ResourceNotFoundException;
 
