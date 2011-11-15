@@ -10,3 +10,11 @@ where:
   - $numOfThreads is the number of threads that should be used to handle client connections
   - $repositoryType is the type of repository which is laying behind the webserver (available options are : fs or url)
   - $repositoryRootNode is the rootNode from which the specified repository has to 'start' looking for resources
+
+example for 'fs' repository based server:
+  java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv.nio.WebServerRunner 100 fs .
+
+example for 'url' repository based server
+  java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv.nio.WebServerRunner 100 url http://people.apache.org/~tommaso
+
+then try the http://localhost:8080 url in your browser to see the results
