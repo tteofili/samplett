@@ -14,6 +14,10 @@ import java.net.Socket;
 import java.util.concurrent.Callable;
 
 /**
+ * Thread responsible of handling a (persistent) socket connection between client and server
+ * Note : this implements Callable<Long> instead of Runnable because of that would eventually allow easier stats
+ * collecting if needed
+ *
  * @author tommaso
  */
 class SocketHandler implements Callable<Long> {
@@ -42,8 +46,8 @@ class SocketHandler implements Callable<Long> {
 
   void run() {
     try {
-      // read from the socket inpustream
       while (persistentConnection) {
+        // read from the socket inpustream
         InputStream socketInputStream = socket.getInputStream();
         byte[] b = new byte[2048];
         socketInputStream.read(b);
