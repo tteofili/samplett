@@ -26,8 +26,7 @@ public class WebServerRunner {
     } catch (Exception e) {
       System.err.println("Could not start the server due to " + e.getLocalizedMessage());
       try {
-        if (server != null)
-          server.stop();
+        server.stop();
       } catch (IOException e1) {
         // do nothing
       }

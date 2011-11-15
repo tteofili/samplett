@@ -12,9 +12,9 @@ import com.github.wsrv.repository.ResourceRepositoryManager;
  *
  * @author tommaso
  */
-public class ResourceFetcher {
+class ResourceFetcher {
 
-  public Resource fetchResource(HttpRequest httpRequest) throws ResourceNotFoundException, NotReadableResourceException {
+  Resource fetchResource(HttpRequest httpRequest) throws ResourceNotFoundException, NotReadableResourceException {
     return getRepository().getResource(httpRequest.getPath());
   }
 

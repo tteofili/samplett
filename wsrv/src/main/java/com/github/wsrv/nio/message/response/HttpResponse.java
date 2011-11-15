@@ -28,7 +28,7 @@ public class HttpResponse {
     this.statusMessage = statusMessage;
   }
 
-  public Map<String, String> getHeaders() {
+  Map<String, String> getHeaders() {
     return headers;
   }
 

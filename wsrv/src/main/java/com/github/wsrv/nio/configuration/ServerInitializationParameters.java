@@ -7,9 +7,9 @@ package com.github.wsrv.nio.configuration;
  */
 public class ServerInitializationParameters {
 
-  private Integer poolSize;
-  private String repositoryType;
-  private String repositoryRootNode;
+  private final Integer poolSize;
+  private final String repositoryType;
+  private final String repositoryRootNode;
 
   public ServerInitializationParameters(Integer poolSize, String repositoryType, String repositoryRootNode) {
     this.poolSize = poolSize;

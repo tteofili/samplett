@@ -12,7 +12,7 @@ import java.util.WeakHashMap;
  */
 public class InMemoryResourceCache<K> implements ResourceCache<K, Resource> {
 
-  private Map<K, Resource> cache = new WeakHashMap<K, Resource>();
+  private final Map<K, Resource> cache = new WeakHashMap<K, Resource>();
 
   @Override
   public Resource get(K key) {

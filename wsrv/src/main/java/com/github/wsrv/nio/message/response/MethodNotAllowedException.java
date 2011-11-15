@@ -6,8 +6,8 @@ package com.github.wsrv.nio.message.response;
  *
  * @author tommaso
  */
-public class MethodNotAllowedException extends Exception {
-  public MethodNotAllowedException(String s) {
+class MethodNotAllowedException extends Exception {
+  MethodNotAllowedException(String s) {
     super(s);
   }
 }

@@ -5,8 +5,8 @@ package com.github.wsrv.nio;
  *
  * @author tommaso
  */
-public class InitializationException extends Exception {
-  public InitializationException(Throwable cause) {
+class InitializationException extends Exception {
+  InitializationException(Throwable cause) {
     super(cause);
   }
 }

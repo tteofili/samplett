@@ -14,7 +14,7 @@ public class StringBasedResourceCacheProvider {
 
   private static StringBasedResourceCacheProvider instance = new StringBasedResourceCacheProvider();
 
-  private Map<String, ResourceCache<String, Resource>> cacheMap = new HashMap<String, ResourceCache<String, Resource>>();
+  private final Map<String, ResourceCache<String, Resource>> cacheMap = new HashMap<String, ResourceCache<String, Resource>>();
 
   private StringBasedResourceCacheProvider() {
     cacheMap.put("in-memory", new InMemoryResourceCache<String>());
