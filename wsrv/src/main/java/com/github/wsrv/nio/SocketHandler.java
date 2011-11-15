@@ -45,7 +45,6 @@ class SocketHandler implements Callable<Long> {
       // read from the socket inpustream
       while (persistentConnection) {
         InputStream socketInputStream = socket.getInputStream();
-        // TODO : change this as 2048 could be not enough for large resources
         byte[] b = new byte[2048];
         socketInputStream.read(b);
         String requestString = new String(b);
@@ -65,6 +64,7 @@ class SocketHandler implements Callable<Long> {
           // handle connection persistence
           persistentConnection = httpResponse.isKeepAlive();
 
+          // write response to socket output stream
           IOUtils.write(httpResponse.toString(), socket.getOutputStream());
         }
       }
