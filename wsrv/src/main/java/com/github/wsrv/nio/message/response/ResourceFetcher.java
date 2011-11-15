@@ -14,20 +14,8 @@ import com.github.wsrv.repository.ResourceRepositoryManager;
  */
 public class ResourceFetcher {
 
-  public Resource fetchResource(HttpRequest httpRequest, HttpResponse httpResponse) {
-    Resource resource = null;
-    try {
-      ResourceRepository resourceRepository = getRepository();
-      resource = resourceRepository.getResource(httpRequest.getPath());
-    } catch (ResourceNotFoundException e) {
-      httpResponse.setStatusCode(404);
-    } catch (NotReadableResourceException e) {
-      // the resource cannot be readable for a number of reasons, assuming here it is for lack of permissions
-      httpResponse.setStatusCode(403);
-    } catch (Exception e) {
-      httpResponse.setStatusCode(503);
-    }
-    return resource;
+  public Resource fetchResource(HttpRequest httpRequest) throws ResourceNotFoundException, NotReadableResourceException {
+    return getRepository().getResource(httpRequest.getPath());
   }
 
   private ResourceRepository getRepository() {

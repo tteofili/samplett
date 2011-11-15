@@ -46,8 +46,8 @@ public class FSRequestHandlerThread implements Callable<Resource> {
       }
       byteStream = sb.toString().getBytes();
     }
-    if (log.isInfoEnabled())
-      log.info(new StringBuilder(resourcePath).append(" retrieved succesfully").toString());
+    if (log.isDebugEnabled())
+      log.debug(new StringBuilder(resourcePath).append(" retrieved succesfully").toString());
     return new Resource() {
       @Override
       public byte[] getBytes() {
