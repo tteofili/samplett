@@ -24,28 +24,30 @@ public class DefaultNIOWebServer implements WebServer {
   private ServerSocketChannel ssc;
   private ExecutorService requestHandlerService;
 
-  public void init(ServerConfiguration configuration) throws Exception {
+  public void init() throws InitializationException {
+    try {
+      requestHandlerService = Executors.newFixedThreadPool(ServerConfiguration.getInstance().getPoolSize());
 
-    requestHandlerService = Executors.newFixedThreadPool(configuration.getPoolSize());
+      // register a selector on the server socket channel
+      selector = SelectorProvider.provider().openSelector();
 
-    // register a selector on the server socket channel
-    selector = SelectorProvider.provider().openSelector();
+      // create a new (non blocking) server socket channel
+      ssc = ServerSocketChannel.open();
 
-    // create a new (non blocking) server socket channel
-    ssc = ServerSocketChannel.open();
+      // get a server socket
+      ServerSocket ss = ssc.socket();
 
-    // get a server socket
-    ServerSocket ss = ssc.socket();
+      // bind the address
+      InetSocketAddress address = new InetSocketAddress(8080);
+      ss.bind(address);
 
-    // bind the address
-    InetSocketAddress address = new InetSocketAddress(8080);
-    ss.bind(address);
+      ssc.configureBlocking(false);
 
-    ssc.configureBlocking(false);
-
-    // register accept operations on the registered selector
-    ssc.register(selector, SelectionKey.OP_ACCEPT);
-
+      // register accept operations on the registered selector
+      ssc.register(selector, SelectionKey.OP_ACCEPT);
+    } catch (Exception e) {
+      throw new InitializationException(e);
+    }
   }
 
   public void run() throws IOException {

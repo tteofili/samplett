@@ -1,6 +1,5 @@
 package com.github.wsrv.nio;
 
-import com.github.wsrv.nio.configuration.ServerConfiguration;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.Executors;
@@ -15,7 +14,7 @@ public class DefaultNIOWebServerTest {
   public void testInitialization() {
     try {
       DefaultNIOWebServer serverDefault = new DefaultNIOWebServer();
-      serverDefault.init(new ServerConfiguration(10, "./"));
+      serverDefault.init();
       serverDefault.stop();
     } catch (Exception e) {
       fail(e.getLocalizedMessage());
@@ -26,7 +25,7 @@ public class DefaultNIOWebServerTest {
   public void testStartAndStop() {
     try {
       DefaultNIOWebServer serverDefault = new DefaultNIOWebServer();
-      serverDefault.init(new ServerConfiguration(10, "./"));
+      serverDefault.init();
       Executors.newCachedThreadPool().submit(new ServerRunnerThread(serverDefault));
       Thread.sleep(2000);
       serverDefault.stop();

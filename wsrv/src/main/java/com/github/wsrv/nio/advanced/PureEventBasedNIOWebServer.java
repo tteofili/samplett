@@ -1,5 +1,6 @@
 package com.github.wsrv.nio.advanced;
 
+import com.github.wsrv.nio.InitializationException;
 import com.github.wsrv.nio.WebServer;
 import com.github.wsrv.nio.configuration.ServerConfiguration;
 
@@ -25,26 +26,28 @@ public class PureEventBasedNIOWebServer implements WebServer {
   private Selector selector;
   private ExecutorService requestHandlerService;
 
-  public void init(ServerConfiguration configuration) throws Exception {
+  public void init() throws InitializationException {
+    try {
+      requestHandlerService = Executors.newFixedThreadPool(ServerConfiguration.getInstance().getPoolSize());
 
-    requestHandlerService = Executors.newFixedThreadPool(configuration.getPoolSize());
+      // create a new (non blocking) server socket channel
+      ssc = ServerSocketChannel.open();
+      ssc.configureBlocking(false);
 
-    // create a new (non blocking) server socket channel
-    ssc = ServerSocketChannel.open();
-    ssc.configureBlocking(false);
+      // get a server socket
+      ServerSocket ss = ssc.socket();
+      // bind the address
+      InetSocketAddress address = new InetSocketAddress(8080);
+      ss.bind(address);
 
-    // get a server socket
-    ServerSocket ss = ssc.socket();
-    // bind the address
-    InetSocketAddress address = new InetSocketAddress(8080);
-    ss.bind(address);
+      // register a selector on the server socket channel
+      selector = SelectorProvider.provider().openSelector();
 
-    // register a selector on the server socket channel
-    selector = SelectorProvider.provider().openSelector();
-
-    // register accept operations on the registered selector
-    ssc.register(selector, SelectionKey.OP_ACCEPT);
-
+      // register accept operations on the registered selector
+      ssc.register(selector, SelectionKey.OP_ACCEPT);
+    } catch (Exception e) {
+      throw new InitializationException(e);
+    }
   }
 
   public void run() throws IOException {
