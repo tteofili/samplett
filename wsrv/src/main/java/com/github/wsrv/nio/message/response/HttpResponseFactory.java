@@ -17,47 +17,31 @@ import org.slf4j.LoggerFactory;
 public class HttpResponseFactory {
 
   private static final Logger log = LoggerFactory.getLogger(HttpResponseFactory.class);
+  private static final String DEFAULT_HTTP_VERSION = "HTTP/1.1";
 
-  public static HttpResponse createResponse(HttpRequest httpRequest) {
+  public HttpResponse createResponse(HttpRequest httpRequest) {
     final HttpResponse httpResponse = new HttpResponse();
-    httpResponse.setVersion(httpRequest.getVersion());
+
+    // if no HTTP version is specified in the request, set default to HTTP/1.1
+    httpResponse.setVersion(httpRequest.getVersion() != null ? httpRequest.getVersion() : DEFAULT_HTTP_VERSION);
     try {
       // check the cache
+      // TODO : it'd be better if the cache was based on client/session instead of request path
       ResourceCache<String, Resource> cache = StringBasedResourceCacheProvider.getInstance().getCache("in-memory");
       Resource resource = cache.get(httpRequest.getPath());
-      if (resource != null) {
-        if (log.isDebugEnabled())
-          log.debug("hit the cache!");
-      } else {
+      if (resource == null) {
         // get the resource from the repository
-        try {
-          resource = new FSRequestHandlerThread("." + httpRequest.getPath()).call();
-        } catch (ResourceNotFoundException e) {
-          httpResponse.setStatusCode(404);
-        } catch (NotReadableResourceException e) {
-          // the resource cannot be readable for a number of reasons, assuming here it is for lack of permissions
-          httpResponse.setStatusCode(403);
-        } catch (Exception e) {
-          httpResponse.setStatusCode(503);
-        }
+        resource = fetchResource(httpRequest, httpResponse);
       }
 
       // handle connection : keep-alive header
-      String connectionHeaderValue = httpRequest.getHeaders().get(Headers.CONNECTION);
-      if (connectionHeaderValue != null && connectionHeaderValue.trim().equalsIgnoreCase(Headers.KEEP_ALIVE)) {
-        httpResponse.addHeader(Headers.CONNECTION, Headers.KEEP_ALIVE);
-      }
+      handleKeepAliveHeader(httpRequest, httpResponse);
 
-      if (httpResponse.getStatusCode() != null) {
-        // there was some error retrieving the resource
-      } else if (resource != null) {
+      if (httpResponse.getStatusCode() == null && resource != null) {
         if (resource.getBytes() != null && resource.getBytes().length > 0) {
-          httpResponse.setStatusCode(200);
-          httpResponse.addHeader(Headers.ETAG, String.valueOf(httpResponse.hashCode()));
-          httpResponse.addHeader(Headers.CONTENT_LENGTH, String.valueOf(resource.getBytes().length));
-          httpResponse.setResource(resource);
+          markResourceFound(httpResponse, resource);
         } else {
-          httpResponse.setStatusCode(204);
+          markEmptyResponse(httpResponse);
         }
       }
 
@@ -76,5 +60,38 @@ public class HttpResponseFactory {
       }
     }
     return httpResponse;
+  }
+
+  private void markResourceFound(HttpResponse httpResponse, Resource resource) {
+    httpResponse.setStatusCode(200);
+    httpResponse.addHeader(Headers.ETAG, String.valueOf(httpResponse.hashCode()));
+    httpResponse.addHeader(Headers.CONTENT_LENGTH, String.valueOf(resource.getBytes().length));
+    httpResponse.setResource(resource);
+  }
+
+  private void markEmptyResponse(HttpResponse httpResponse) {
+    httpResponse.setStatusCode(204);
+  }
+
+  private void handleKeepAliveHeader(HttpRequest httpRequest, HttpResponse httpResponse) {
+    String connectionHeaderValue = httpRequest.getHeaders().get(Headers.CONNECTION);
+    if (connectionHeaderValue != null && connectionHeaderValue.trim().equalsIgnoreCase(Headers.KEEP_ALIVE)) {
+      httpResponse.addHeader(Headers.CONNECTION, Headers.KEEP_ALIVE);
+    }
+  }
+
+  private Resource fetchResource(HttpRequest httpRequest, HttpResponse httpResponse) {
+    Resource resource = null;
+    try {
+      resource = new FSRequestHandlerThread("." + httpRequest.getPath()).call();
+    } catch (ResourceNotFoundException e) {
+      httpResponse.setStatusCode(404);
+    } catch (NotReadableResourceException e) {
+      // the resource cannot be readable for a number of reasons, assuming here it is for lack of permissions
+      httpResponse.setStatusCode(403);
+    } catch (Exception e) {
+      httpResponse.setStatusCode(503);
+    }
+    return resource;
   }
 }

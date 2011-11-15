@@ -56,7 +56,8 @@ class SocketHandler implements Callable<Long> {
           log.info("parsed HTTP request :\n{}", httpRequest);
 
           // create the response
-          HttpResponse httpResponse = HttpResponseFactory.createResponse(httpRequest);
+          HttpResponseFactory httpResponseFactory = new HttpResponseFactory();
+          HttpResponse httpResponse = httpResponseFactory.createResponse(httpRequest);
           log.info("parsed HTTP response :\n{}", httpResponse);
 
           // handle connection persistence
