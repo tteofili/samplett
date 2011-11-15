@@ -40,7 +40,8 @@ class SocketHandler implements Callable<Long> {
       long e = System.nanoTime();
       return e - s;
     } finally {
-      log.info("finished running");
+      if (log.isDebugEnabled())
+        log.debug("finished running");
     }
   }
 
