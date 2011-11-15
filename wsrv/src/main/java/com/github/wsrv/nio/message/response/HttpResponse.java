@@ -57,7 +57,7 @@ public class HttpResponse {
 
   public Boolean isKeepAlive() {
     String keepAliveValue = getHeaders().get(Headers.CONNECTION);
-    return keepAliveValue != null && keepAliveValue.equals(Headers.KEEP_ALIVE);
+    return resource != null && keepAliveValue != null && keepAliveValue.equals(Headers.KEEP_ALIVE);
   }
 
   @Override

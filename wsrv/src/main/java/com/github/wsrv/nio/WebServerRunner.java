@@ -19,7 +19,8 @@ public class WebServerRunner {
     WebServer server = new DefaultNIOWebServer();
     try {
       ServerInitializationParameters parameters = parseInitializationParameters(args);
-      ServerConfiguration.initialize(parameters.getPoolSize(), parameters.getRepositoryType(), parameters.getRepositoryRootNode());
+      ServerConfiguration.initialize(parameters.getPoolSize(), parameters.getRepositoryType(),
+              parameters.getRepositoryRootNode());
       server.init();
       server.run();
     } catch (Exception e) {
@@ -38,7 +39,7 @@ public class WebServerRunner {
     try {
       Integer poolSize = Integer.valueOf(args[0]);
       System.out.println("thread number set to: " + poolSize);
-      String repoType = args[3];
+      String repoType = args[1];
       System.out.println("repository type chosen is: " + repoType);
       String root = args[2];
       System.out.println("root is : " + root);

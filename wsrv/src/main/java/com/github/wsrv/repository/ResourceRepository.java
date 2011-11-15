@@ -8,5 +8,5 @@ import com.github.wsrv.Resource;
 public interface ResourceRepository {
   void initialize(String root);
 
-  Resource getResource(String resourceName) throws ResourceNotFoundException;
+  Resource getResource(String resourceName) throws ResourceNotFoundException, NotReadableResourceException;
 }

@@ -2,48 +2,33 @@ package com.github.wsrv.repository;
 
 
 import com.github.wsrv.Resource;
-import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author tommaso
  */
 public class FileSystemResourceRepository implements ResourceRepository {
   private String baseDir;
+  private ExecutorService executorService;
 
   @Override
   public void initialize(String root) {
     this.baseDir = root;
+    this.executorService = Executors.newCachedThreadPool();
   }
 
   @Override
-  public Resource getResource(String resourceName) throws ResourceNotFoundException {
-    String pathName = new StringBuilder(baseDir).append(resourceName).toString();
-    final byte[] byteStream;
-    File file = new File(pathName);
-    if (!file.exists()) {
-      throw new ResourceNotFoundException(new StringBuilder(pathName).append(" not found").toString());
+  public Resource getResource(String resourceName) throws ResourceNotFoundException, NotReadableResourceException {
+    try {
+      return executorService.submit(new FSRequestHandlerThread(new StringBuilder(baseDir).append(resourceName).
+              toString())).get();
+    } catch (InterruptedException e) {
+      throw new ResourceNotFoundException(e);
+    } catch (ExecutionException e) {
+      throw new ResourceNotFoundException(e);
     }
-    if (file.isFile()) {
-      try {
-        byteStream = IOUtils.toByteArray(new FileInputStream(file));
-      } catch (Exception e) {
-        throw new ResourceNotFoundException(e);
-      }
-    } else {
-      StringBuilder sb = new StringBuilder();
-      for (File f : file.listFiles()) {
-        sb.append(f.getName()).append("\n");
-      }
-      byteStream = sb.toString().getBytes();
-    }
-    return new Resource() {
-      @Override
-      public byte[] getBytes() {
-        return byteStream;
-      }
-    };
   }
 }

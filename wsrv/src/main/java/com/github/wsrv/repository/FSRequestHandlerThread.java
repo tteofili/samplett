@@ -1,8 +1,9 @@
 package com.github.wsrv.repository;
 
 import com.github.wsrv.Resource;
-import com.github.wsrv.nio.configuration.ServerConfiguration;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,10 +13,12 @@ import java.util.concurrent.Callable;
  * @author tommaso
  */
 public class FSRequestHandlerThread implements Callable<Resource> {
+  private final Logger log = LoggerFactory.getLogger(FSRequestHandlerThread.class);
+
   private final String resourcePath;
 
   public FSRequestHandlerThread(String resourcePath) {
-    this.resourcePath = new StringBuilder(ServerConfiguration.getInstance().getRoot()).append(resourcePath).toString();
+    this.resourcePath = resourcePath;
   }
 
   public Resource call() throws Exception {
@@ -40,6 +43,8 @@ public class FSRequestHandlerThread implements Callable<Resource> {
       }
       byteStream = sb.toString().getBytes();
     }
+    if (log.isInfoEnabled())
+      log.info(new StringBuilder(resourcePath).append(" retrieved succesfully").toString());
     return new Resource() {
       @Override
       public byte[] getBytes() {

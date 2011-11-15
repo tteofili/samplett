@@ -1,5 +1,7 @@
 package com.github.wsrv.repository;
 
+import com.github.wsrv.nio.configuration.ServerConfiguration;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +18,9 @@ public class ResourceRepositoryManager {
   }
 
   private ResourceRepositoryManager() {
-    resourceRepositoryMap.put("fs", new FileSystemResourceRepository());
+    FileSystemResourceRepository fileSystemResourceRepository = new FileSystemResourceRepository();
+    fileSystemResourceRepository.initialize(ServerConfiguration.getInstance().getRoot());
+    resourceRepositoryMap.put("fs", fileSystemResourceRepository);
   }
 
   public ResourceRepository getResourceRepository(String repoType) {
