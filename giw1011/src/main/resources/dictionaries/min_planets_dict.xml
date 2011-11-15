@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dictionary xmlns="http://incubator.apache.org/uima" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="dictionary.xsd">
+  <typeCollection>
+    <dictionaryMetaData caseNormalization="true" multiWordEntries="true" multiWordSeparator="|"/>
+    <typeDescription>
+      <typeName>com.github.samplett.giw1011.ts.PlanetNameAnnotation</typeName>
+    </typeDescription>
+    <entries>
+      <entry>
+        <key>A&apos;Hearn</key>
+      </entry>
+      <entry>
+        <key>A'Hearn</key>
+      </entry>
+      <entry>
+        <key>AAS</key>
+      </entry>
+      <entry>
+        <key>AAVSO</key>
+      </entry>
+      <entry>
+        <key>AMOS</key>
+      </entry>
+      <entry>
+        <key>ANS</key>
+      </entry>
+      <entry>
+        <key>ANSI&amp;Gret</key>
+      </entry>
+      <entry>
+        <key>new&amp;york</key>
+      </entry>
+    </entries>
+  </typeCollection>
+</dictionary>
