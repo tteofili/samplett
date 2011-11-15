@@ -1,12 +1,11 @@
 This module contains a very small and raw implementation of a multi thread web server.
-It runs on top of Jetty with 'mvn clean jetty:run' and exposes files via HTTP gets.
-The sample web.xml contains some configuration parameters:
-- the thread pool size
-- the base dir for the files / resources to show
-
-It allows different implementations of the HTTP GET method via different servlets.
-- WSRVBaseServlet is the basic abstract one, cannot be actually instantiated but offers the basics of the request handlign
-- DefaultWSRVServlet is the default actually instantiable extension of WSRVBaseServlet which allows to delegate threads for fetching resources from the filesystem
-- RepositoryAwareWSRVServlet is the second instantiable extension of WSRVBaseServlet which allows for plugging of different repositories other than file system
-- WSRVThreadedBaseServlet delegates each handling of GET methods to a separate thread which in turns uses threads from the same pool to browse the filesystem (this is the default one)
-
+It runs as a standalone java application using java.nio package for the communication/socket facilities.
+It exposes resources using HTTP GET calls.
+The resources are served by repositories (ResourceRepository interface).
+This is because ideally resources could be not only on file system, but also on the web, on JCR repositories, etc.
+The server can be started launching the following command:
+  java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv.nio.WebServerRunner $numOfThreads $repositoryType $repositoryRootNode
+where:
+  - $numOfThreads is the number of threads that should be used to handle client connections
+  - $repositoryType is the type of repository which is laying behind the webserver (available options are : fs or web)
+  - $repositoryRootNode is the rootNode from which the specified repository has to 'start' looking for resources
