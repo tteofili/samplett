@@ -2,6 +2,8 @@ package com.github.wsrv.nio;
 
 import com.github.wsrv.nio.configuration.ServerConfiguration;
 import com.github.wsrv.nio.configuration.ServerInitializationParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -15,6 +17,8 @@ import java.io.IOException;
  * @author tommaso
  */
 public class WebServerRunner {
+  private final static Logger log = LoggerFactory.getLogger(WebServerRunner.class);
+
   public static void main(String[] args) {
     WebServer server = new DefaultNIOWebServer();
     try {
@@ -24,7 +28,7 @@ public class WebServerRunner {
       server.init();
       server.run();
     } catch (Exception e) {
-      System.err.println("Could not start the server due to " + e.getLocalizedMessage());
+      log.error("Could not start the server due to " + e.getLocalizedMessage());
       try {
         server.stop();
       } catch (IOException e1) {
@@ -37,11 +41,11 @@ public class WebServerRunner {
   private static ServerInitializationParameters parseInitializationParameters(String[] args) {
     try {
       Integer poolSize = Integer.valueOf(args[0]);
-      System.out.println("thread number set to: " + poolSize);
+      log.info("thread number set to: " + poolSize);
       String repoType = args[1];
-      System.out.println("repository type chosen is: " + repoType);
+      log.info("repository type chosen is: " + repoType);
       String root = args[2];
-      System.out.println("root is : " + root);
+      log.info("root is : " + root);
       assert poolSize != null && repoType != null && root != null;
       return new ServerInitializationParameters(poolSize, repoType, root);
     } catch (Exception e) {
