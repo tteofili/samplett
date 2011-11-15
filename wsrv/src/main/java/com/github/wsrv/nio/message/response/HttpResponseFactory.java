@@ -3,20 +3,18 @@ package com.github.wsrv.nio.message.response;
 import com.github.wsrv.Resource;
 import com.github.wsrv.cache.ResourceCache;
 import com.github.wsrv.cache.StringBasedResourceCacheProvider;
+import com.github.wsrv.nio.configuration.ServerConfiguration;
 import com.github.wsrv.nio.message.Headers;
 import com.github.wsrv.nio.message.request.HttpRequest;
 import com.github.wsrv.repository.FSRequestHandlerThread;
 import com.github.wsrv.repository.NotReadableResourceException;
 import com.github.wsrv.repository.ResourceNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author tommaso
  */
 public class HttpResponseFactory {
 
-  private static final Logger log = LoggerFactory.getLogger(HttpResponseFactory.class);
   private static final String DEFAULT_HTTP_VERSION = "HTTP/1.1";
 
   public HttpResponse createResponse(HttpRequest httpRequest) {
@@ -25,6 +23,10 @@ public class HttpResponseFactory {
     // if no HTTP version is specified in the request, set default to HTTP/1.1
     httpResponse.setVersion(httpRequest.getVersion() != null ? httpRequest.getVersion() : DEFAULT_HTTP_VERSION);
     try {
+      // check if method is allowed
+      if (!ServerConfiguration.getInstance().getSupportedMethods().contains(httpRequest.getMethod()))
+        throw new MethodNotAllowedException(new StringBuilder(httpRequest.getMethod()).append(" method not allowed").toString());
+
       // check the cache
       // TODO : it'd be better if the cache was based on client/session instead of request path
       ResourceCache<String, Resource> cache = StringBasedResourceCacheProvider.getInstance().getCache("in-memory");
@@ -45,6 +47,8 @@ public class HttpResponseFactory {
         }
       }
 
+    } catch (MethodNotAllowedException e) {
+      httpResponse.setStatusCode(405);
     } catch (Exception e) {
       httpResponse.setStatusCode(500);
     } finally {
@@ -83,7 +87,7 @@ public class HttpResponseFactory {
   private Resource fetchResource(HttpRequest httpRequest, HttpResponse httpResponse) {
     Resource resource = null;
     try {
-      resource = new FSRequestHandlerThread("." + httpRequest.getPath()).call();
+      resource = new FSRequestHandlerThread(httpRequest.getPath()).call();
     } catch (ResourceNotFoundException e) {
       httpResponse.setStatusCode(404);
     } catch (NotReadableResourceException e) {
@@ -93,5 +97,11 @@ public class HttpResponseFactory {
       httpResponse.setStatusCode(503);
     }
     return resource;
+  }
+
+  private class MethodNotAllowedException extends Throwable {
+    public MethodNotAllowedException(String s) {
+      super(s);
+    }
   }
 }

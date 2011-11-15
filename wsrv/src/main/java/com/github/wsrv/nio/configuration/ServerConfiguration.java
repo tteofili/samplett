@@ -26,10 +26,10 @@ public class ServerConfiguration {
     return instance;
   }
 
-  public static void initialize(Integer poolSize, String root, List<String> supportedMethods) {
+  public static void initialize(Integer poolSize, String root) {
     if (instance != null)
       throw new RuntimeException("ServerConfiguration has already been initialized");
-    instance = new ServerConfiguration(poolSize, root, supportedMethods);
+    instance = new ServerConfiguration(poolSize, root);
   }
 
   private ServerConfiguration() {

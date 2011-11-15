@@ -53,12 +53,14 @@ class SocketHandler implements Callable<Long> {
           HttpRequestParser httpRequestParser = new HttpRequestParser();
           // parse the request
           HttpRequest httpRequest = httpRequestParser.parse(requestString);
-          log.info("parsed HTTP request :\n{}", httpRequest);
+          if (log.isDebugEnabled())
+            log.debug("parsed HTTP request :\n{}", httpRequest);
 
           // create the response
           HttpResponseFactory httpResponseFactory = new HttpResponseFactory();
           HttpResponse httpResponse = httpResponseFactory.createResponse(httpRequest);
-          log.info("parsed HTTP response :\n{}", httpResponse);
+          if (log.isDebugEnabled())
+            log.debug("parsed HTTP response :\n{}", httpResponse);
 
           // handle connection persistence
           persistentConnection = httpResponse.keepAlive();

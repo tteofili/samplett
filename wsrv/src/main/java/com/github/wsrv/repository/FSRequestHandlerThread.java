@@ -1,6 +1,7 @@
 package com.github.wsrv.repository;
 
 import com.github.wsrv.Resource;
+import com.github.wsrv.nio.configuration.ServerConfiguration;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -14,7 +15,7 @@ public class FSRequestHandlerThread implements Callable<Resource> {
   private final String resourcePath;
 
   public FSRequestHandlerThread(String resourcePath) {
-    this.resourcePath = resourcePath;
+    this.resourcePath = new StringBuilder(ServerConfiguration.getInstance().getRoot()).append(resourcePath).toString();
   }
 
   public Resource call() throws Exception {
