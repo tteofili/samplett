@@ -28,7 +28,8 @@ public class ResourceRepositoryManager {
       URLBasedResourceRepository urlBasedResourceRepository = new URLBasedResourceRepository();
       urlBasedResourceRepository.initialize(root);
       this.repository = urlBasedResourceRepository;
-    }
+    } else
+      throw new RuntimeException(new StringBuilder(repoType).append(" type does not exist or has not been registered").toString());
   }
 
   public ResourceRepository getResourceRepository() {

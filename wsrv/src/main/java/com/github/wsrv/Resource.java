@@ -6,5 +6,5 @@ package com.github.wsrv;
  * @author tommaso
  */
 public interface Resource {
-  Byte[] getBytes();
+  byte[] getBytes();
 }
