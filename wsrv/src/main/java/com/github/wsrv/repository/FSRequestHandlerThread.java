@@ -10,6 +10,9 @@ import java.io.FileInputStream;
 import java.util.concurrent.Callable;
 
 /**
+ * Thread that actually gets the {@link File} bytes from the file system or a String representing the list of files
+ * contained in a directory, if the {@link Resource} is a directory
+ *
  * @author tommaso
  */
 public class FSRequestHandlerThread implements Callable<Resource> {

@@ -8,6 +8,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * A {@link ResourceRepository} implementation which gets resources from the file system.
+ * Implementation note: this uses a multi-thread based approach to better handle multiple requests
+ *
  * @author tommaso
  */
 public class FileSystemResourceRepository implements ResourceRepository {

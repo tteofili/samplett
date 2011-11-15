@@ -1,6 +1,8 @@
 package com.github.wsrv.nio.message;
 
 /**
+ * Utility class to hold the explicitly used HTTP Headers names
+ *
  * @author tommaso
  */
 public class Headers {

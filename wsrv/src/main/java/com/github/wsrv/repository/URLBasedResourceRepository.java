@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.net.*;
 
 /**
+ * A {@link ResourceRepository} implementation which backs an URL based resource repository (e.g. http, jar, etc.)
+ *
  * @author tommaso
  */
 public class URLBasedResourceRepository implements ResourceRepository {
@@ -20,7 +22,6 @@ public class URLBasedResourceRepository implements ResourceRepository {
 
   @Override
   public Resource getResource(String resourceName) throws ResourceNotFoundException, NotReadableResourceException {
-    Resource resource = null;
     try {
       URL url = URI.create(new StringBuilder(root).append(resourceName).toString()).toURL();
       URLConnection urlConnection = url.openConnection();

@@ -8,6 +8,8 @@ import com.github.wsrv.nio.message.Headers;
 import com.github.wsrv.nio.message.request.HttpRequest;
 
 /**
+ * A class responsible for creating an {@link HttpResponse} from the given {@link HttpResponse}
+ *
  * @author tommaso
  */
 public class HttpResponseFactory {

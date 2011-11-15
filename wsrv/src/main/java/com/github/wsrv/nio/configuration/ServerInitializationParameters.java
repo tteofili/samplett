@@ -1,6 +1,8 @@
 package com.github.wsrv.nio.configuration;
 
 /**
+ * POJO for server initialization parameters (to be read from the command line)
+ *
  * @author tommaso
  */
 public class ServerInitializationParameters {

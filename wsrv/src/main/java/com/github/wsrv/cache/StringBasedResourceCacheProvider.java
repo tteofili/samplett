@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Singleton class to retrieve different implementations of {@link ResourceCache} with String as K type
+ *
  * @author tommaso
  */
 public class StringBasedResourceCacheProvider {

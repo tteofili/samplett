@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * Default {@link WebServer} implementation based on java.nio
+ *
  * @author tommaso
  */
 public class DefaultNIOWebServer implements WebServer {

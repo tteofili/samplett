@@ -3,6 +3,9 @@ package com.github.wsrv.repository;
 import com.github.wsrv.nio.configuration.ServerConfiguration;
 
 /**
+ * A class for retrieving the {@link ResourceRepository} based on the $repositoryType parameter defined during
+ * the server initialization
+ *
  * @author tommaso
  */
 public class ResourceRepositoryManager {

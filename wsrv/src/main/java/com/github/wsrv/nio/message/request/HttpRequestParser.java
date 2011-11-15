@@ -1,6 +1,8 @@
 package com.github.wsrv.nio.message.request;
 
 /**
+ * A class which has the responsibility of parsing a String representing an HTTP Request to a {@link HttpRequest} class
+ *
  * @author tommaso
  */
 public class HttpRequestParser {

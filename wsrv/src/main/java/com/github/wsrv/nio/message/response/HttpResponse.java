@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A class representing an HTTP Response
+ *
  * @author tommaso
  */
 public class HttpResponse {

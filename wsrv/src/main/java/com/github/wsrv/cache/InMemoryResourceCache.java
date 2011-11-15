@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
+ * Basic in-memory implementation of {@link ResourceCache}
+ *
  * @author tommaso
  */
 public class InMemoryResourceCache<K> implements ResourceCache<K, Resource> {

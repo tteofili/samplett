@@ -16,5 +16,6 @@ example for 'fs' repository based server:
 
 example for 'url' repository based server
   java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv.nio.WebServerRunner 100 url http://people.apache.org/~tommaso
+note that, if the root is an HTTP resource, then the server will work like a proxy
 
 then try the http://localhost:8080 url in your browser to see the results

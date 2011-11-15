@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A simple {@link Map} of HTTP status codes -> HTTP status messages
+ *
  * @author tommaso
  */
 class HTTPStatusCodeNameMapper {

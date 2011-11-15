@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A class representing an HTTP Request
+ *
  * @author tommaso
  */
 public class HttpRequest {
