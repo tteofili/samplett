@@ -55,7 +55,7 @@ public class HttpResponse {
     this.statusCode = statusCode;
   }
 
-  public Boolean keepAlive() {
+  public Boolean isKeepAlive() {
     String keepAliveValue = getHeaders().get(Headers.CONNECTION);
     return keepAliveValue != null && keepAliveValue.equals(Headers.KEEP_ALIVE);
   }

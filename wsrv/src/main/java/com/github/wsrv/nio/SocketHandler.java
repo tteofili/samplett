@@ -63,7 +63,7 @@ class SocketHandler implements Callable<Long> {
             log.debug("parsed HTTP response :\n{}", httpResponse);
 
           // handle connection persistence
-          persistentConnection = httpResponse.keepAlive();
+          persistentConnection = httpResponse.isKeepAlive();
 
           IOUtils.write(httpResponse.toString(), socket.getOutputStream());
         }
