@@ -1,7 +1,6 @@
 package com.github.wsrv.nio.message.response;
 
 import com.github.wsrv.Resource;
-import com.github.wsrv.nio.configuration.ServerConfiguration;
 import com.github.wsrv.nio.message.request.HttpRequest;
 import com.github.wsrv.repository.NotReadableResourceException;
 import com.github.wsrv.repository.ResourceNotFoundException;
@@ -32,7 +31,6 @@ public class ResourceFetcher {
   }
 
   private ResourceRepository getRepository() {
-    return ResourceRepositoryManager.getInstance().getResourceRepository(
-            ServerConfiguration.getInstance().getRepoType());
+    return ResourceRepositoryManager.getInstance().getResourceRepository();
   }
 }

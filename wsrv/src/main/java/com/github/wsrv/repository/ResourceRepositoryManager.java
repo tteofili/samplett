@@ -2,28 +2,33 @@ package com.github.wsrv.repository;
 
 import com.github.wsrv.nio.configuration.ServerConfiguration;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author tommaso
  */
 public class ResourceRepositoryManager {
   private static ResourceRepositoryManager instance = new ResourceRepositoryManager();
 
-  private final Map<String, ResourceRepository> resourceRepositoryMap = new HashMap<String, ResourceRepository>();
+  private ResourceRepository repository;
 
   public static ResourceRepositoryManager getInstance() {
     return instance;
   }
 
   private ResourceRepositoryManager() {
-    FileSystemResourceRepository fileSystemResourceRepository = new FileSystemResourceRepository();
-    fileSystemResourceRepository.initialize(ServerConfiguration.getInstance().getRoot());
-    resourceRepositoryMap.put("fs", fileSystemResourceRepository);
+    String repoType = ServerConfiguration.getInstance().getRepoType();
+    String root = ServerConfiguration.getInstance().getRoot();
+    if (repoType.equals("fs")) {
+      FileSystemResourceRepository fileSystemResourceRepository = new FileSystemResourceRepository();
+      fileSystemResourceRepository.initialize(root);
+      this.repository = fileSystemResourceRepository;
+    } else if (repoType.equals("url")) {
+      URLBasedResourceRepository urlBasedResourceRepository = new URLBasedResourceRepository();
+      urlBasedResourceRepository.initialize(root);
+      this.repository = urlBasedResourceRepository;
+    }
   }
 
-  public ResourceRepository getResourceRepository(String repoType) {
-    return resourceRepositoryMap.get(repoType);
+  public ResourceRepository getResourceRepository() {
+    return repository;
   }
 }
