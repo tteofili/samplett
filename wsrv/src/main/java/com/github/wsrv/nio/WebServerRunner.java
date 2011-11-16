@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * The main class which is used to run the server
- * Usage: java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv.nio.WebServerRunner $numOfThreads $repositoryType $repositoryRootNode
+ * Usage: java -cp ... com.github.wsrv.nio.WebServerRunner $numOfThreads $repositoryType $repositoryRootNode
  * - $numThreads is the number of threads that should be allocated to the thread pool
  * - $repositoryType is the repository implementation to use
  * - $repositoryRootNode is the root node of the repository used
@@ -41,15 +41,18 @@ public class WebServerRunner {
   private static ServerInitializationParameters parseInitializationParameters(String[] args) {
     try {
       Integer poolSize = Integer.valueOf(args[0]);
-      log.info("thread number set to: " + poolSize);
+      if (log.isInfoEnabled())
+        log.info("thread number set to: " + poolSize);
       String repoType = args[1];
-      log.info("repository type chosen is: " + repoType);
+      if (log.isInfoEnabled())
+        log.info("repository type chosen is: " + repoType);
       String root = args[2];
-      log.info("root is : " + root);
+      if (log.isInfoEnabled())
+        log.info("root is : " + root);
       assert poolSize != null && repoType != null && root != null;
       return new ServerInitializationParameters(poolSize, repoType, root);
     } catch (Exception e) {
-      throw new RuntimeException("missing / wrong input parameters\n usage: java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv." +
+      throw new RuntimeException("missing / wrong input parameters\n usage: java -cp ... com.github.wsrv." +
               "nio.WebServerRunner $numOfThreads $repositoryType $repositoryRootNode");
     }
   }

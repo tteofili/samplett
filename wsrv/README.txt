@@ -4,18 +4,21 @@ It exposes resources using HTTP GET calls.
 The resources are served by repositories (ResourceRepository interface).
 This is because ideally resources could be not only on file system, but also on the web, on JCR repositories, etc.
 
-The server can be started launching the following command:
-  java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv.nio.WebServerRunner $numOfThreads $repositoryType $repositoryRootNode
+After running a 'mvn clean install' the server can be started launching the following script (generated with Application Assembler Maven Plugin):
+  Linux: sh target/appassembler/bin/wsrv $numOfThreads $repositoryType $repositoryRootNode
+  Windows: target/appassembler/bin/wsrv.bat $numOfThreads $repositoryType $repositoryRootNode
 where:
   - $numOfThreads is the number of threads that should be used to handle client connections
   - $repositoryType is the type of repository which is laying behind the webserver (available options are : fs or url)
   - $repositoryRootNode is the rootNode from which the specified repository has to 'start' looking for resources
 
 example for 'fs' repository based server:
-  java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv.nio.WebServerRunner 100 fs .
+  sh target/appassembler/bin/wsrv 100 fs .
 
 example for 'url' repository based server
-  java -cp wsrv-0.0.1-SNAPSHOT.jar com.github.wsrv.nio.WebServerRunner 100 url http://people.apache.org/~tommaso
+  sh target/appassembler/bin/wsrv 100 url http://people.apache.org/~tommaso
 note that, if the root is an HTTP resource, then the server will work like a proxy
 
 then try the http://localhost:8080 url in your browser to see the results
+
+A FindBugs reports and API javadoc pages can be obtained running the 'mvn site' command.
