@@ -21,4 +21,15 @@ note that, if the root is an HTTP resource, then the server will work like a pro
 
 then try the http://localhost:8080 url in your browser to see the results
 
+The components used for this project are:
+ - java.nio for the communication protocol
+ - commons.io to ease reads/writes and I/O conversions (e.g. stream>byte[])
+ - org.testng for unit testing
+ - org.mockito to mock objects in order to improve unit tests isolation
+
+Known extensions points:
+ - HTTP cache should be handled
+ - Could introduce a better framework for 'services' instantiation like ResourceRepository (ServiceLoader, OSGi, Guidce, etc.)
+ - Eventually support multiple HTTP methods
+
 A FindBugs reports and API javadoc pages can be obtained running the 'mvn site' command.
