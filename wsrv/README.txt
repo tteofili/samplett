@@ -29,7 +29,7 @@ The components used for this project are:
 
 Known extensions points:
  - HTTP cache should be handled
- - Could introduce a better framework for 'services' instantiation like ResourceRepository (ServiceLoader, OSGi, Guidce, etc.)
- - Eventually support multiple HTTP methods
+ - Could introduce a better framework for 'services' instantiation like ResourceRepository (ServiceLoader, OSGi, Guice, etc.)
+ - Eventually support other HTTP methods (e.g. HEAD, OPTIONS)
 
 A FindBugs reports and API javadoc pages can be obtained running the 'mvn site' command.
