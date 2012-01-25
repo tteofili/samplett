@@ -10,8 +10,7 @@
     <module>giw1011</module>
     <module>gbeanc</module>
     <module>wsrv</module>
-    <!--<module>pg</module>-->
-    <!--<module>uhama</module>-->
+    <module>pg</module>
   </modules>
   <build>
     <plugins>
