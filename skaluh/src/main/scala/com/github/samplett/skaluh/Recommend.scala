@@ -1,9 +1,7 @@
 package com.github.samplett.skaluh
 
-import scala.math.sqrt
-
 /**
- *
+ * class for trying to implement recommendation algorithms in scala
  */
 
 class Recommend {
@@ -21,12 +19,11 @@ class Recommend {
 
     if (si.size == 0) return 0
 
-    //    val sumOfSquares =
     var sumOfSquares = 0d;
 
     for (item <- si) sumOfSquares += scala.math.pow(prefs(firstPerson)(item) - prefs(secondPerson)(item), 2)
 
-    return 1d / (1d + sqrt(sumOfSquares))
+    return 1d / (1d + scala.math.sqrt(sumOfSquares))
   }
 
 }
