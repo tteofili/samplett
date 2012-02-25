@@ -11,9 +11,15 @@ class RecommendTest {
   @Test
   def sim_distanceTest() {
     val r = new Recommend();
-    val simDistance = r.sim_distance(r.sampleSet, "paula", "john")
+    var simDistance = r.sim_distance(r.sampleSet, "paula", "john")
+    Console.println("paula and john similarity is : " + simDistance)
     // john and paula are quite far
     assertTrue(simDistance < 0.1);
+
+    // paula and timothy are less far
+    simDistance = r.sim_distance(r.sampleSet, "paula", "timothy")
+    Console.println("paula and timothy similarity is : " + simDistance)
+    assertTrue(simDistance > 0.2);
   }
 
 }
