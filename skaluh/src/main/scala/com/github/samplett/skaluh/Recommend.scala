@@ -17,12 +17,12 @@ class Recommend {
     // get the list of shared items
     for (item <- prefs(firstPerson).keys) if (prefs(secondPerson).contains(item)) si += (item)
 
+    // if there is no shared item then the similarity is 0
     if (si.size == 0) return 0
 
+    // otherwise the euclidean distance based similarity is calculated
     var sumOfSquares = 0d;
-
     for (item <- si) sumOfSquares += scala.math.pow(prefs(firstPerson)(item) - prefs(secondPerson)(item), 2)
-
     return 1d / (1d + scala.math.sqrt(sumOfSquares))
   }
 
