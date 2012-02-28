@@ -27,4 +27,43 @@ class Recommend {
     return 1d / (1d + scala.math.sqrt(sumOfSquares))
   }
 
+  def sim_pearson(prefs: Map[String, Map[String, Double]], firstPerson: String, secondPerson: String): Double = {
+    var si = scala.collection.mutable.ArrayBuffer[String]()
+
+    // get the list of shared items
+    for (item <- prefs(firstPerson).keys) if (prefs(secondPerson).contains(item)) si += (item)
+
+    // if there is no shared item then the similarity is 0
+    if (si.size == 0) return 0
+
+    // add up all the preferences
+    var sumSq1 = 0d
+    for (it <- prefs(firstPerson).keys if si.contains(it))
+      sumSq1 += scala.math.pow(prefs(firstPerson)(it), 2)
+
+    var sumSq2 = 0d
+    for (it <- prefs(secondPerson).keys if si.contains(it))
+      sumSq2 += scala.math.pow(prefs(secondPerson)(it), 2)
+
+
+    var sum1 = 0d
+    for (it <- prefs(firstPerson).keys if si.contains(it))
+      sum1 += prefs(firstPerson)(it)
+
+    var sum2 = 0d
+    for (it <- prefs(secondPerson).keys if si.contains(it))
+      sum2 += prefs(secondPerson)(it)
+
+    var prodSum = 0d
+    for (it <- si)
+      prodSum += prefs(firstPerson)(it) * prefs(secondPerson)(it)
+
+    val num = prodSum - ((sum1 * sum2) / si.size)
+    val den = scala.math.sqrt((sumSq1 - scala.math.pow(sum1, 2) / si.size) * (sumSq2 - scala.math.pow(sum2, 2) / si.size))
+
+    if (den == 0) return 0
+
+    return num / den
+  }
+
 }
