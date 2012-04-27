@@ -1,4 +1,4 @@
-package com.github.samplett.nlp;
+package com.github.samplett.nlp.util;
 
 import org.junit.Test;
 
