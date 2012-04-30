@@ -13,6 +13,7 @@
     <module>pg</module>
     <module>skaluh</module>
     <module>nlp</module>
+    <module>uima-bsp</module>
   </modules>
   <build>
     <plugins>
