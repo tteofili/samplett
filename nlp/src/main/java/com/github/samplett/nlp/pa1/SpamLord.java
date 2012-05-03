@@ -14,12 +14,10 @@ public class SpamLord {
 
   public static final int OPTS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.UNIX_LINES;
 
-  //  private static final String PHONE_REGEX = "((Tel|TEL|Phone)\\s?\\:?)?\\s*(\\(?(\\+|00)\\d{1,2}\\)?[\\-\\:]\\s*)?((\\(\\d{2,}\\))?([\\-\\s]?\\d{2,})+)";
-//  private static final String PHONE_REGEX = "\\w+?\\s*\\(?(\\+|00)\\d{1,2}?\\)?\\:?\\s*(\\d{3,})((\\-\\d{3,})+)+";
   private static final String PHONE_REGEX = "(\\d{3})(\\-\\d{3,4}){2,}";
   private static final String SCRIPT_PHONE_REGEX = "<a\\shref=\"contact.html\">TEL</a>\\s(\\(?(\\+|00)\\d{1,2}\\)?(\\&.+\\;|\\:)\\s*)?((\\(\\d+\\)\\s)?((\\d+(\\&.+\\;)?)+))";
 
-  private static final String EMAIL_REGEX = "(\\w+)(\\@|\\sat\\s|\\(at\\))((\\w+)((\\.|\\sdot\\s)(\\w{2,}))+)";
+  private static final String EMAIL_REGEX = "(\\w+\\.?\\w+)(\\s@\\s|\\@|\\sat\\s|\\(at\\))((\\w+)((\\.|\\sdot\\s)(\\w{2,}))+)";
   private static final String SCRIPT_EMAIL_REGEX = "(\\<script.+obfuscate\\(\\')(.+)(\\'\\,\\')(.+)('\\).+\\<\\/script\\>)";
 
 
@@ -122,6 +120,7 @@ public class SpamLord {
             result.append("@");
             result.append(m1.group(2));
             contacts.add(new Contact(fileName, "e", result.toString()));
+            System.err.println(line + " > " + result.toString());
           }
         } else if (m2.find()) {
           m2.reset();
@@ -130,6 +129,7 @@ public class SpamLord {
             result.append(m2.group(3).replaceAll("&thinsp;", "-").substring(1));
             result.append(m2.group(4));
             contacts.add(new Contact(fileName, "p", result.toString()));
+            System.err.println(line + " > " + result.toString());
           }
         } else if (m3.find()) {
           m3.reset();
@@ -139,6 +139,7 @@ public class SpamLord {
             result.append("@");
             result.append(m3.group(3).replaceAll(" dot ", "."));
             contacts.add(new Contact(fileName, "e", result.toString()));
+            System.err.println(line + " > " + result.toString());
           }
 
         } else if (m4.find()) {
@@ -147,6 +148,7 @@ public class SpamLord {
             StringBuilder result = new StringBuilder();
             result.append(m4.group(0));
             contacts.add(new Contact(fileName, "p", result.toString()));
+            System.err.println(line + " > " + result.toString());
           }
         }
       }
