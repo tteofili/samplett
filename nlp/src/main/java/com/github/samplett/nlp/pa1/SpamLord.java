@@ -14,7 +14,9 @@ public class SpamLord {
 
   public static final int OPTS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.UNIX_LINES;
 
-  private static final String PHONE_REGEX = "((Tel|TEL|Phone)\\s?\\:?)?\\s*(\\(?(\\+|00)\\d{1,2}\\)?[\\-\\:]\\s*)?((\\(\\d{2,}\\))?([\\-\\s]?\\d{2,})+)";
+  //  private static final String PHONE_REGEX = "((Tel|TEL|Phone)\\s?\\:?)?\\s*(\\(?(\\+|00)\\d{1,2}\\)?[\\-\\:]\\s*)?((\\(\\d{2,}\\))?([\\-\\s]?\\d{2,})+)";
+//  private static final String PHONE_REGEX = "\\w+?\\s*\\(?(\\+|00)\\d{1,2}?\\)?\\:?\\s*(\\d{3,})((\\-\\d{3,})+)+";
+  private static final String PHONE_REGEX = "(\\d{3})(\\-\\d{3,4}){2,}";
   private static final String SCRIPT_PHONE_REGEX = "<a\\shref=\"contact.html\">TEL</a>\\s(\\(?(\\+|00)\\d{1,2}\\)?(\\&.+\\;|\\:)\\s*)?((\\(\\d+\\)\\s)?((\\d+(\\&.+\\;)?)+))";
 
   private static final String EMAIL_REGEX = "(\\w+)(\\@|\\sat\\s|\\(at\\))((\\w+)((\\.|\\sdot\\s)(\\w{2,}))+)";
@@ -108,12 +110,6 @@ public class SpamLord {
     // for each line
     try {
       for (String line = input.readLine(); line != null; line = input.readLine()) {
-//        m = myFirstPattern.matcher(line);
-//        while(m.find()) {
-//          email = m.group(1) + "@" + m.group(2) + ".edu";
-//          Contact contact = new Contact(fileName,"e",email);
-//          contacts.add(contact);
-//        }
         Matcher m1 = scriptEmailPattern.matcher(line);
         Matcher m2 = scriptPhonePattern.matcher(line);
         Matcher m3 = plainEmailPattern.matcher(line);
@@ -143,23 +139,14 @@ public class SpamLord {
             result.append("@");
             result.append(m3.group(3).replaceAll(" dot ", "."));
             contacts.add(new Contact(fileName, "e", result.toString()));
-//            System.err.println(m3.group(0));
           }
 
         } else if (m4.find()) {
           m4.reset();
           while (m4.find()) {
             StringBuilder result = new StringBuilder();
-            String group = m4.group(6);
-            if (group != null && group.length() > 0) {
-              result.append(m4.group(6).replace("(", "").replace(") ", ""));
-              result.append('-');
-              result.append(m4.group(7));
-            } else {
-              result.append(m4.group(5));
-            }
+            result.append(m4.group(0));
             contacts.add(new Contact(fileName, "p", result.toString()));
-            System.err.println(m4.group(0));
           }
         }
       }
