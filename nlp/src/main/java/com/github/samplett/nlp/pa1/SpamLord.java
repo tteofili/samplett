@@ -12,17 +12,20 @@ import java.util.regex.Pattern;
 
 public class SpamLord {
 
-  private static final String PHONE_REGEX = "((Tel|TEL|Phone)\\s?\\:?)\\s*(\\(?(\\+|00)\\d{1,2}\\)?[\\-\\:]\\s*)?((\\(\\d+\\)\\s)?((\\d+\\-?)+))";
+  public static final int OPTS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.UNIX_LINES;
+
+  private static final String PHONE_REGEX = "((Tel|TEL|Phone)\\s?\\:?)?\\s*(\\(?(\\+|00)\\d{1,2}\\)?[\\-\\:]\\s*)?((\\(\\d{2,}\\))?([\\-\\s]?\\d{2,})+)";
   private static final String SCRIPT_PHONE_REGEX = "<a\\shref=\"contact.html\">TEL</a>\\s(\\(?(\\+|00)\\d{1,2}\\)?(\\&.+\\;|\\:)\\s*)?((\\(\\d+\\)\\s)?((\\d+(\\&.+\\;)?)+))";
 
-  private Pattern scriptPhonePattern = Pattern.compile(SCRIPT_PHONE_REGEX);
-  private Pattern plainPhoneNumberPattern = Pattern.compile(PHONE_REGEX);
+  private static final String EMAIL_REGEX = "(\\w+)(\\@|\\sat\\s|\\(at\\))((\\w+)((\\.|\\sdot\\s)(\\w{2,}))+)";
+  private static final String SCRIPT_EMAIL_REGEX = "(\\<script.+obfuscate\\(\\')(.+)(\\'\\,\\')(.+)('\\).+\\<\\/script\\>)";
 
-  private static final String EMAIL_REGEX = "(\\w+)(\\(|\\s)?(\\@|at)(\\)|\\s)?((\\w+)((\\.|\\sdot\\s)(\\w+))+)";
-  private static final String SCRIPT_EMAIL_REGEX = "(.+obfuscate\\(\\')(.+)(\\'\\,\\')(.+)('\\).+)";
 
-  private Pattern plainEmailPattern = Pattern.compile(EMAIL_REGEX);
-  private Pattern scriptEmailPattern = Pattern.compile(SCRIPT_EMAIL_REGEX);
+  private Pattern scriptPhonePattern = Pattern.compile(SCRIPT_PHONE_REGEX, OPTS);
+  private Pattern plainPhoneNumberPattern = Pattern.compile(PHONE_REGEX, OPTS);
+
+  private Pattern plainEmailPattern = Pattern.compile(EMAIL_REGEX, OPTS);
+  private Pattern scriptEmailPattern = Pattern.compile(SCRIPT_EMAIL_REGEX, OPTS);
 
   /*
    * You do not need to modify anything in the Contact class.
@@ -92,8 +95,6 @@ public class SpamLord {
     }
   }
 
-  // Example pattern for extracting e-mail addresses
-  private Pattern myFirstPattern = Pattern.compile("(\\w+)@(\\w+)\\.edu");
 
   /*
    * TODO
@@ -107,7 +108,6 @@ public class SpamLord {
     // for each line
     try {
       for (String line = input.readLine(); line != null; line = input.readLine()) {
-        StringBuilder result = new StringBuilder();
 //        m = myFirstPattern.matcher(line);
 //        while(m.find()) {
 //          email = m.group(1) + "@" + m.group(2) + ".edu";
@@ -119,33 +119,48 @@ public class SpamLord {
         Matcher m3 = plainEmailPattern.matcher(line);
         Matcher m4 = plainPhoneNumberPattern.matcher(line);
         if (m1.find()) {
-          result.append(m1.group(4));
-          result.append("@");
-          result.append(m1.group(2));
-          contacts.add(new Contact(fileName, "e", result.toString()));
-        } else if (m2.find()) {
-          result.append(m2.group(3).replaceAll("&thinsp;", "-").substring(1));
-          result.append(m2.group(4));
-          contacts.add(new Contact(fileName, "p", result.toString()));
-        } else if (m3.find()) {
-//          while (m.find()) {
-          result.append(m3.group(1));
-          result.append("@");
-          result.append(m3.group(5).replaceAll(" dot ", "."));
-          contacts.add(new Contact(fileName, "e", result.toString()));
-//          }
-        } else if (m4.find()) {
-//          while (matcher.find()) {
-          String group = m4.group(6);
-          if (group != null && group.length() > 0) {
-            result.append(m4.group(6).replace("(", "").replace(") ", ""));
-            result.append('-');
-            result.append(m4.group(7));
-          } else {
-            result.append(m4.group(5));
+          m1.reset();
+          while (m1.find()) {
+            StringBuilder result = new StringBuilder();
+            result.append(m1.group(4));
+            result.append("@");
+            result.append(m1.group(2));
+            contacts.add(new Contact(fileName, "e", result.toString()));
           }
-          contacts.add(new Contact(fileName, "p", result.toString()));
-//          }
+        } else if (m2.find()) {
+          m2.reset();
+          while (m2.find()) {
+            StringBuilder result = new StringBuilder();
+            result.append(m2.group(3).replaceAll("&thinsp;", "-").substring(1));
+            result.append(m2.group(4));
+            contacts.add(new Contact(fileName, "p", result.toString()));
+          }
+        } else if (m3.find()) {
+          m3.reset();
+          while (m3.find()) {
+            StringBuilder result = new StringBuilder();
+            result.append(m3.group(1));
+            result.append("@");
+            result.append(m3.group(3).replaceAll(" dot ", "."));
+            contacts.add(new Contact(fileName, "e", result.toString()));
+//            System.err.println(m3.group(0));
+          }
+
+        } else if (m4.find()) {
+          m4.reset();
+          while (m4.find()) {
+            StringBuilder result = new StringBuilder();
+            String group = m4.group(6);
+            if (group != null && group.length() > 0) {
+              result.append(m4.group(6).replace("(", "").replace(") ", ""));
+              result.append('-');
+              result.append(m4.group(7));
+            } else {
+              result.append(m4.group(5));
+            }
+            contacts.add(new Contact(fileName, "p", result.toString()));
+            System.err.println(m4.group(0));
+          }
         }
       }
       input.close();
