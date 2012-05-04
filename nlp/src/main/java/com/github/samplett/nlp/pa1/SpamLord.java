@@ -12,13 +12,12 @@ import java.util.regex.Pattern;
 
 public class SpamLord {
 
-  public static final int OPTS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.UNIX_LINES;
+  private static final int OPTS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.UNIX_LINES;
 
-  //  private static final String PHONE_REGEX = "(\\d{3})(\\-\\d{3,4}){2,}";
-  private static final String PHONE_REGEX = "(\\d{3})([\\)\\-]\\s?)(\\d{3,4})(\\-\\d{3,4}){1,2}";
+  private static final String PHONE_REGEX = "(\\d{3})([\\)\\-\\s]\\s?)(\\d{3})([\\-\\s]\\d{3,4}){1,2}";
   private static final String SCRIPT_PHONE_REGEX = "<a\\shref=\"contact.html\">TEL</a>\\s(\\(?(\\+|00)\\d{1,2}\\)?(\\&.+\\;|\\:)\\s*)?((\\(\\d+\\)\\s)?((\\d+(\\&.+\\;)?)+))";
 
-  private static final String EMAIL_REGEX = "(\\w+\\.?\\w+)(\\s@\\s|\\@|\\sat\\s|\\(at\\))((\\w+)((\\.|\\sdot\\s)(\\w{2,}))+)";
+  private static final String EMAIL_REGEX = "([\\w\\.\\-\\_]{3,})(\\s@\\s|\\@|\\&\\#x40\\;|\\sat\\s|\\(at\\))(([\\w\\.\\-\\_]{2,})((\\.|\\sdot\\s)([\\w\\.\\-\\_]{2,}))+)";
   private static final String SCRIPT_EMAIL_REGEX = "(\\<script.+obfuscate\\(\\')(.+)(\\'\\,\\')(.+)('\\).+\\<\\/script\\>)";
 
 
