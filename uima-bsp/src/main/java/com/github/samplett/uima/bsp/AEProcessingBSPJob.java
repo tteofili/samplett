@@ -11,15 +11,12 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasPool;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -60,10 +57,8 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
       } catch (Exception e) {
         // do nothing
       }
-      if (isMaster(bspPeer)) {
-        Integer casPoolSize = Integer.valueOf(bspPeer.getConfiguration().get("cas.pool.size"));
-        casPool = new CasPool(casPoolSize, analysisEngine);
-      }
+      Integer casPoolSize = Integer.valueOf(bspPeer.getConfiguration().get("cas.pool.size"));
+      casPool = new CasPool(casPoolSize, analysisEngine);
       bspPeer.sync();
 
       // collection distribution
@@ -71,12 +66,8 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
         String dirPath = configuration.get("collection.path");
         for (File f : new File(dirPath).listFiles()) {
           System.err.println("sending " + f.getAbsolutePath());
-          CAS cas = casPool.getCas();
-          cas.setDocumentText(new FileReader(f).toString());
-          CASSerializer casSerializer = new CASSerializer();
-          casSerializer.addCAS((CASImpl) cas);
-          byte[] serializedCAS = casSerializer.byteHeapArray;
-          ByteMessage byteMessage = new ByteMessage(UUID.randomUUID().toString().getBytes("UTF-8"), serializedCAS);
+          FileReader fileReader = new FileReader(f);
+          ByteMessage byteMessage = new ByteMessage(UUID.randomUUID().toString().getBytes("UTF-8"), fileReader.toString().getBytes("UTF-8"));
           bspPeer.send(bspPeer.getPeerName(UUID.randomUUID().variant() % bspPeer.getNumPeers() - 1), byteMessage);
         }
       }
@@ -86,10 +77,10 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
       ByteMessage currentMessage = (ByteMessage) bspPeer.getCurrentMessage();
       while (currentMessage != null) {
         // AE execution
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(currentMessage.getData());
-        CASImpl cas = new CASImpl();
-        cas.reinit(byteArrayInputStream);
+        CAS cas = casPool.getCas();
+        cas.setDocumentText(new String(currentMessage.getData()));
         ProcessTrace pt = analysisEngine.process(cas);
+        casPool.releaseCas(cas);
         bspPeer.send(master, new ByteMessage(UUID.randomUUID().toString().getBytes("UTF-8"), pt.toString().getBytes("UTF-8")));
       }
       bspPeer.sync();
@@ -98,7 +89,6 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
         ByteMessage bspMessage = (ByteMessage) bspPeer.getCurrentMessage();
         while (bspMessage != null) {
           System.err.println(new String(bspMessage.getData()));
-          bspMessage = (ByteMessage) bspPeer.getCurrentMessage();
         }
       }
       try {
