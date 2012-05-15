@@ -9,8 +9,11 @@ import org.apache.hama.bsp.sync.SyncException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasPool;
+import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
@@ -30,7 +33,7 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
   private CasPool casPool;
 
   private String master;
-  private Random r = new Random();
+  private final Random r = new Random();
 
   @Override
   public void setup(BSPPeer<KI, VI, KO, VO, BSPMessage> peer) throws IOException, SyncException, InterruptedException {
@@ -40,12 +43,11 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
 
   @Override
   public void bsp(BSPPeer<KI, VI, KO, VO, BSPMessage> bspPeer) throws IOException, SyncException, InterruptedException {
-
-    Configuration configuration = bspPeer.getConfiguration();
-    String aePath = configuration.get("uima.ae.path");
     try {
+      Configuration configuration = bspPeer.getConfiguration();
 
       // AE instantiation
+      String aePath = configuration.get("uima.ae.path");
       AnalysisEngineDescription analysisEngineDescription = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(aePath));
       AnalysisEngine analysisEngine = UIMAFramework.produceAnalysisEngine(analysisEngineDescription);
       bspPeer.sync();
@@ -112,8 +114,12 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
         // do nothing
       }
 
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    } catch (InvalidXMLException e) {
+      throw new InterruptedException(e.getLocalizedMessage());
+    } catch (AnalysisEngineProcessException e) {
+      throw new InterruptedException(e.getLocalizedMessage());
+    } catch (ResourceInitializationException e) {
+      throw new InterruptedException(e.getLocalizedMessage());
     }
   }
 
