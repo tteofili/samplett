@@ -9,18 +9,17 @@ import org.apache.hama.bsp.sync.SyncException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasPool;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -31,6 +30,7 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
   private CasPool casPool;
 
   private String master;
+  private Random r = new Random();
 
   @Override
   public void setup(BSPPeer<KI, VI, KO, VO, BSPMessage> peer) throws IOException, SyncException, InterruptedException {
@@ -53,29 +53,30 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
       // AE initialization
       try {
         analysisEngine.initialize(analysisEngineDescription, new HashMap<String, Object>());
-        System.out.println(bspPeer.getPeerName() + " initialized the AE");
       } catch (Exception e) {
         // do nothing
       }
       Integer casPoolSize = Integer.valueOf(bspPeer.getConfiguration().get("cas.pool.size"));
       casPool = new CasPool(casPoolSize, analysisEngine);
-      bspPeer.sync();
+//      bspPeer.sync();
 
       // collection distribution
       if (isMaster(bspPeer)) {
         String dirPath = configuration.get("collection.path");
+        int i = 0;
         for (File f : new File(dirPath).listFiles()) {
-          System.err.println("sending " + f.getAbsolutePath());
           FileReader fileReader = new FileReader(f);
           ByteMessage byteMessage = new ByteMessage(UUID.randomUUID().toString().getBytes("UTF-8"), fileReader.toString().getBytes("UTF-8"));
-          bspPeer.send(bspPeer.getPeerName(UUID.randomUUID().variant() % bspPeer.getNumPeers() - 1), byteMessage);
+          fileReader.close();
+          String toPeer = bspPeer.getAllPeerNames()[r.nextInt(bspPeer.getAllPeerNames().length)];
+          bspPeer.send(toPeer, byteMessage);
+          i++;
         }
       }
       bspPeer.sync();
 
-
-      ByteMessage currentMessage = (ByteMessage) bspPeer.getCurrentMessage();
-      while (currentMessage != null) {
+      ByteMessage currentMessage;
+      while ((currentMessage = (ByteMessage) bspPeer.getCurrentMessage()) != null) {
         // AE execution
         CAS cas = casPool.getCas();
         cas.setDocumentText(new String(currentMessage.getData()));
@@ -86,24 +87,28 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
       bspPeer.sync();
 
       if (isMaster(bspPeer)) {
-        ByteMessage bspMessage = (ByteMessage) bspPeer.getCurrentMessage();
-        while (bspMessage != null) {
-          System.err.println(new String(bspMessage.getData()));
+        StringBuilder stringBuilder = new StringBuilder();
+        ByteMessage bspMessage;
+        while ((bspMessage = (ByteMessage) bspPeer.getCurrentMessage()) != null) {
+          stringBuilder.append(new String(bspMessage.getData()));
         }
+        File f = new File("/Users/teofili/asd.txt");
+        f.createNewFile();
+        FileOutputStream fileOutputStream = new FileOutputStream(f);
+        fileOutputStream.write(stringBuilder.toString().getBytes("UTF-8"));
+        fileOutputStream.flush();
+        fileOutputStream.close();
       }
+
+
       try {
         analysisEngine.destroy();
       } catch (Exception e) {
         // do nothing
       }
 
-
-    } catch (InvalidXMLException e) {
-      e.printStackTrace(); //TODO change this
-    } catch (ResourceInitializationException e) {
-      e.printStackTrace(); //TODO change this
-    } catch (AnalysisEngineProcessException e) {
-      e.printStackTrace(); //TODO change this
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 

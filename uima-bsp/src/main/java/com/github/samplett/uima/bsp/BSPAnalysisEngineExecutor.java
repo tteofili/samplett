@@ -9,11 +9,11 @@ import org.apache.hama.bsp.BSPJob;
  */
 public class BSPAnalysisEngineExecutor {
 
-  public void executeAE(String path) throws Exception {
+  public void executeAE(String aePath, String collectionPath) throws Exception {
     HamaConfiguration conf = new HamaConfiguration();
-    conf.set("uima.ae.path", path);
+    conf.set("uima.ae.path", aePath);
     conf.set("cas.pool.size", "3");
-    conf.set("collection.path", "src/test/resources/data/dev");
+    conf.set("collection.path", collectionPath);
     BSPJob job = new BSPJob(conf);
     // set the BSP class which shall be executed
     job.setBspClass(AEProcessingBSPJob.class);
