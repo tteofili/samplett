@@ -58,7 +58,6 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
       }
       Integer casPoolSize = Integer.valueOf(bspPeer.getConfiguration().get("cas.pool.size"));
       casPool = new CasPool(casPoolSize, analysisEngine);
-//      bspPeer.sync();
 
       // collection distribution
       if (isMaster(bspPeer)) {
@@ -75,24 +74,30 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
       }
       bspPeer.sync();
 
+      // receive files to analyze
       ByteMessage currentMessage;
       while ((currentMessage = (ByteMessage) bspPeer.getCurrentMessage()) != null) {
-        // AE execution
+        // get a CAS
         CAS cas = casPool.getCas();
+        // populate with received text
         cas.setDocumentText(new String(currentMessage.getData()));
+        // AE execution
         ProcessTrace pt = analysisEngine.process(cas);
+        // release CAS
         casPool.releaseCas(cas);
+        // send results
         bspPeer.send(master, new ByteMessage(UUID.randomUUID().toString().getBytes("UTF-8"), pt.toString().getBytes("UTF-8")));
       }
       bspPeer.sync();
 
+      // collect analysis results
       if (isMaster(bspPeer)) {
         StringBuilder stringBuilder = new StringBuilder();
         ByteMessage bspMessage;
         while ((bspMessage = (ByteMessage) bspPeer.getCurrentMessage()) != null) {
           stringBuilder.append(new String(bspMessage.getData()));
         }
-        File f = new File("/Users/teofili/asd.txt");
+        File f = new File(configuration.get("output.file"));
         f.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(f);
         fileOutputStream.write(stringBuilder.toString().getBytes("UTF-8"));
@@ -100,7 +105,7 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
         fileOutputStream.close();
       }
 
-
+      // destroy the used AE
       try {
         analysisEngine.destroy();
       } catch (Exception e) {
