@@ -12,6 +12,8 @@ public class BSPAnalysisEngineExecutor {
   public void executeAE(String path) throws Exception {
     HamaConfiguration conf = new HamaConfiguration();
     conf.set("uima.ae.path", path);
+    conf.set("cas.pool.size", "3");
+    conf.set("collection.path", "src/test/resources/data/dev");
     BSPJob job = new BSPJob(conf);
     // set the BSP class which shall be executed
     job.setBspClass(AEProcessingBSPJob.class);
