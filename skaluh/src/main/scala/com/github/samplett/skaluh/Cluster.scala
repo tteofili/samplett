@@ -40,11 +40,15 @@ class Cluster {
         total + n
     };
 
-    var sumSq1 = 0;
-    for (item <- f1) sumSq1 += math.pow(item, 2);
+    val sumSq1 = f1.foldLeft(0d) {
+      (total, n) =>
+        total + math.pow(n, 2)
+    };
 
-    var sumSq2 = 0;
-    for (item <- f2) sumSq2 += math.pow(item, 2);
+    val sumSq2 = f2.foldLeft(0d) {
+      (total, n) =>
+        total + math.pow(n, 2)
+    };
 
     var pSum = 0;
     for (i <- 0 until f1.length if f2(i)) pSum += f1(i) * f2(i);
