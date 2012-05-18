@@ -30,11 +30,15 @@ class Cluster {
   }
 
   def pearson(f1: Array[Double], f2: Array[Double]): Double = {
-    var sum1 = 0;
-    for (item <- f1) sum1 += item;
+    val sum1 = f1.foldLeft(0d) {
+      (total, n) =>
+        total + n
+    };
 
-    var sum2 = 0;
-    for (item <- f2) sum2 += item;
+    val sum2 = f2.foldLeft(0d) {
+      (total, n) =>
+        total + n
+    };
 
     var sumSq1 = 0;
     for (item <- f1) sumSq1 += math.pow(item, 2);
