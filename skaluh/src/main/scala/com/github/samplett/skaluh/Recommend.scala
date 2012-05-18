@@ -75,8 +75,8 @@ class Recommend {
     var scores = new scala.collection.mutable.HashMap[String, Double];
     for (other <- prefs if other._1 != person)
       scores += other._1 -> sim(prefs, person, other._1);
-    var sortedList = scores.toList sortBy (_._2)
-    return sortedList.reverse.slice(0, n).toMap[String, Double].keySet;
+    val sortedList = scores.toList sortBy (_._2)
+    sortedList.reverse.slice(0, n).toMap[String, Double].keySet;
   }
 
 }
