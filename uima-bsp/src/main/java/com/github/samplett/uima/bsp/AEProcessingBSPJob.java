@@ -46,12 +46,12 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
   public void bsp(BSPPeer<KI, VI, KO, VO, BSPMessage> bspPeer) throws IOException, SyncException, InterruptedException {
     try {
       Configuration configuration = bspPeer.getConfiguration();
+      // first superstep
 
       // AE instantiation
       String aePath = configuration.get("uima.ae.path");
       AnalysisEngineDescription analysisEngineDescription = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(aePath));
       AnalysisEngine analysisEngine = UIMAFramework.produceAnalysisEngine(analysisEngineDescription);
-      bspPeer.sync();
 
       // AE initialization
       try {
@@ -77,6 +77,8 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
       }
       bspPeer.sync();
 
+      // second superstep
+
       // receive files to analyze
       ByteMessage currentMessage;
       while ((currentMessage = (ByteMessage) bspPeer.getCurrentMessage()) != null) {
@@ -92,6 +94,8 @@ public class AEProcessingBSPJob<KI, VI, KO, VO, M extends ByteMessage> extends B
         bspPeer.send(master, new ByteMessage(UUID.randomUUID().toString().getBytes("UTF-8"), pt.toString().getBytes("UTF-8")));
       }
       bspPeer.sync();
+
+      // third superstep
 
       // collect analysis results
       if (isMaster(bspPeer)) {
