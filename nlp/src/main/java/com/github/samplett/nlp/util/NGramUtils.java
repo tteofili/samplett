@@ -40,7 +40,7 @@ public class NGramUtils {
     return (count(word, precedingWord, set) + k) / (count(word, set) + k * set.size());
   }
 
-  public static Long calculateProbabilityUnigramPriorSmoothing(String word, String precedingWord, Collection<String> set, Long k) {
+  public static Long calculateUnigramPriorSmoothingProbability(String word, String precedingWord, Collection<String> set, Long k) {
     return (count(word, precedingWord, set) + k * calculateProbability(word, set)) / (count(word, set) + k * set.size());
   }
 
