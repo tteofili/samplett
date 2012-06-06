@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Add javadoc here
+ * Testcase for {@link NGramUtils}
  */
 public class NGramUtilsTest {
   @Test
