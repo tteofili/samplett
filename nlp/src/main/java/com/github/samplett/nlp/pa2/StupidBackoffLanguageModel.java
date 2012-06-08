@@ -108,7 +108,7 @@ public class StupidBackoffLanguageModel implements LanguageModel {
             if (aDouble != null && aDouble > 0d) {
                 score += Math.log(aDouble);
             } else {
-                double v = Math.log(calculateUnigram1SmoothedProbability(sentence.get(i), words));
+                double v = Math.log(0.4d * calculateUnigram1SmoothedProbability(sentence.get(i), words));
                 score += v;
                 scores.put(s, v);
             }
