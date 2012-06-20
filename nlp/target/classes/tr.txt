@@ -1,0 +1,4 @@
+tr -cs '[A-Za-z]' '\n' < case-normalization.txt | sort | uniq -c | sort -rn | less
+tr 'A-Z' 'a-z' < case-normalization.txt | tr -sc 'A-Za-z' '\n' | sort -rn | uniq -c | sort -rn | less
+tr -cs '[A-Za-z]' '\n' < case-normalization.txt | sort | uniq -c | sort -rn | wc -l
+tr 'A-Z' 'a-z' < case-normalization.txt | tr -sc 'A-Za-z' '\n' | sort -rn | uniq -c | sort -rn | wc -l

@@ -140,10 +140,10 @@ public class SpellCorrect {
     System.out.println(sbOutcome.toString());
 
     System.out.println("Custom Language Model: ");
-    CustomLanguageModel customLM = new CustomLanguageModel(trainingCorpus);
-    SpellCorrect customSpell = new SpellCorrect(customLM, trainingCorpus);
-    SpellingResult customOutcome = customSpell.evaluate(devCorpus);
-    System.out.println(customOutcome.toString());
+//    CustomLanguageModel customLM = new CustomLanguageModel(trainingCorpus);
+//    SpellCorrect customSpell = new SpellCorrect(customLM, trainingCorpus);
+//    SpellingResult customOutcome = customSpell.evaluate(devCorpus);
+//    System.out.println(customOutcome.toString());
   }
 
   public static void main(String[] args) {
