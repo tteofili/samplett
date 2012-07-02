@@ -97,8 +97,9 @@ public class LuceneSimpleNaiveBayesClassifier implements NaiveBayesClassifier<St
 //        }
 
         // take the existing classes
+        new CountFacetRequest(new CategoryPath("author"), 10);
         FacetSearchParams facetSearchParams = new FacetSearchParams();
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath(10, 10), 100));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath(), 100));
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, indexSearcher.getIndexReader(), new DirectoryTaxonomyReader(directory));
         classCounts = new HashMap<String, Double>();
         indexSearcher.search(new WildcardQuery(new Term(classFieldName, "*")), facetsCollector);
@@ -154,11 +155,10 @@ public class LuceneSimpleNaiveBayesClassifier implements NaiveBayesClassifier<St
     }
 
     private double countInClassC(String c) throws IOException {
-
 //        SlowCompositeReaderWrapper.wrap(indexSearcher.getIndexReader()).fields().terms(textFieldName);
 
         FacetSearchParams facetSearchParams = new FacetSearchParams();
-        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath(10, 10), 100));
+        facetSearchParams.addFacetRequest(new CountFacetRequest(new CategoryPath(), 100));
         FacetsCollector facetsCollector = new FacetsCollector(facetSearchParams, indexSearcher.getIndexReader(), null);
         indexSearcher.search(new WildcardQuery(new Term(classFieldName, c)), facetsCollector);
         double res = facetsCollector.getFacetResults().size();
