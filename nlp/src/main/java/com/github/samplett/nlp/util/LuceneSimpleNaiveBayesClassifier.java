@@ -1,10 +1,15 @@
 package com.github.samplett.nlp.util;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
-import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -13,7 +18,6 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.Directory;
 
 /**
  * A Lucene based {@link NaiveBayesClassifier}
@@ -27,19 +31,15 @@ public class LuceneSimpleNaiveBayesClassifier implements NaiveBayesClassifier<St
     private String classFieldName;
     private Map<String, Double> classCounts;
     private int docsWithClassSize;
+    private Analyzer analyzer;
 
-    public LuceneSimpleNaiveBayesClassifier(IndexSearcher indexSearcher, String textFieldName, String classFieldName) {
-
-        try {
-            this.indexSearcher = indexSearcher;
-            this.textFieldName = textFieldName;
-            this.classFieldName = classFieldName;
-            createVocabulary();
-            preComputePriors();
-
-        } catch (IOException e) {
-            e.printStackTrace(); //TODO change this
-        }
+    public void train(IndexSearcher indexSearcher, String textFieldName, String classFieldName, Analyzer analyzer) throws IOException {
+        this.indexSearcher = indexSearcher;
+        this.textFieldName = textFieldName;
+        this.classFieldName = classFieldName;
+        this.analyzer = analyzer;
+        createVocabulary();
+        preComputePriors();
     }
 
 
@@ -67,13 +67,21 @@ public class LuceneSimpleNaiveBayesClassifier implements NaiveBayesClassifier<St
         docsWithClassSize = topDocs.totalHits;
     }
 
-    private String[] tokenizeDoc(String doc) {
-        // TODO : this is by far not a tokenization, it should be changed
-        return doc.split(" ");
+    private String[] tokenizeDoc(String doc) throws IOException {
+        Collection<String> result = new LinkedList<String>();
+        TokenStream tokenStream = analyzer.tokenStream(textFieldName, new StringReader(doc));
+        while (tokenStream.incrementToken()) {
+            CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
+            result.add(charTermAttribute.toString());
+        }
+        return result.toArray(new String[result.size()]);
     }
 
     @Override
     public String calculateClass(String inputDocument) throws Exception {
+        if (indexSearcher == null) {
+            throw new RuntimeException("need to train the classifier (use train method)");
+        }
         Double max = 0d;
         String foundClass = null;
 

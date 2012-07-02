@@ -25,7 +25,8 @@ public class LuceneNaiveBayesClassifierTest {
     public void ppsIntegrationTest() throws Exception {
 
         Directory dir = new RAMDirectory();
-        IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_40, new WhitespaceAnalyzer(Version.LUCENE_40));
+        WhitespaceAnalyzer analyzer = new WhitespaceAnalyzer(Version.LUCENE_40);
+        IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_40, analyzer);
         IndexWriter indexWriter = new IndexWriter(dir, conf);
 
         FieldType type = new FieldType();
@@ -105,7 +106,8 @@ public class LuceneNaiveBayesClassifierTest {
 
         IndexSearcher indexSearcher = new IndexSearcher(DirectoryReader.open(indexWriter.getDirectory()));
 
-        LuceneSimpleNaiveBayesClassifier classifier = new LuceneSimpleNaiveBayesClassifier(indexSearcher, "text", "class");
+        LuceneSimpleNaiveBayesClassifier classifier = new LuceneSimpleNaiveBayesClassifier();
+        classifier.train(indexSearcher, "text", "class", analyzer);
 
         Boolean isAgency = classifier.calculateClass("CENTRO S.Maria Maggiore " +
                 "angolo Napoleone III in palazzo epoca con portiere 110 mq ristrutt." +
