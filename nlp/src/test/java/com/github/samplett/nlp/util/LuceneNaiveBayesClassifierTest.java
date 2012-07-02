@@ -1,11 +1,13 @@
 package com.github.samplett.nlp.util;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
@@ -23,12 +25,14 @@ public class LuceneNaiveBayesClassifierTest {
     public void ppsIntegrationTest() throws Exception {
 
         Directory dir = new RAMDirectory();
-        IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_40, new StandardAnalyzer(Version.LUCENE_40));
+        IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_40, new WhitespaceAnalyzer(Version.LUCENE_40));
         IndexWriter indexWriter = new IndexWriter(dir, conf);
 
         FieldType type = new FieldType();
         type.setIndexed(true);
         type.setStored(true);
+        type.setStoreTermVectors(true);
+
         Document d = new Document();
         d.add(new Field("text", "CAVOUR ad.te napoleone III affare: cat. C/2 ottimo" +
                 " stato ingresso angolo cottura bagno con doccia e camera. " +
@@ -99,7 +103,9 @@ public class LuceneNaiveBayesClassifierTest {
 
         indexWriter.commit();
 
-        LuceneSimpleNaiveBayesClassifier classifier = new LuceneSimpleNaiveBayesClassifier(dir, "text", "class");
+        IndexSearcher indexSearcher = new IndexSearcher(DirectoryReader.open(indexWriter.getDirectory()));
+
+        LuceneSimpleNaiveBayesClassifier classifier = new LuceneSimpleNaiveBayesClassifier(indexSearcher, "text", "class");
 
         Boolean isAgency = classifier.calculateClass("CENTRO S.Maria Maggiore " +
                 "angolo Napoleone III in palazzo epoca con portiere 110 mq ristrutt." +
