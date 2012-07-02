@@ -59,4 +59,10 @@ class Cluster {
     return 1 - num / den;
   }
 
+  class biCluster(private val left: biCluster = null, private val right: biCluster = null,
+                  private val distance: Double = 0d, private val id: Unit) {
+
+
+  }
+
 }
