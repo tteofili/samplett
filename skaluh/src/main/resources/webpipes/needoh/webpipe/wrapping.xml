@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wrappers>
+	<wrapper type="xpath" pageclassname="anagrafica" relationname="anagrafica" path="/webpipes/ThreePageclasses/webpipe/wrappers/AnagraficaWrapper.xml">
+	</wrapper>
+	<wrapper type="collage" pageclassname="portafoglio" relationname="portafoglio" path="/webpipes/ThreePageclasses/webpipe/wrappers/PortafoglioWrapper.xml">
+	</wrapper>
+</wrappers>

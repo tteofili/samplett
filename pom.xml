@@ -12,6 +12,7 @@
     <module>wsrv</module>
     <module>pg</module>
     <module>skaluh</module>
+    <module>fntlearn</module>
   </modules>
   <build>
     <plugins>

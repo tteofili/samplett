@@ -1,0 +1,5 @@
+<webpipe>
+    <crawler>webpipe/crawling.xml</crawler>
+    <wrapper>webpipe/wrapping.xml</wrapper>
+    <mapper>webpipe/mapping.xml</mapper>    
+</webpipe>

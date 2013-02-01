@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<navigation>
+	<entrypoint pageclass="index" url="https://www.comune.roma.it/servizi/mesis-portal-reports-war/loadGraduatoriaAsiliNido.do"/>
+	<model>
+		<pageclass type="index">
+			<assertion pageclass="index" xpath="//div[@class='title']" />
+			
+			<classrequest type="index2anagrafica" pageclass="index" expectedtype="anagrafica">
+			   <clickonall xpath="//div[@class='anagrafica']/a"/>
+			</classrequest>
+			
+			<classrequest type="index2portafoglio" pageclass="index" expectedtype="portafoglio">
+			   <clickonall xpath="//div[@class='portafoglio']/a"/>
+			</classrequest>
+			
+		</pageclass>
+
+		<pageclass type="anagrafica">
+			<assertion pageclass="anagrafica" xpath="//div[@class='title']" />
+		</pageclass>
+
+		<pageclass type="portafoglio">
+			<assertion pageclass="portafoglio" xpath="//div[@class='title']" />
+		</pageclass>
+	</model>
+
+</navigation>

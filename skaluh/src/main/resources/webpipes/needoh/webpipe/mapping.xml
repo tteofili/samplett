@@ -1,0 +1,26 @@
+<mapping>
+	<base file="nr_anagrafica.xml" label="0"/>
+	<base file="nr_portafoglio.xml" label="3"/>
+	<operators>
+	
+		<!-- ================================== -->
+		<!--  for the NR anagrafica -->
+		<operator type="ProjectAttributeOperator" in="0" out="1">
+			<operatorParameter type="ProjectAttributeOperatorParameter">
+				<project on="name,fundcode" />
+			</operatorParameter>
+			<save name='nr_anagrafica_projected.xml'>true</save>
+		</operator>
+		<!-- ================================== -->
+		
+		<!-- ================================== -->
+		<!-- for the NR portafoglio -->
+		<operator type="RenameAttributeOperator" in="3" out="4">
+			<operatorParameter type="RenameAttributeOperatorParameter">
+				<rename from="amount" to="year_amount"/>
+			</operatorParameter>
+			<save name='nr_portafoglio_renamed.xml'>true</save>
+		</operator>
+		<!-- ================================== -->
+	</operators>
+</mapping>

@@ -1,0 +1,6 @@
+<wrapper>
+	<extractionrule extractor="XPath" xpath="//div[@class='name']" attribute="name"/>	
+	<extractionrule extractor="XPath" xpath="//div[@class='address']" attribute="address"/>
+	<extractionrule extractor="XPath" xpath="//div[@class='fundcode']" attribute="fundcode"/>
+</wrapper> 
+
