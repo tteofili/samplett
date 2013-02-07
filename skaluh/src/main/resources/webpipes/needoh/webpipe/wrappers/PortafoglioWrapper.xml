@@ -1,0 +1,47 @@
+<wrapper>
+<collage name="portafoglio">
+  <locator/>
+  <collage-expression> 
+    <and>
+ 		<fragment name="fundcode">
+			<locator class="it.uniroma3.dia.wrapper.locator.XPathLocator"><![CDATA[ //div[@class='fundcode']]]></locator>
+		</fragment>	
+ 		
+
+ 		<collage name="portafoglio_nested">
+ 			<locator/>
+  			<collage-expression>
+    			<and>
+			 		<fragment name="fundcode_nested">
+						<locator class="it.uniroma3.dia.wrapper.locator.XPathLocator"><![CDATA[ //div[@class='fundcode_nested']]]></locator>
+					</fragment>	
+			 
+			    	<fragment name="update">
+						<locator class="it.uniroma3.dia.wrapper.locator.XPathLocator"><![CDATA[ //div[@class='update']]]></locator>
+					</fragment>
+					
+					<collage name="portafoglio_nested_nested">
+ 						<locator/>
+  						<collage-expression>
+    						<and>
+						 		<fragment name="fundcode_nested_nested">
+									<locator class="it.uniroma3.dia.wrapper.locator.XPathLocator"><![CDATA[ //div[@class='fundcode_nested_nested']]]></locator>
+								</fragment>						 
+						    	<fragment name="update_nested_nested">
+									<locator class="it.uniroma3.dia.wrapper.locator.XPathLocator"><![CDATA[ //div[@class='update_nested_nested']]]></locator>
+								</fragment>		
+							</and>
+  						</collage-expression>
+					</collage>	
+				</and>
+  			</collage-expression>
+		</collage>
+		
+    	<fragment name="amount">
+			<locator class="it.uniroma3.dia.wrapper.locator.XPathLocator"><![CDATA[ //div[@class='amount']]]></locator>
+		</fragment>
+
+	</and>
+  </collage-expression>
+</collage>
+</wrapper>

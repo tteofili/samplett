@@ -1,0 +1,15 @@
+<populator>
+	<relations>
+		<relation>nr_anagrafica_projected.xml</relation>
+		<relation>nr_portafoglio_renamed.xml</relation>
+	</relations>
+	<!-- quelle obbligatorie sono definite in 
+	it.uniroma3.webpipe.populator.sql.SqlExecutorImpl.java x
+	<properties>
+		<property key="connection.driver_class_name">org.hsqldb.jdbcDriver</property>
+		<property key="connection.jdbc_url">jdbc:hsqldb:mem:testdb</property>
+		<property key="connection.username">sa</property>
+		<property key="connection.password"></property>
+	</properties>
+	-->
+</populator>
