@@ -14,7 +14,6 @@ public class FirstSampleAppTest {
     try {
       FirstSampleApp.runAnalysisEngineDescriptor("src/main/resources/AggregateGiw1011.xml","the big brown fox jumped on the tree");
     } catch (Exception e) {
-      e.printStackTrace();
       fail(e.getLocalizedMessage());
     }
   }
