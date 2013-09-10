@@ -23,12 +23,8 @@ public class PlanetDictionaryAnnotatorTest {
               "is nothing while new&amp;york is wrong",null);
       AnnotationIndex<Annotation> annotationIndex = cas.getJCas().getAnnotationIndex(PlanetNameAnnotation.type);
       assertTrue(annotationIndex.size()>0);
-      for (Annotation annotation : annotationIndex){
-        System.err.println(annotation.toString()+"   coveredText: "+annotation.getCoveredText());
-      }
     }
     catch (Exception e) {
-      e.printStackTrace();
       fail(e.getLocalizedMessage());
     }
   }

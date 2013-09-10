@@ -23,7 +23,6 @@ public class SimpleCPETest {
     try {
       runCPE("src/main/resources/SimpleCPE.xml");
     } catch (Exception e) {
-      e.printStackTrace();
       fail(e.getLocalizedMessage());
     }
 
