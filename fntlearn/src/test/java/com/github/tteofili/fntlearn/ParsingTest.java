@@ -11,6 +11,9 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.InputStream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  *
  */
@@ -29,7 +32,7 @@ public class ParsingTest {
       metadata.set(Metadata.CONTENT_TYPE, mimeType);
 
       parser.parse(stream, handler, metadata, context);
-      System.out.println("Metadata: " + metadata.toString());
+      assertEquals("gianluca", metadata.get("author"));
 
     } finally {
       stream.close();
@@ -42,7 +45,7 @@ public class ParsingTest {
     InputStream stream = getClass().getResourceAsStream("/Voti 2013-2014.xlsx");
     try {
       String text = tika.parseToString(stream);
-      System.out.println("Content: " + text);
+      assertNotNull(text);
     } finally {
       stream.close();
     }
