@@ -1,0 +1,243 @@
+ Memorial M.B. Vignola
+	 	TROFEO BIRRA PERONI
+
+
+	1	1
+	3-4-3	BARCELLONANDO	5-4-1	NANDO UTD.	Partita 1	ERROR:#REF!	TRUE	Partita 2	FALSE	FALSE	Partita 3	FALSE	FALSE
+	Abbiati	5,5	-2	Mirante	6	-3	ERROR:#REF!	FALSE	FALSE	FALSE	FALSE	FALSE
+	Zuniga	--	Pasqual?	6	ERROR:#REF!	FALSE	FALSE	FALSE	FALSE	FALSE
+	Biava	--	Maietta	--	ERROR:#REF!	FALSE	FALSE	FALSE	FALSE	FALSE
+	Palombo	5,5	Del Grosso	6	ERROR:#REF!	FALSE	FALSE	FALSE	FALSE	FALSE
+	Hamsik	6,5	Strootman	7	+	3	1	Partita 4	FALSE	FALSE	Partita 5	FALSE	FALSE
+	Bonaventura	6	Liajc	5	FALSE	FALSE	FALSE	FALSE
+	Montolivo	5,5	B.Valero	6,5	+	3	FALSE	FALSE	FALSE	FALSE
+	Alvarez	7	+	1	Missiroli	5	FALSE	FALSE	FALSE	FALSE
+	Totti	6,5	+	3	Balotelli	6	+	3	FALSE	FALSE	FALSE	FALSE
+	Klose	5,5	Eder?	5,5
+	Cacia	5	Therau	5
+	A Disp.	A Disp.
+	Amelia	Bardi
+	Campagnaro	7,5	-0,5	Costa	5	-0,5
+	J. Jesus	6,5	Garics
+	Parolo	Kone
+	Brighi	Obiang
+	Floccari	Centuriom
+	Immobile	Sansone Parma
+	Calai?	Sansone Samp?
+	TOT:	68,5	TOT:	69,5
+
+
+
+	Rigoristi	1	Rigoristi	4
+	Abbiati	5,5	X	Mirante	6	V
+	Zuniga	--	X	Pasqual?	6	V
+	Biava	--	X	Maietta	--	X
+	Palombo	5,5	X	Del Grosso	6	V
+	Hamsik	6,5	V	Strootman	7	V
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1? Giorn.
+	 	1? GIORNATA
+
+
+	4	2	1	1	2	1
+	S.S. BARBONANDO	3-4-3	NANDO COIJTO F.C.	3-4-3	NANDO UTD	3-4-3	BARCELLONANDO	3-4-3	URINANDO	3-5-2	NANDO M'GLABACH	3-3-1-3	Partita 1	TRUE	TRUE	Partita 2	TRUE	TRUE	Partita 3	TRUE	TRUE
+	Reina	6,5	Marchetti	7	Mirante	6	-3	Abbiati	5,5	-2	De Sanctis	6	-1	Buffon	6,5	-1	TRUE	TRUE	FALSE	FALSE	TRUE	FALSE
+	Gonzalo Ro.	5,5	-0,5	Barzagli	7	Pasqual?	6	Zuniga	--	Maicon	6	Jonathan	5,5	TRUE	FALSE	FALSE	FALSE	FALSE	FALSE
+	Terranova	6	Cana	6,5	Maietta	--	Biava	--	Emerson	6,5	-0,5	Bonucci	6	TRUE	FALSE	FALSE	FALSE	FALSE	FALSE
+	Danilo	6	De Silvestri	5	Del Grosso	6	Palombo	5,5	Alvarez	6	-0,5	Regini	5,5	-0,5	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE
+	Candreva	7,5	+	3	Aquilani	5,5	Strootman	7	+	3	1	Hamsik	6,5	Florenzi	6,5	+	3	Lodi	7	Partita 4	TRUE	FALSE	Partita 5	TRUE	TRUE
+	Pogba	5,5	Lulic	6,5	+	3	-0,5	Liajc	5	Bonaventura	6	Inler	6	Ledesma	7	+	1	FALSE	FALSE	FALSE	FALSE
+	Guarin	5,5	Badu	6	B.Valero	6,5	+	3	Montolivo	5,5	Behrami	--	Pizarro	5	-1	FALSE	FALSE	FALSE	FALSE
+	Martinho	6,5	+	3	Diamanti	6,5	+	3	Missiroli	5	Alvarez	7	+	1	Almiron	5	Ederson	6	+	1	FALSE	FALSE	FALSE	FALSE
+	M.Gomez	5	Rossi	6,5	Balotelli	6	+	3	Totti	6,5	+	3	Izco	--	Di Natale	6,5	+	3	FALSE	FALSE	FALSE	FALSE
+	Paulinho	8	+	6	Amauri	5,5	Eder?	5,5	Klose	5,5	Higuain	7	+	3	Bianchi	5
+	Callejon	7	+	3	-0,5	Leto	6	Therau	5	Cacia	5	Ibarbo	6,5	+	1	Paloschi	6
+	A Disp.	A Disp.	A Disp.	A Disp.	A Disp.	A Disp.
+	Rafael	Puggioni	Bardi	Amelia	Kelava	Storari
+	Domizi	Astori	Costa	5	-0,5	Campagnaro	7,5	-0,5	Stendardo	G. Silva
+	Legrottaglie	Portanova	Garics	J. Jesus	6,5	Castan	Vrsaljko
+	Santana	Kucka	Kone	Parolo	Maicosuel	6,5	Kovacic
+	Felipe Anderson	Halfredsson	Obiang	Brighi	Greco	6	-0,5	Bjarnsson
+	Biglia	Insigne	Centuriom	Floccari	Pandev	El Kaddouri
+	Mertens	Pinilla	Sansone Parma	Immobile	Moscardelli	Zaza
+	Sansone Samp?	Calai?	Larrondo	Giovinco	3
+	TOT:	83	+2=	85	TOT:	73,5	TOT:	69,5	+2=	71,5	TOT:	68,5	TOT:	72,5	+2=	74,5	TOT:	71,5
+
+
+
+	1	0	1	1
+	FR. NANDO	3-4-3	LOKOMOTIV NANDO	3-4-3	S.B.K. NANDO	3-4-3	ATHLETIC ISERNANDO	3-4-3
+	Consigli	6	-2	Handanovic	7	-1	Neto	6	-1	Frison	--
+	Nagaomo	6,5	Lichsteiner	6	-0,5	Savic	--	Monzon	5,5
+	Chiellini	5	Benatia	6,5	Zapata	5,5	-0,5	Mexes	6
+	D'Ambrosio	6,5	+	3	Maggio	--	Spolli	5,5	-0,5	Antonini	7	+	3
+	De Rossi	6	Pereyra	5	Nainggolan	6,5	Vidal	7	+	3	-0,5
+	Pirlo	5,5	Castro	5	Poli	6	-0,5	Cerci	7	+	3
+	Asamoah	6	+	1	Cuadrado	5,5	Pjanic	7	+	1	Barrientos	5
+	Jankovic	6	-0,5	Kak?	5	Valdes	--	De Jong	6
+	Emeghara	6,5	Palacio	6,5	Tevez	7	Muriel	6,5	+	1	-0,5
+	Gabbiadini	5	Bergessio	6	Cassano	7	-0,5	Robinho	5
+	Toni	--	Gilardino	7,5	-0,5	F.Flores	6,5	Vucinic	5
+	A Disp.	A Disp.	A Disp.	A Disp.
+	Polito	Carrizo	Agazzi	Andujar	4,5	-2
+	Balzaretti	Konko	6,5	Gastaldello	5	Albiol
+	Ranocchia	Cavanda	Felipe	Sardo
+	Biabiany	Lazzari	Conti	6	Kristicic
+	Tachsidis	Cambiasso	Cossu	Cigarini
+	Hetemaji	Taider	Quaglia	Matri
+	Denis	6,5	Sau	Icardi	Llorente
+	Gervinho	Nen?	Milito
+	TOT:	67	+2=	69	TOT:	64,5	TOT:	66	+2=	68	TOT:	71,5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2? Giorn.
+	 	2? GIORNATA
+
+
+	2	1	3	3	0	2
+	BARCELLONANDO	3-4-3	S.S. BARBONANDO	3-5-2	LOKOMOTIV NANDO	3-4-3	S.B.K. NANDO	3-4-3	NANDO M'GLABACH	3-4-3	FR. NANDO	3-4-3	Partita 1	TRUE	TRUE	Partita 2	TRUE	TRUE	Partita 3	FALSE	TRUE
+	Curci	6	-2	Reina	7,5	+	3	-1	Handanovic	6,5	Neto	6,5	Buffon	--	Consigli	5,5	-2	TRUE	FALSE	TRUE	TRUE	FALSE	TRUE
+	J. Jesus	7	Gonzalo Ro.	6,5	+	1	Lichsteiner	--	Abate	5	Vrsaljko	6,5	Nagatomo	7	+	1	FALSE	FALSE	TRUE	TRUE	FALSE	FALSE
+	Campagnaro	6,5	Danilo	5,5	-0,5	Benatia	7	Spolli	6,5	Bonucci	7	+	1	Chiellini	--	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE
+	Zuniga	6	Cana	6,5	-0,5	Maggio	--	Gastaldello	5	-0,5	Jonathan	6	D'Ambrosio	7	+	3	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE
+	Bonaventura	6	Candreva	6,5	Joaquin	6,5	Pjanic	6	Bjarnason	5	De Rossi	7	-0,5	Partita 4	TRUE	TRUE	Partita 5	TRUE	TRUE
+	Alvarez	7	+	3	1	Pogba	6,5	Taider	7,5	+	3	-0,5	Naingolan	6,5	Lodi	5	-0,5	Pirlo	5,5	FALSE	TRUE	TRUE	FALSE
+	Hamsik	6	Guarin	6,5	+	1	Cambiasso	6,5	+	3	Conti	7	+	3	-0,5	Hernanes	4	Asamoah	5,5	-0,5	FALSE	FALSE	FALSE	FALSE
+	Parolo	5	Martinho	--	Pereyra	5,5	Cossu	6	El Kaddouri	5,5	Jankovic	--	FALSE	FALSE	FALSE	FALSE
+	Totti	7,5	+	1	Onazi	--	Bergessio	5,5	Tevez	8	+	3	Paloschi	6	Emeghara	5,5	FALSE	FALSE	FALSE	FALSE
+	Klose	4,5	Callejon	6,5	Palacio	7	+	3	Cassano	4,5	Bianchi R.	4,5	Gabbiadini	7	+	6
+	Calai?	6,5	Paulinho	5,5	-0,5	Gilardino	6	-0,5	Icardi	--	Di Natale	6	Denis	5
+	A Disp.	A Disp.	A Disp.	A Disp.	A Disp.	A Disp.
+	Abbiati	Rafael	Carrizo	Agazzi	Storari	6	-1	Polito
+	Palombo	Legrottaglie	Konko	6	Felipe	Glik	Ranocchia	6,5
+	Drame	Cannavaro	Cavanda	5,5	-0,5	Cesar	Heurtaux	Balzaretti
+	Moralez	Mati Fernandez	7	+	3	Costant	Poli	Kovacic?	Biabiany	5,5
+	Brighi	Santana	--	Lazzari	Schelotto	Ederson	Tachsidis
+	Ekdal	Felipe Anderson	--	Gonzalez	Milito	7	+	6	1	Ledesma	Hetemaj
+	Immobile	Siligardi	Sau	Floro Flores	Zaza	Gervinho
+	Floccari	Mertens	Nen?	Giovinco	Livaja	3
+	TOT:	71	+2=	73	TOT:	70	TOT:	77	+2=	79	TOT:	80	TOT:	61	+2=	63	TOT:	74
+
+
+
+	1	2	2	1
+	NANDO COIJTO F.C.	3-4-3	URINANDO	3-4-3	ATHLETIC ISERNANDO	3-4-3	NANDO UTD	3-4-3
+	Marchetti	6,5	-2	Perin	6	Frison	--	Mirante	6
+	Barzagli	7	Maicon	6	-0,5	Antonini	6	Pasqual	6
+	Astori	5,5	Alvarez	6	Mexes	5	Del Grosso	--
+	De Silvestri	6,5	Emerson	--	Albiol	6,5	+	1	Basta	6	-0,5
+	Lulic	6	-0,5	Florenzi	5,5	-0,5	Cerci	6,5	+	3	Strootman	6,5	-0,5
+	Diamanti	6	-0,5	Inler?	--	Vidal	6,5	+	1	Ljaic	7	+	3
+	Aquilani	6,5	Behrami	7,5	Barrientos	5,5	B.Valero	7
+	Badu	6	Almiron	6	Kristicic	5,5	Kone	6	-0,5
+	Rossi	7,5	+	3	Higuain	7,5	+	3	Muriel	5	Balotelli?	6,5	+	3	-4
+	Insigne	6	Pandev	6	Matri	5	Therau	--
+	Pinilla	6	Moscardelli	5,5	Llorente	7	+	3	Sansone Samp	5,5
+	A Disp.	A Disp.	A Disp.	A Disp.
+	Puggioni	De Sanctis	Andujar	6	Bardi
+	Portanova	Stendardo	6	Britos	Cassani	6	-0,5
+	Rossettini	Castan	Sardo	Garics
+	Ambrosini 	Maicosuel	6,5	+	3	De Jong	Allan
+	Halfredsson	Greco	Estigaribia	Obiang
+	Maxi Lopez	Gargano	Vucinic	Centurion
+	Amauri	Ibarbo	Robinho	Sansone Parma	--
+	Juanito Gomez	Iturbe	5,5
+	TOT:	69,5	+2=	71,5	TOT:	73,5	TOT:	72,5	+2=	74,5	TOT:	68
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
