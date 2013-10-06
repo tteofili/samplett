@@ -16,14 +16,18 @@ public class PiggiaFileParser {
     FileChannel fc = new FileInputStream(piggiaFile).getChannel();
     NioLineReader nioLineReader = new NioLineReader(fc);
 
+    MatchStatsCollectionBuilder builder = new MatchStatsCollectionBuilder();
     // parse file stream
     byte[] line = null;
     while ((line = nioLineReader.nextLine()) != null) {
+      String lineString = new String(line);
       // a line can be
       // nothing
       // team names
       // player stats
-
+      if (lineString.contains("giorn") || lineString.contains("Giorn")) {
+        builder.addMatchStats();
+      }
     }
 
 
