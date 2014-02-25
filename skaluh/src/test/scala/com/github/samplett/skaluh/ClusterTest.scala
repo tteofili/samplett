@@ -11,6 +11,6 @@ class ClusterTest {
   @Test
   def testFileRead() {
     def c = new Cluster();
-    c.readClusterDatasetFromFile("src/test/resources/blogdata.txt")
+//    c.readClusterDatasetFromFile("src/test/resources/blogdata.txt")
   }
 }
