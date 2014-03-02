@@ -124,7 +124,7 @@ public class SimpleStringTrie {
             results.add(prefix);
         }
         for (CharTrieNode child : foundSubTree.getChildren()) {
-            String currentPrefix = new StringBuilder(prefix).append(child.getKey()).toString();
+            String currentPrefix = prefix + child.getKey();
             results.addAll(toCollectionOfElements(currentPrefix, child));
         }
         return results;
