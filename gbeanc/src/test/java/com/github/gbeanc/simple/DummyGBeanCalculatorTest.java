@@ -4,8 +4,7 @@ import com.github.gbeanc.GBeanCalculator;
 import org.junit.Test;
 
 /**
- * @author tommaso
- * @version $Id$
+ * Tests for {@link com.github.gbeanc.simple.DummyGBeanCalculator}
  */
 public class DummyGBeanCalculatorTest {
 

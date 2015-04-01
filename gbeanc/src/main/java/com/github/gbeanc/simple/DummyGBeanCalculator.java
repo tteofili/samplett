@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author tommaso
- * @version $Id$
  */
 public class DummyGBeanCalculator implements GBeanCalculator {
 

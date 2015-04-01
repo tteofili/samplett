@@ -3,8 +3,7 @@ package com.github.gbeanc.prime;
 import org.junit.Test;
 
 /**
- * @author tommaso
- * @version $Id$
+ * Tests for {@link com.github.gbeanc.prime.DummyPrimeCalculator}
  */
 public class DummyPrimeCalculatorTest {
 

@@ -1,8 +1,6 @@
 package com.github.gbeanc.prime;
 
 /**
- * @author tommaso
- * @version $Id$
  */
 public class DummyPrimeCalculator implements GBeanPrimeCalculator {
 

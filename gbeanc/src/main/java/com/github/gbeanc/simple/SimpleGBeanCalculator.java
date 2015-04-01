@@ -7,8 +7,6 @@ import com.github.gbeanc.prime.GBeanPrimeCalculator;
 import java.util.ArrayList;
 
 /**
- * @author tommaso
- * @version $Id$
  */
 public class SimpleGBeanCalculator implements GBeanCalculator {
 

@@ -8,14 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * @author tommaso
- * @version $Id$
  */
 public class CachedSimpleGBeanCalculator implements GBeanCalculator {
 
   private GBeanPrimeCalculator primeCalculator = new DummyPrimeCalculator();
-
-  private ArrayList<Integer> primes;
 
   public boolean verify(Integer n) {
     boolean isGBC = false;
@@ -24,10 +20,10 @@ public class CachedSimpleGBeanCalculator implements GBeanCalculator {
 
       /* the list is initialized at n/log(n) size is due to the prime numbers theorem */
       int size = (int) (n / Math.log(n));
-      primes = new ArrayList<Integer>(size);
+      ArrayList<Integer> primes = new ArrayList<Integer>(size);
 
       for (int i = 1; i < n; i++) {
-        if (Collections.binarySearch(primes, n) == -1 && primeCalculator.isPrime(i)) {
+        if (primeCalculator.isPrime(i)) {
           primes.add(i);
         }
       }
