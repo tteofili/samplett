@@ -4,6 +4,7 @@ import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -25,12 +26,11 @@ public class SlowLuceneNaiveBayesClassifierTest {
   public void ppsIntegrationTest() throws Exception {
 
     Directory dir = new RAMDirectory();
-    WhitespaceAnalyzer analyzer = new WhitespaceAnalyzer(Version.LUCENE_47);
-    IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_47, analyzer);
+    WhitespaceAnalyzer analyzer = new WhitespaceAnalyzer();
+    IndexWriterConfig conf = new IndexWriterConfig(analyzer);
     IndexWriter indexWriter = new IndexWriter(dir, conf);
 
-    FieldType type = new FieldType();
-    type.setIndexed(true);
+    FieldType type = new FieldType(TextField.TYPE_STORED);
     type.setStored(true);
     type.setStoreTermVectors(true);
 
