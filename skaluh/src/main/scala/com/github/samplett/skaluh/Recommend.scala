@@ -19,25 +19,25 @@ class Recommend {
     var si = scala.collection.mutable.ArrayBuffer[String]()
 
     // get the list of shared items
-    for (item <- prefs(firstPerson).keys) if (prefs(secondPerson).contains(item)) si += (item)
+    for (item <- prefs(firstPerson).keys) if (prefs(secondPerson).contains(item)) si += item
 
     // if there is no shared item then the similarity is 0
-    if (si.size == 0) return 0
+    if (si.isEmpty) return 0
 
     // otherwise the euclidean distance based similarity is calculated
-    var sumOfSquares = 0d;
+    var sumOfSquares = 0d
     for (item <- si) sumOfSquares += scala.math.pow(prefs(firstPerson)(item) - prefs(secondPerson)(item), 2)
-    return 1d / (1d + scala.math.sqrt(sumOfSquares))
+    1d / (1d + scala.math.sqrt(sumOfSquares))
   }
 
   def sim_pearson(prefs: Map[String, Map[String, Double]], firstPerson: String, secondPerson: String): Double = {
     var si = scala.collection.mutable.ArrayBuffer[String]()
 
     // get the list of shared items
-    for (item <- prefs(firstPerson).keys) if (prefs(secondPerson).contains(item)) si += (item)
+    for (item <- prefs(firstPerson).keys) if (prefs(secondPerson).contains(item)) si += item
 
     // if there is no shared item then the similarity is 0
-    if (si.size == 0) return 0
+    if (si.isEmpty) return 0
 
     // add up all the preferences
     var sumSq1 = 0d
@@ -66,17 +66,17 @@ class Recommend {
 
     if (den == 0) return 0
 
-    return num / den
+    num / den
   }
 
 
   def topMatches(prefs: Map[String, Map[String, Double]], person: String, n: Int, sim: (Map[String, Map[String, Double]],
     String, String) => Double): Set[String] = {
-    var scores = new scala.collection.mutable.HashMap[String, Double];
+    var scores = new scala.collection.mutable.HashMap[String, Double]
     for (other <- prefs if other._1 != person)
-      scores += other._1 -> sim(prefs, person, other._1);
+      scores += other._1 -> sim(prefs, person, other._1)
     val sortedList = scores.toList sortBy (_._2)
-    sortedList.reverse.slice(0, n).toMap[String, Double].keySet;
+    sortedList.reverse.slice(0, n).toMap[String, Double].keySet
   }
 
 }
