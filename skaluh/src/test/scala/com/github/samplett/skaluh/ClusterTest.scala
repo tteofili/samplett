@@ -3,14 +3,15 @@ package com.github.samplett.skaluh
 import org.junit.Test
 
 /**
- * Add javadoc here
+ * Tests for Cluster class
  */
 
 class ClusterTest {
 
   @Test
   def testFileRead() {
-    def c = new Cluster();
-//    c.readClusterDatasetFromFile("src/test/resources/blogdata.txt")
+    def c = new Cluster()
+    val data = c.readClusterDatasetFromFile("src/test/resources/blogdata.txt")
+    println(data)
   }
 }

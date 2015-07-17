@@ -4,7 +4,7 @@ import org.junit._
 import Assert._
 
 /**
- * testcase for Recommend class
+ * Tests for Recommend class
  */
 class RecommendTest {
 
