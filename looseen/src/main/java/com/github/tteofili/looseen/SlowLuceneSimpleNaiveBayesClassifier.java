@@ -129,11 +129,11 @@ public class SlowLuceneSimpleNaiveBayesClassifier implements NaiveBayesClassifie
   }
 
   private int countWordInClassC(String c, String word) throws IOException {
-    BooleanQuery booleanQuery = new BooleanQuery();
-    booleanQuery.add(new BooleanClause(new TermQuery(new Term(textFieldName, word)), BooleanClause.Occur.MUST));
-    booleanQuery.add(new BooleanClause(new TermQuery(new Term(classFieldName, c)), BooleanClause.Occur.MUST));
-    TopDocs topDocs = indexSearcher.search(booleanQuery, 1);
-    return topDocs.totalHits;
+//    BooleanQuery booleanQuery = new BooleanQuery(new BooleanClause(new TermQuery(new Term(textFieldName, word)), BooleanClause.Occur.MUST),
+//            new BooleanClause(new TermQuery(new Term(classFieldName, c)), BooleanClause.Occur.MUST));
+//    TopDocs topDocs = indexSearcher.search(booleanQuery, 1);
+//    return topDocs.totalHits;
+    return 0;
   }
 
   private Double calculatePrior(String currentClass) throws IOException {

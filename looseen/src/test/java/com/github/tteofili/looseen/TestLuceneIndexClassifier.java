@@ -18,17 +18,21 @@ package com.github.tteofili.looseen;
  */
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -37,9 +41,12 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.it.ItalianAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.classification.CachingNaiveBayesClassifier;
 import org.apache.lucene.classification.Classifier;
 import org.apache.lucene.classification.KNearestNeighborClassifier;
+import org.apache.lucene.classification.SimpleNaiveBayesClassifier;
 import org.apache.lucene.classification.utils.ConfusionMatrixGenerator;
+import org.apache.lucene.classification.utils.DatasetSplitter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
@@ -59,22 +66,42 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.LuceneTestCase;
 import org.junit.Test;
 
 
 public final class TestLuceneIndexClassifier extends LuceneTestCase {
 
-    private static final String INDEX = "/Users/teofili/Desktop/itwiki/index";
+    private static final String INDEX = "/path/to/itwiki/index";
     private static final List<String> CATEGORIES = new LinkedList<>();
     private static final Pattern pattern = Pattern.compile("\\[Categoria\\:(.+)\\|\\s");
-    private static final boolean index = true;
+    private static final boolean index = false;
+    private static final boolean split = false;
 
     @Test
     public void testItalianWikipedia() throws Exception {
-        Path path = Paths.get(INDEX);
-        Directory directory = FSDirectory.open(path);
+
+        Path mainIndexPath = Paths.get(INDEX + "/original");
+        Directory directory = FSDirectory.open(mainIndexPath);
+        Path trainPath = Paths.get(INDEX + "/train");
+        Path testPath = Paths.get(INDEX + "/test");
+        Path cvPath = Paths.get(INDEX + "/cv");
+        FSDirectory cv = null;
+        FSDirectory test = null;
+        FSDirectory train = null;
+        if (split) {
+            cv = FSDirectory.open(cvPath);
+            test = FSDirectory.open(testPath);
+            train = FSDirectory.open(trainPath);
+        }
+
+        if (index) {
+            delete(mainIndexPath);
+            if (split) {
+                delete(trainPath, testPath, cvPath);
+            }
+        }
+
         IndexReader reader = null;
         try {
             Collection<String> stopWordsList = Arrays.asList("di", "a", "da", "in", "per", "tra", "fra", "il", "lo", "la", "i", "gli", "le");
@@ -85,10 +112,7 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                 System.out.format("Indexing Italian Wikipedia...%n");
                 IndexWriter indexWriter = new IndexWriter(directory, new IndexWriterConfig(analyzer));
 
-                indexWriter.deleteAll();
-                indexWriter.commit();
-
-                importWikipedia(new File("/path/to/itwiki-20150405-pages-meta-current1.xml"), indexWriter);
+                importWikipedia(new File("/path/to/itwiki/itwiki-20150405-pages-meta-current1.xml"), indexWriter);
 
                 indexWriter.forceMerge(3);
                 indexWriter.close();
@@ -96,9 +120,22 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                 System.gc();
             }
 
+            reader = DirectoryReader.open(directory);
+            LeafReader ar = SlowCompositeReaderWrapper.wrap(reader);
+
+            if (index && split) {
+                // split the index
+                System.out.format("Splitting the index...%n");
+
+                DatasetSplitter datasetSplitter = new DatasetSplitter(0.1, 0);
+                datasetSplitter.split(ar, train, test, cv, analyzer, "title", "text", "cat");
+                reader.close();
+                reader = DirectoryReader.open(train); // using the train index from now on
+                ar = SlowCompositeReaderWrapper.wrap(reader);
+            }
+
             // get the categories
             System.out.format("Reading categories...%n");
-            reader = DirectoryReader.open(directory);
 
             IndexSearcher searcher = new IndexSearcher(reader);
             TopDocs topDocs = searcher.search(new WildcardQuery(new Term("cat", "*")), Integer.MAX_VALUE);
@@ -107,30 +144,38 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                 StorableField cat = doc.getField("cat");
                 if (cat != null && !CATEGORIES.contains(cat.stringValue())) {
                     CATEGORIES.add(cat.stringValue());
-                    System.out.println("'" + cat.stringValue() + "'");
+//                    System.out.println("'" + cat.stringValue() + "'");
                 }
             }
+            System.out.format("Read %d categories...%n",CATEGORIES.size());
 
             final long startTime = System.currentTimeMillis();
 
-            LeafReader ar = SlowCompositeReaderWrapper.wrap(reader);
-
-            Classifier<BytesRef> classifier = new KNearestNeighborClassifier(ar, analyzer, null, 1, 0, 0, "cat", "text");
-//            Classifier<BytesRef> classifier = new SimpleNaiveBayesClassifier(ar, analyzer, null, "cat", "text");
+            KNearestNeighborClassifier classifier = new KNearestNeighborClassifier(ar, analyzer, null, 1, 0, 0, "cat", "text");
 //            Classifier<BytesRef> classifier = new CachingNaiveBayesClassifier(ar, analyzer, null, "cat", "text");
-//            Classifier<BytesRef> classifier = new BooleanPerceptronClassifier(ar, analyzer, null, 1, null, "cat", "text");
-
+//            Classifier<BytesRef> classifier = new SimpleNaiveBayesClassifier(ar, analyzer, null, "cat", "text");
 
             System.out.format("Starting evaluation...%n");
 
-            final int maxdoc = reader.maxDoc();
+            final int maxdoc;
 
-            ConfusionMatrixGenerator.ConfusionMatrix confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(ar, classifier, "cat", "text");
-            System.out.println("confusion matrix");
-            System.out.format("%s", confusionMatrix.toString());
+            ConfusionMatrixGenerator.ConfusionMatrix confusionMatrix;
+
+            if (split) {
+                DirectoryReader testReader = DirectoryReader.open(test);
+                LeafReader testLeafReader = SlowCompositeReaderWrapper.wrap(testReader);
+                confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(testLeafReader, classifier, "cat", "text");
+                maxdoc = testReader.maxDoc();
+                testReader.close();
+            } else {
+                confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(ar, classifier, "cat", "text");
+                maxdoc = reader.maxDoc();
+            }
 
             final long endTime = System.currentTimeMillis();
             final int elapse = (int) (endTime - startTime) / 1000;
+
+            System.out.format("Generated confusion matrix in %ds %n", elapse);
 
             // print results
             int fc = 0, tc = 0;
@@ -158,7 +203,29 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                 reader.close();
             }
             directory.close();
+            if (test != null) {
+                test.close();
+            }
+            if (train != null) {
+                train.close();
+            }
+            if (cv != null) {
+                cv.close();
+            }
         }
+    }
+
+    private void delete(Path... paths) throws IOException {
+        for (Path path : paths) {
+            if (Files.isDirectory(path)) {
+                Stream<Path> pathStream = Files.list(path);
+                Iterator<Path> iterator = pathStream.iterator();
+                while (iterator.hasNext()) {
+                    Files.delete(iterator.next());
+                }
+            }
+        }
+
     }
 
     private static void importWikipedia(File dump, IndexWriter indexWriter) throws Exception {
@@ -182,7 +249,7 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
         }
         XMLStreamReader reader = factory.createXMLStreamReader(source);
         while (reader.hasNext()) {
-            if (count == 30000) {
+            if (count == Integer.MAX_VALUE) {
                 break;
             }
             switch (reader.next()) {
