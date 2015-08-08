@@ -2,7 +2,7 @@
 
 playing with Lucene stuff
 
-## Aug 5th 2015 - Evaluation of Lucene Classifiers using Italian Wikipedia dump
+## Evaluation of Lucene Classifiers using Italian Wikipedia dump
 
 ### NB with default similarity
 #### training set evaluation
