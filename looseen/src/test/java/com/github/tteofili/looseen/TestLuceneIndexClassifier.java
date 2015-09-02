@@ -30,6 +30,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -85,7 +88,12 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
 
     private static final String PREFIX = "/path/to";
     private static final String INDEX = PREFIX + "/itwiki/index";
+    private static final String TITLE = "title";
+    private static final String TEXT = "text";
+    private static final String CAT = "cat";
+
     private static final List<String> CATEGORIES = new LinkedList<>();
+
     private static final Pattern pattern = Pattern.compile("\\[Categoria\\:(.+)\\|\\s");
     private static final boolean index = false;
     private static final boolean split = true;
@@ -145,20 +153,23 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
             }
 
             reader = DirectoryReader.open(directory);
-            LeafReader ar = SlowCompositeReaderWrapper.wrap(reader);
+            LeafReader originalIndex = SlowCompositeReaderWrapper.wrap(reader);
+            LeafReader ar;
 
             if (index && split) {
                 // split the index
                 System.out.format("Splitting the index...%n");
 
                 long startSplit = System.currentTimeMillis();
-                DatasetSplitter datasetSplitter = new DatasetSplitter(0.1, 0);
-                datasetSplitter.split(ar, train, test, cv, analyzer, "title", "text", "cat");
+                DatasetSplitter datasetSplitter = new DatasetSplitter(0.003, 0);
+                datasetSplitter.split(originalIndex, train, test, cv, analyzer, "title", "text", "cat");
                 reader.close();
                 reader = DirectoryReader.open(train); // using the train index from now on
                 ar = SlowCompositeReaderWrapper.wrap(reader);
                 long endSplit = System.currentTimeMillis();
                 System.out.format("Splitting done in %ds %n", (endSplit - startSplit) / 1000);
+            } else {
+                ar = originalIndex;
             }
 
             // get the categories
@@ -188,7 +199,6 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
             classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, "cat", "text"));
 
             int maxdoc;
-            ConfusionMatrixGenerator.ConfusionMatrix confusionMatrix;
             LeafReader testLeafReader;
 
             if (split) {
@@ -201,40 +211,58 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
 
             System.out.format("Starting evaluation on %d docs...%n", maxdoc);
 
+            ExecutorService service = Executors.newCachedThreadPool();
+            List<Future<String>> futures = new LinkedList<>();
             for (Classifier<BytesRef> classifier : classifiers) {
-                if (split) {
-                    confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(testLeafReader, classifier, "cat", "text");
-                } else {
-                    confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(ar, classifier, "cat", "text");
-                }
 
-                final long endTime = System.currentTimeMillis();
-                final int elapse = (int) (endTime - startTime) / 1000;
-
-                System.out.format("Generated confusion matrix in %ds %n", elapse);
-
-                // print results
-                int fc = 0, tc = 0;
-
-                Map<String, Map<String, Long>> linearizedMatrix = confusionMatrix.getLinearizedMatrix();
-
-                System.out.format("Creating report...%n");
-                for (Map.Entry<String, Map<String, Long>> entry : linearizedMatrix.entrySet()) {
-                    String correctAnswer = entry.getKey();
-                    for (Map.Entry<String, Long> classifiedAnswers : entry.getValue().entrySet()) {
-                        if (correctAnswer.equals(classifiedAnswers.getKey())) {
-                            tc += classifiedAnswers.getValue();
-                        } else {
-                            fc += classifiedAnswers.getValue();
-                        }
+                futures.add(service.submit(() -> {
+                    ConfusionMatrixGenerator.ConfusionMatrix confusionMatrix;
+                    if (split) {
+                        confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(testLeafReader, classifier, "cat", "text");
+                    } else {
+                        confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(ar, classifier, "cat", "text");
                     }
 
-                }
-                float accrate = (float) tc / (float) (tc + fc);
-                float errrate = (float) fc / (float) (tc + fc);
-                System.out.println("Classifier " + classifier.toString());
-                System.out.printf("\n\n*** accuracy rate = %f, error rate = %f; time = %d (sec); %d docs\n", accrate, errrate, elapse, maxdoc);
+                    final long endTime = System.currentTimeMillis();
+                    final int elapse = (int) (endTime - startTime) / 1000;
+
+                    System.out.format("Generated confusion matrix:\n %s \n in %ds %n", confusionMatrix.toString(), elapse);
+
+                    // print results
+                    int fc = 0, tc = 0;
+
+                    Map<String, Map<String, Long>> linearizedMatrix = confusionMatrix.getLinearizedMatrix();
+
+                    for (Map.Entry<String, Map<String, Long>> entry : linearizedMatrix.entrySet()) {
+                        String correctAnswer = entry.getKey();
+                        for (Map.Entry<String, Long> classifiedAnswers : entry.getValue().entrySet()) {
+                            Long value = classifiedAnswers.getValue();
+                            if (value != null) {
+                                if (correctAnswer.equals(classifiedAnswers.getKey())) {
+                                    tc += value;
+                                } else {
+                                    fc += value;
+                                }
+                            }
+                        }
+
+                    }
+                    System.err.println("tc:"+tc+",fc:"+fc);
+                    float accrate = (float) tc / (float) (tc + fc);
+                    float errrate = (float) fc / (float) (tc + fc);
+                    return classifier + " -> *** accuracy rate = " + accrate + ", error rate = " + errrate + "; time = " + elapse + " (sec); " + maxdoc + " docs\n";
+                }));
+
             }
+            for (Future<String> f : futures) {
+                while (!f.isDone()) {
+                    Thread.sleep(1000);
+                }
+                System.out.println(f.get());
+            }
+
+            Thread.sleep(10000);
+            service.shutdown();
 
         } finally {
             if (reader != null) {
@@ -308,13 +336,13 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                     if ("page".equals(reader.getLocalName())) {
                         Document page = new Document();
                         if (title != null) {
-                            page.add(new TextField("title", title, StoredField.Store.YES));
+                            page.add(new TextField(TITLE, title, StoredField.Store.YES));
                         }
                         if (text != null) {
-                            page.add(new TextField("text", text, StoredField.Store.YES));
+                            page.add(new TextField(TEXT, text, StoredField.Store.YES));
                         }
                         for (String cat : cats) {
-                            page.add(new StringField("cat", cat, StoredField.Store.YES));
+                            page.add(new StringField(CAT, cat, StoredField.Store.YES));
                         }
                         cats.clear();
                         indexWriter.addDocument(page);
@@ -335,6 +363,5 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                 "Imported %d pages in %d seconds (%.2fms/page)%n",
                 count, millis / 1000, (double) millis / count);
     }
-
 
 }
