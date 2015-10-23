@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -63,11 +64,21 @@ import org.apache.lucene.index.SlowCompositeReaderWrapper;
 import org.apache.lucene.index.StorableField;
 import org.apache.lucene.index.StoredDocument;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
+import org.apache.lucene.search.FieldValueQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.search.similarities.AfterEffectB;
+import org.apache.lucene.search.similarities.AfterEffectL;
 import org.apache.lucene.search.similarities.BM25Similarity;
+import org.apache.lucene.search.similarities.BasicModelG;
+import org.apache.lucene.search.similarities.BasicModelP;
+import org.apache.lucene.search.similarities.ClassicSimilarity;
+import org.apache.lucene.search.similarities.DFRSimilarity;
 import org.apache.lucene.search.similarities.DistributionLL;
 import org.apache.lucene.search.similarities.DistributionSPL;
 import org.apache.lucene.search.similarities.IBSimilarity;
@@ -77,13 +88,14 @@ import org.apache.lucene.search.similarities.LambdaDF;
 import org.apache.lucene.search.similarities.LambdaTTF;
 import org.apache.lucene.search.similarities.Normalization;
 import org.apache.lucene.search.similarities.NormalizationH1;
+import org.apache.lucene.search.similarities.NormalizationH3;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.LuceneTestCase;
 import org.junit.Test;
 
-
+@LuceneTestCase.SuppressSysoutChecks(bugUrl = "none")
 public final class TestLuceneIndexClassifier extends LuceneTestCase {
 
     private static final String PREFIX = "/path/to";
@@ -92,9 +104,7 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
     private static final String TEXT = "text";
     private static final String CAT = "cat";
 
-    private static final List<String> CATEGORIES = new LinkedList<>();
-
-    private static final Pattern pattern = Pattern.compile("\\[Categoria\\:(.+)\\|\\s");
+    private static final Pattern pattern = Pattern.compile("\\[Categoria\\:(\\w+([\\|\\s\\']\\w*)*)\\]");
     private static final boolean index = false;
     private static final boolean split = true;
 
@@ -148,13 +158,14 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
 
                 indexWriter.close();
 
-
                 System.gc();
             }
 
-            reader = DirectoryReader.open(directory);
-            LeafReader originalIndex = SlowCompositeReaderWrapper.wrap(reader);
-            LeafReader ar;
+            if (split && !index) {
+                reader = DirectoryReader.open(train);
+            } else {
+                reader = DirectoryReader.open(directory);
+            }
 
             if (index && split) {
                 // split the index
@@ -162,28 +173,14 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
 
                 long startSplit = System.currentTimeMillis();
                 DatasetSplitter datasetSplitter = new DatasetSplitter(0.003, 0);
+                LeafReader originalIndex = SlowCompositeReaderWrapper.wrap(reader);
                 datasetSplitter.split(originalIndex, train, test, cv, analyzer, "title", "text", "cat");
                 reader.close();
                 reader = DirectoryReader.open(train); // using the train index from now on
-                ar = SlowCompositeReaderWrapper.wrap(reader);
                 long endSplit = System.currentTimeMillis();
                 System.out.format("Splitting done in %ds %n", (endSplit - startSplit) / 1000);
-            } else {
-                ar = originalIndex;
             }
-
-            // get the categories
-
-            IndexSearcher searcher = new IndexSearcher(reader);
-            TopDocs topDocs = searcher.search(new WildcardQuery(new Term("cat", "*")), Integer.MAX_VALUE);
-            for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-                StoredDocument doc = searcher.doc(scoreDoc.doc);
-                StorableField cat = doc.getField("cat");
-                if (cat != null && !CATEGORIES.contains(cat.stringValue())) {
-                    CATEGORIES.add(cat.stringValue());
-                }
-            }
-            System.out.format("Read %d categories...%n", CATEGORIES.size());
+            final LeafReader ar = SlowCompositeReaderWrapper.wrap(reader);
 
             final long startTime = System.currentTimeMillis();
 
@@ -192,7 +189,10 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
             classifiers.add(new KNearestNeighborClassifier(ar, null, analyzer, null, 3, 1, 1, "cat", "text"));
             classifiers.add(new KNearestNeighborClassifier(ar, new LMDirichletSimilarity(), analyzer, null, 3, 1, 1, "cat", "text"));
             classifiers.add(new KNearestNeighborClassifier(ar, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 3, 1, 1, "cat", "text"));
-            classifiers.add(new KNearestNeighborClassifier(ar, new BM25Similarity(), analyzer, null, 3, 1, 1, "cat", "text"));
+            classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 1, 0, 0, "cat", "text"));
+            classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, 1, 1, "cat", "text"));
+            classifiers.add(new KNearestNeighborClassifier(ar, new DFRSimilarity(new BasicModelG(), new AfterEffectB(), new NormalizationH1()), analyzer, null, 3, 1, 1, "cat", "text"));
+            classifiers.add(new KNearestNeighborClassifier(ar, new DFRSimilarity(new BasicModelP(), new AfterEffectL(), new NormalizationH3()), analyzer, null, 3, 1, 1, "cat", "text"));
             classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionSPL(), new LambdaDF(), new Normalization.NoNormalization()), analyzer, null, 3, 1, 1, "cat", "text"));
             classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, "cat", "text"));
             classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, "cat", "text"));
@@ -206,6 +206,7 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                 testLeafReader = SlowCompositeReaderWrapper.wrap(testReader);
                 maxdoc = testReader.maxDoc();
             } else {
+                testLeafReader = null;
                 maxdoc = reader.maxDoc();
             }
 
@@ -228,29 +229,7 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
 
                     System.out.format("Generated confusion matrix:\n %s \n in %ds %n", confusionMatrix.toString(), elapse);
 
-                    // print results
-                    int fc = 0, tc = 0;
-
-                    Map<String, Map<String, Long>> linearizedMatrix = confusionMatrix.getLinearizedMatrix();
-
-                    for (Map.Entry<String, Map<String, Long>> entry : linearizedMatrix.entrySet()) {
-                        String correctAnswer = entry.getKey();
-                        for (Map.Entry<String, Long> classifiedAnswers : entry.getValue().entrySet()) {
-                            Long value = classifiedAnswers.getValue();
-                            if (value != null) {
-                                if (correctAnswer.equals(classifiedAnswers.getKey())) {
-                                    tc += value;
-                                } else {
-                                    fc += value;
-                                }
-                            }
-                        }
-
-                    }
-                    System.err.println("tc:"+tc+",fc:"+fc);
-                    float accrate = (float) tc / (float) (tc + fc);
-                    float errrate = (float) fc / (float) (tc + fc);
-                    return classifier + " -> *** accuracy rate = " + accrate + ", error rate = " + errrate + "; time = " + elapse + " (sec); " + maxdoc + " docs\n";
+                    return classifier + " -> *** accuracy rate = " + confusionMatrix.getAccuracy() + "; time = " + elapse + " (sec)\n ";
                 }));
 
             }
@@ -327,7 +306,9 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                         Matcher matcher = pattern.matcher(text);
                         int pos = 0;
                         while (matcher.find(pos)) {
-                            cats.add(matcher.group(1));
+                            String group = matcher.group(1);
+                            String catName = group.replaceAll("\\|\\s", "").replaceAll("\\|\\*","");
+                            Collections.addAll(cats, catName.split("\\|"));
                             pos = matcher.end();
                         }
                     }
@@ -344,8 +325,8 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                         for (String cat : cats) {
                             page.add(new StringField(CAT, cat, StoredField.Store.YES));
                         }
-                        cats.clear();
                         indexWriter.addDocument(page);
+                        cats.clear();
                         count++;
                         if (count % 100000 == 0) {
                             indexWriter.commit();
