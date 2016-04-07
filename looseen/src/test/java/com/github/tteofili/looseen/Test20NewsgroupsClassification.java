@@ -31,7 +31,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
-import com.carrotsearch.randomizedtesting.annotations.TimeoutSuite;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -71,7 +70,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.LuceneTestCase;
-import org.apache.lucene.util.TimeUnits;
 import org.junit.Test;
 
 @LuceneTestCase.SuppressSysoutChecks(bugUrl = "none")
@@ -273,20 +271,22 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             throws IOException {
         File[] groupsDir = indexDir.listFiles();
         for (File group : groupsDir) {
-            String groupName = group.getName();
-            File[] posts = group.listFiles();
-            if (posts != null) {
-                for (File postFile : posts) {
-                    String number = postFile.getName();
-                    NewsPost post = parse(postFile, groupName, number);
-                    Document d = new Document();
-                    d.add(new TextField(CATEGORY_FIELD,
-                            post.getGroup(), Field.Store.YES));
-                    d.add(new TextField(SUBJECT_FIELD,
-                            post.getSubject(), Field.Store.YES));
-                    d.add(new TextField(BODY_FIELD,
-                            post.getBody(), Field.Store.YES));
-                    indexWriter.addDocument(d);
+            if (groupsDir != null) {
+                String groupName = group.getName();
+                File[] posts = group.listFiles();
+                if (posts != null) {
+                    for (File postFile : posts) {
+                        String number = postFile.getName();
+                        NewsPost post = parse(postFile, groupName, number);
+                        Document d = new Document();
+                        d.add(new TextField(CATEGORY_FIELD,
+                                post.getGroup(), Field.Store.YES));
+                        d.add(new TextField(SUBJECT_FIELD,
+                                post.getSubject(), Field.Store.YES));
+                        d.add(new TextField(BODY_FIELD,
+                                post.getBody(), Field.Store.YES));
+                        indexWriter.addDocument(d);
+                    }
                 }
             }
         }
