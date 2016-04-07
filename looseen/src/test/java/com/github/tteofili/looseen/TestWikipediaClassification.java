@@ -41,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import com.carrotsearch.randomizedtesting.annotations.TimeoutSuite;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.it.ItalianAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
@@ -87,24 +88,44 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.LuceneTestCase;
+import org.apache.lucene.util.TimeUnits;
 import org.junit.Test;
 
 @LuceneTestCase.SuppressSysoutChecks(bugUrl = "none")
-public final class TestLuceneIndexClassifier extends LuceneTestCase {
+@TimeoutSuite(millis = 365 * 24 * TimeUnits.HOUR) // hopefully ~1 year is long enough ;)
+@LuceneTestCase.Monster("takes a lot!")
+public final class TestWikipediaClassification extends LuceneTestCase {
 
     private static final String PREFIX = "/Users/teofili/data";
     private static final String INDEX = PREFIX + "/itwiki/index";
     private static final String TITLE_FIELD = "title";
-
     private static final Pattern pattern = Pattern.compile("\\[Categoria\\:(\\w+([\\|\\s\\']\\w*)*)\\]");
-    private static final boolean index = false;
-    private static final boolean split = true;
-
     private static final String CATEGORY_FIELD = "cat";
     private static final String TEXT_FIELD = "text";
 
+    private static boolean index = false;
+    private static boolean split = true;
+
     @Test
     public void testItalianWikipedia() throws Exception {
+
+        String indexProperty = System.getProperty("index");
+        if (indexProperty != null) {
+            try {
+                index = Boolean.valueOf(indexProperty);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+
+        String splitProperty = System.getProperty("split");
+        if (splitProperty != null) {
+            try {
+                split = Boolean.valueOf(splitProperty);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
 
         Path mainIndexPath = Paths.get(INDEX + "/original");
         Directory directory = FSDirectory.open(mainIndexPath);
@@ -145,15 +166,11 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                 importWikipedia(new File(PREFIX + "/itwiki/itwiki-20150405-pages-meta-current3.xml"), indexWriter);
                 importWikipedia(new File(PREFIX + "/itwiki/itwiki-20150405-pages-meta-current4.xml"), indexWriter);
 
-
                 long endIndex = System.currentTimeMillis();
                 System.out.format("Indexed %d pages in %ds %n", indexWriter.maxDoc(), (endIndex - startIndex) / 1000);
 
-                indexWriter.forceMerge(3);
-
                 indexWriter.close();
 
-                System.gc();
             }
 
             if (split && !index) {
@@ -167,9 +184,9 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                 System.out.format("Splitting the index...%n");
 
                 long startSplit = System.currentTimeMillis();
-                DatasetSplitter datasetSplitter = new DatasetSplitter(0.003, 0);
+                DatasetSplitter datasetSplitter = new DatasetSplitter(0.1, 0);
                 LeafReader originalIndex = SlowCompositeReaderWrapper.wrap(reader);
-                datasetSplitter.split(originalIndex, train, test, cv, analyzer, "title", TEXT_FIELD, CATEGORY_FIELD);
+                datasetSplitter.split(originalIndex, train, test, cv, analyzer, false, "title", TEXT_FIELD, CATEGORY_FIELD);
                 reader.close();
                 reader = DirectoryReader.open(train); // using the train index from now on
                 long endSplit = System.currentTimeMillis();
@@ -180,17 +197,17 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
             final long startTime = System.currentTimeMillis();
 
             List<Classifier<BytesRef>> classifiers = new LinkedList<>();
-            classifiers.add(new KNearestNeighborClassifier(ar, null, analyzer, null, 1, 0, 0, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(ar, null, analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(ar, new LMDirichletSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(ar, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(ar, new DFRSimilarity(new BasicModelG(), new AfterEffectB(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(ar, new DFRSimilarity(new BasicModelP(), new AfterEffectL(), new NormalizationH3()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionSPL(), new LambdaDF(), new Normalization.NoNormalization()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, null, analyzer, null, 1, 0, 0, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, new LMDirichletSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, 0, 0, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, new DFRSimilarity(new BasicModelG(), new AfterEffectB(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, new DFRSimilarity(new BasicModelP(), new AfterEffectL(), new NormalizationH3()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionSPL(), new LambdaDF(), new Normalization.NoNormalization()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
+//            classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
 
             int maxdoc;
@@ -222,20 +239,20 @@ public final class TestLuceneIndexClassifier extends LuceneTestCase {
                     final long endTime = System.currentTimeMillis();
                     final int elapse = (int) (endTime - startTime) / 1000;
 
+                    System.out.println(confusionMatrix.getLinearizedMatrix().size()+" classes");
+
                     System.out.format("Generated confusion matrix:\n %s \n in %ds %n", confusionMatrix.toString(), elapse);
 
                     return classifier + " -> *** accuracy = " + confusionMatrix.getAccuracy() +
                             "; precision = " + confusionMatrix.getPrecision() +
                             "; recall = " + confusionMatrix.getRecall() +
+                            "; f1-measure = " + confusionMatrix.getF1Measure() +
                             "; avgClassificationTime = " + confusionMatrix.getAvgClassificationTime() +
                             "; time = " + elapse + " (sec)\n ";
                 }));
 
             }
             for (Future<String> f : futures) {
-                while (!f.isDone()) {
-                    Thread.sleep(1000);
-                }
                 System.out.println(f.get());
             }
 
