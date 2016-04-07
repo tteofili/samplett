@@ -160,7 +160,7 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
                 long startSplit = System.currentTimeMillis();
                 DatasetSplitter datasetSplitter = new DatasetSplitter(0.1, 0);
                 LeafReader originalIndex = SlowCompositeReaderWrapper.wrap(reader);
-                datasetSplitter.split(originalIndex, train, test, cv, analyzer, false, "title", BODY_FIELD, SUBJECT_FIELD, CATEGORY_FIELD);
+                datasetSplitter.split(originalIndex, train, test, cv, analyzer, false, CATEGORY_FIELD, BODY_FIELD, SUBJECT_FIELD, CATEGORY_FIELD);
                 reader.close();
                 reader = DirectoryReader.open(train); // using the train index from now on
                 long endSplit = System.currentTimeMillis();
