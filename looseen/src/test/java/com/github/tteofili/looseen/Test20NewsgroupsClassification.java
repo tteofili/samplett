@@ -270,8 +270,8 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
     void buildIndex(File indexDir, IndexWriter indexWriter)
             throws IOException {
         File[] groupsDir = indexDir.listFiles();
-        for (File group : groupsDir) {
-            if (groupsDir != null) {
+        if (groupsDir != null) {
+            for (File group : groupsDir) {
                 String groupName = group.getName();
                 File[] posts = group.listFiles();
                 if (posts != null) {
