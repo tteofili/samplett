@@ -183,6 +183,9 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new BM25NBClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
 
             int maxdoc;
             LeafReader testLeafReader;
@@ -205,9 +208,9 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
                 futures.add(service.submit(() -> {
                     ConfusionMatrixGenerator.ConfusionMatrix confusionMatrix;
                     if (split) {
-                        confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(testLeafReader, classifier, CATEGORY_FIELD, BODY_FIELD);
+                        confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(testLeafReader, classifier, CATEGORY_FIELD, BODY_FIELD, 60000 * 30);
                     } else {
-                        confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(ar, classifier, CATEGORY_FIELD, BODY_FIELD);
+                        confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(ar, classifier, CATEGORY_FIELD, BODY_FIELD, 60000 * 30);
                     }
 
                     final long endTime = System.currentTimeMillis();
