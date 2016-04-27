@@ -4,7 +4,7 @@ playing with Lucene stuff
 
 ## Evaluation of Lucene Classifiers on 20 Newsgroups dataset
 
-* KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=1, query=null, similarity=ClassicSimilarity} 
+ * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=1, query=null, similarity=ClassicSimilarity} 
     * accuracy = 0.36961232843727426
     * precision = 0.4086339444115908
     * recall = 0.691
@@ -116,7 +116,7 @@ playing with Lucene stuff
     * avgClassificationTime = 161.4390366281987
     * time = 322 (sec)
 
-* BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75)} 
+ * BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75)} 
     * accuracy = 0.43649844534800286
     * precision = 0.44586167800453513
     * recall = 0.7968591691995948
