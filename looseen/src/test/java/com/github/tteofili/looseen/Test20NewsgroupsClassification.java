@@ -172,6 +172,7 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
 
             List<Classifier<BytesRef>> classifiers = new LinkedList<>();
             classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new KNearestNeighborClassifier(ar, new BM25Similarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, 0, 0, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, 2, 4, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(ar, new LMDirichletSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
@@ -181,11 +182,13 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new KNearestNeighborClassifier(ar, new DFRSimilarity(new BasicModelP(), new AfterEffectL(), new NormalizationH3()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionSPL(), new LambdaDF(), new Normalization.NoNormalization()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(ar, new ClassicSimilarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new BM25NBClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new BM25NBClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new FuzzyLikeThisClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
 
             int maxdoc;
             LeafReader testLeafReader;
@@ -216,16 +219,12 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
                     final long endTime = System.currentTimeMillis();
                     final int elapse = (int) (endTime - startTime) / 1000;
 
-                    System.out.println(confusionMatrix.getLinearizedMatrix().size() + " classes");
-
-                    System.out.format("Generated confusion matrix:\n %s \n in %ds %n", confusionMatrix.toString(), elapse);
-
-                    return classifier + " -> *** accuracy = " + confusionMatrix.getAccuracy() +
-                            "; precision = " + confusionMatrix.getPrecision() +
-                            "; recall = " + confusionMatrix.getRecall() +
-                            "; f1-measure = " + confusionMatrix.getF1Measure() +
-                            "; avgClassificationTime = " + confusionMatrix.getAvgClassificationTime() +
-                            "; time = " + elapse + " (sec)\n ";
+                    return " * " + classifier + " \n    * accuracy = " + confusionMatrix.getAccuracy() +
+                            "\n    * precision = " + confusionMatrix.getPrecision() +
+                            "\n    * recall = " + confusionMatrix.getRecall() +
+                            "\n    * f1-measure = " + confusionMatrix.getF1Measure() +
+                            "\n    * avgClassificationTime = " + confusionMatrix.getAvgClassificationTime() +
+                            "\n    * time = " + elapse + " (sec)\n ";
                 }));
 
             }
