@@ -116,13 +116,29 @@ playing with Lucene stuff
     * avgClassificationTime = 161.4390366281987
     * time = 322 (sec)
 
- * BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75)} 
-    * accuracy = 0.43649844534800286
-    * precision = 0.44586167800453513
-    * recall = 0.7968591691995948
-    * f1-measure = 0.5717920756088696
-    * avgClassificationTime = 456.5790273556231
-    * time = 902 (sec)
+ * BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75), ngramSize=1} 
+    * accuracy = 0.43539865513928916
+    * precision = 0.44495151169423847
+    * recall = 0.7938931297709924
+    * f1-measure = 0.5702796563699507
+    * avgClassificationTime = 490.37404580152673
+    * time = 964 (sec)
+ 
+ * BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75), ngramSize=2} 
+    * accuracy = 0.44304104930774835
+    * precision = 0.45111047014710126
+    * recall = 0.8004094165813715
+    * f1-measure = 0.5770153108282604
+    * avgClassificationTime = 635.6499488229273
+    * time = 1244 (sec)
+ 
+ * BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75), ngramSize=3} 
+    * accuracy = 0.4463054187192118
+    * precision = 0.45406670567583385
+    * recall = 0.8024819027921406
+    * f1-measure = 0.5799701046337817
+    * avgClassificationTime = 747.2905894519131
+    * time = 1447 (sec)
  
  * CachingNaiveBayesClassifier 
     * accuracy = 0.3978260869565217

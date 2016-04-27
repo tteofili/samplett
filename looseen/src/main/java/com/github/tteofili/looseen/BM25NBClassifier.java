@@ -39,8 +39,6 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.TotalHitCountCollector;
-import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.util.BytesRef;
 
@@ -82,6 +80,8 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
      */
     protected final Query query;
 
+    private final int ngramSize;
+
     /**
      * Creates a new NaiveBayes classifier.
      *
@@ -93,7 +93,7 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
      *                       as the returned class will be a token indexed for this field
      * @param textFieldNames the name of the fields used as the inputs for the classifier, NO boosting supported per field
      */
-    public BM25NBClassifier(LeafReader leafReader, Analyzer analyzer, Query query, String classFieldName, String... textFieldNames) {
+    public BM25NBClassifier(LeafReader leafReader, Analyzer analyzer, Query query, int ngramSize, String classFieldName, String... textFieldNames) {
         this.leafReader = leafReader;
         this.indexSearcher = new IndexSearcher(this.leafReader);
         this.indexSearcher.setSimilarity(new BM25Similarity());
@@ -101,6 +101,7 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
         this.classFieldName = classFieldName;
         this.analyzer = analyzer;
         this.query = query;
+        this.ngramSize = ngramSize;
     }
 
     /**
@@ -143,12 +144,12 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
         Terms classes = MultiFields.getTerms(leafReader, classFieldName);
         TermsEnum classesEnum = classes.iterator();
         BytesRef next;
-        String[] tokenizedText = tokenize(inputDocument);
+        Collection<String[]> ngrams = tokenize(inputDocument, ngramSize);
         while ((next = classesEnum.next()) != null) {
             if (next.length > 0) {
                 Term term = new Term(this.classFieldName, next);
                 double prior = calculateLogPrior(term);
-                double likelihood = calculateLogLikelihood(tokenizedText, term);
+                double likelihood = calculateLogLikelihood(ngrams, term);
                 double clVal = prior + likelihood;
                 assignedClasses.add(new ClassificationResult<>(term.bytes(), clVal));
             }
@@ -166,7 +167,7 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
      * @return a <code>String</code> array of the resulting tokens
      * @throws IOException if tokenization fails
      */
-    protected String[] tokenize(String text) throws IOException {
+    protected Collection<String[]> tokenize(String text, int ngramSize) throws IOException {
         Collection<String> result = new LinkedList<>();
         for (String textFieldName : textFieldNames) {
             try (TokenStream tokenStream = analyzer.tokenStream(textFieldName, text)) {
@@ -178,23 +179,41 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
                 tokenStream.end();
             }
         }
-        return result.toArray(new String[result.size()]);
+        return getNgrams(result.toArray(new String[result.size()]), ngramSize);
     }
 
-    private double calculateLogLikelihood(String[] tokenizedText, Term term) throws IOException {
-        // for each word
+    private double calculateLogLikelihood(Collection<String[]> ngrams, Term term) throws IOException {
         double result = 0d;
-        for (String word : tokenizedText) {
-            result += Math.log(getTermProbForClass(word, term));
+        for (String[] words : ngrams) {
+            result += Math.log(getTermProbForClass(term, words));
         }
         return result;
     }
 
-    private double getTermProbForClass(String word, Term term) throws IOException {
+    private Collection<String[]> getNgrams(String[] sequence, int size) {
+        Collection<String[]> ngrams = new LinkedList<>();
+        if (size == -1 || size >= sequence.length) {
+            ngrams.add(sequence);
+        } else {
+            for (int i = 0; i < sequence.length - size + 1; i++) {
+                String[] ngram = new String[size];
+                ngram[0] = sequence[i];
+                for (int j = 1; j < size; j++) {
+                    ngram[j] = sequence[i + j];
+                }
+                ngrams.add(ngram);
+            }
+        }
+        return ngrams;
+    }
+
+    private double getTermProbForClass(Term term, String... words) throws IOException {
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         builder.add(new BooleanClause(new TermQuery(term), BooleanClause.Occur.MUST));
         for (String textFieldName : textFieldNames) {
-            builder.add(new BooleanClause(new TermQuery(new Term(textFieldName, word)), BooleanClause.Occur.SHOULD));
+            for (String word : words) {
+                builder.add(new BooleanClause(new TermQuery(new Term(textFieldName, word)), BooleanClause.Occur.SHOULD));
+            }
         }
         TopDocs search = indexSearcher.search(builder.build(), 1);
         return search.totalHits > 0 ? search.getMaxScore() : 1;
@@ -209,6 +228,7 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
     public String toString() {
         return "BM25NBClassifier{" +
                 "similarity=" + indexSearcher.getSimilarity(true) +
+                ", ngramSize=" + ngramSize +
                 '}';
     }
 }

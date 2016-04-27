@@ -206,7 +206,9 @@ public final class TestWikipediaClassification extends LuceneTestCase {
             classifiers.add(new FuzzyLikeThisClassifier(ar, new ClassicSimilarity(), analyzer, null, 1, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new BM25NBClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
+            classifiers.add(new BM25NBClassifier(ar, analyzer, null, 1, CATEGORY_FIELD, TEXT_FIELD));
+            classifiers.add(new BM25NBClassifier(ar, analyzer, null, 2, CATEGORY_FIELD, TEXT_FIELD));
+            classifiers.add(new BM25NBClassifier(ar, analyzer, null, 3, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
 
