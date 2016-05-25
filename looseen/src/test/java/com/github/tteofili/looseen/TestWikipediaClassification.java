@@ -52,6 +52,7 @@ import org.apache.lucene.classification.SimpleNaiveBayesClassifier;
 import org.apache.lucene.classification.utils.ConfusionMatrixGenerator;
 import org.apache.lucene.classification.utils.DatasetSplitter;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
@@ -338,6 +339,7 @@ public final class TestWikipediaClassification extends LuceneTestCase {
                         }
                         for (String cat : cats) {
                             page.add(new StringField(CATEGORY_FIELD, cat, StoredField.Store.YES));
+                            page.add(new SortedDocValuesField(CATEGORY_FIELD, new BytesRef(cat)));
                         }
                         indexWriter.addDocument(page);
                         cats.clear();

@@ -78,7 +78,7 @@ public class FuzzyLikeThisClassifier implements Classifier<BytesRef> {
     private final Analyzer analyzer;
 
     /**
-     * Creates a {@link org.apache.lucene.classification.KNearestNeighborClassifier}.
+     * Creates a {@link FuzzyLikeThisClassifier}.
      *
      * @param leafReader     the reader on the index to be used for classification
      * @param analyzer       an {@link Analyzer} used to analyze unseen text

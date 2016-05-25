@@ -42,6 +42,8 @@ import org.apache.lucene.classification.utils.ConfusionMatrixGenerator;
 import org.apache.lucene.classification.utils.DatasetSplitter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.SortedDocValuesField;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -283,8 +285,10 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
                         String number = postFile.getName();
                         NewsPost post = parse(postFile, groupName, number);
                         Document d = new Document();
-                        d.add(new TextField(CATEGORY_FIELD,
+                        d.add(new StringField(CATEGORY_FIELD,
                                 post.getGroup(), Field.Store.YES));
+                        d.add(new SortedDocValuesField(CATEGORY_FIELD,
+                                new BytesRef(post.getGroup())));
                         d.add(new TextField(SUBJECT_FIELD,
                                 post.getSubject(), Field.Store.YES));
                         d.add(new TextField(BODY_FIELD,
