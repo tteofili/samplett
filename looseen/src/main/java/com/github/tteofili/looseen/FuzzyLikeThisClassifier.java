@@ -44,8 +44,7 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.util.BytesRef;
 
 /**
- * A k-Nearest Neighbor classifier (see <code>http://en.wikipedia.org/wiki/K-nearest_neighbors</code>) based
- * on {@link FuzzyLikeThisQuery}
+ * A k-Nearest Neighbor classifier based on {@link FuzzyLikeThisQuery}.
  *
  * @lucene.experimental
  */

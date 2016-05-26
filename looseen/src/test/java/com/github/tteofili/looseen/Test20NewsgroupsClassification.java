@@ -188,11 +188,11 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new FuzzyLikeThisClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 2, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
 
             int maxdoc;
             LeafReader testLeafReader;

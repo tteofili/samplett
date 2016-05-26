@@ -43,7 +43,7 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.util.BytesRef;
 
 /**
- * A NaiveBayes classifier based on BM25 model.
+ * A classifier approximating naive bayes by using pure queries based on probabilistic Okapi BM25 model.
  *
  * @lucene.experimental
  */
