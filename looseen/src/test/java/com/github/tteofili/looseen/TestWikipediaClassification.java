@@ -61,7 +61,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.LeafReader;
-import org.apache.lucene.index.SlowCompositeReaderWrapper;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.similarities.AfterEffectB;
 import org.apache.lucene.search.similarities.AfterEffectL;
 import org.apache.lucene.search.similarities.BM25Similarity;
@@ -180,14 +180,18 @@ public final class TestWikipediaClassification extends LuceneTestCase {
 
                 long startSplit = System.currentTimeMillis();
                 DatasetSplitter datasetSplitter = new DatasetSplitter(0.1, 0);
-                LeafReader originalIndex = SlowCompositeReaderWrapper.wrap(reader);
-                datasetSplitter.split(originalIndex, train, test, cv, analyzer, false, "title", TEXT_FIELD, CATEGORY_FIELD);
+                for (LeafReaderContext context : reader.leaves()) {
+                    datasetSplitter.split(context.reader(), train, test, cv, analyzer, false, CATEGORY_FIELD, TEXT_FIELD, CATEGORY_FIELD);
+                }
                 reader.close();
                 reader = DirectoryReader.open(train); // using the train index from now on
                 long endSplit = System.currentTimeMillis();
                 System.out.format("Splitting done in %ds %n", (endSplit - startSplit) / 1000);
             }
-            final LeafReader ar = SlowCompositeReaderWrapper.wrap(reader);
+            if (reader.leaves().size() > 0) {
+                throw new RuntimeException("not atomic");
+            }
+            final LeafReader ar = reader.leaves().get(0).reader();
 
             final long startTime = System.currentTimeMillis();
 
@@ -218,7 +222,7 @@ public final class TestWikipediaClassification extends LuceneTestCase {
 
             if (split) {
                 testReader = DirectoryReader.open(test);
-                testLeafReader = SlowCompositeReaderWrapper.wrap(testReader);
+                testLeafReader = testReader.leaves().get(0).reader();
                 maxdoc = testReader.maxDoc();
             } else {
                 testLeafReader = null;
