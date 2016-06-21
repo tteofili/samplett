@@ -32,6 +32,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.classification.ClassificationResult;
 import org.apache.lucene.classification.Classifier;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Term;
@@ -58,7 +59,7 @@ public class LoggingBM25NBClassifier implements Classifier<BytesRef> {
      * {@link LeafReader} used to access the {@link Classifier}'s
      * index
      */
-    protected final LeafReader leafReader;
+    protected final IndexReader indexReader;
 
     /**
      * names of the fields to be used as input text
@@ -96,7 +97,7 @@ public class LoggingBM25NBClassifier implements Classifier<BytesRef> {
     /**
      * Creates a new NaiveBayes classifier.
      *
-     * @param leafReader     the reader on the index to be used for classification
+     * @param indexReader     the reader on the index to be used for classification
      * @param analyzer       an {@link Analyzer} used to analyze unseen text
      * @param query          a {@link Query} to eventually filter the docs used for training the classifier, or {@code null}
      *                       if all the indexed docs should be used
@@ -104,10 +105,10 @@ public class LoggingBM25NBClassifier implements Classifier<BytesRef> {
      *                       as the returned class will be a token indexed for this field
      * @param textFieldNames the name of the fields used as the inputs for the classifier, NO boosting supported per field
      */
-    public LoggingBM25NBClassifier(LeafReader leafReader, Analyzer analyzer, Query query, int ngramSize, String classFieldName, String... textFieldNames) {
+    public LoggingBM25NBClassifier(IndexReader indexReader, Analyzer analyzer, Query query, int ngramSize, String classFieldName, String... textFieldNames) {
         BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
-        this.leafReader = leafReader;
-        this.indexSearcher = new IndexSearcher(this.leafReader);
+        this.indexReader = indexReader;
+        this.indexSearcher = new IndexSearcher(this.indexReader);
         this.indexSearcher.setSimilarity(new BM25Similarity());
         this.textFieldNames = textFieldNames;
         this.classFieldName = classFieldName;
@@ -154,7 +155,7 @@ public class LoggingBM25NBClassifier implements Classifier<BytesRef> {
         List<ClassificationResult<BytesRef>> assignedClasses = new ArrayList<>();
 
         Map<String, Set<Query>> likelihoodQueryPerClass = new HashMap<>();
-        Terms classes = MultiFields.getTerms(leafReader, classFieldName);
+        Terms classes = MultiFields.getTerms(indexReader, classFieldName);
         TermsEnum classesEnum = classes.iterator();
         BytesRef next;
         Collection<String[]> ngrams = tokenize(inputDocument, ngramSize);

@@ -17,7 +17,6 @@
 package com.github.tteofili.looseen;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +27,7 @@ import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.classification.ClassificationResult;
 import org.apache.lucene.classification.Classifier;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.Term;
@@ -79,7 +79,7 @@ public class FuzzyLikeThisClassifier implements Classifier<BytesRef> {
     /**
      * Creates a {@link FuzzyLikeThisClassifier}.
      *
-     * @param leafReader     the reader on the index to be used for classification
+     * @param indexReader     the reader on the index to be used for classification
      * @param analyzer       an {@link Analyzer} used to analyze unseen text
      * @param similarity     the {@link Similarity} to be used by the underlying {@link IndexSearcher} or {@code null}
      *                       (defaults to {@link ClassicSimilarity})
@@ -89,12 +89,12 @@ public class FuzzyLikeThisClassifier implements Classifier<BytesRef> {
      * @param classFieldName the name of the field used as the output for the classifier
      * @param textFieldNames the name of the fields used as the inputs for the classifier, they can contain boosting indication e.g. title^10
      */
-    public FuzzyLikeThisClassifier(LeafReader leafReader, Similarity similarity, Analyzer analyzer, Query query, int k,
+    public FuzzyLikeThisClassifier(IndexReader indexReader, Similarity similarity, Analyzer analyzer, Query query, int k,
                                    String classFieldName, String... textFieldNames) {
         this.textFieldNames = textFieldNames;
         this.classFieldName = classFieldName;
         this.analyzer = analyzer;
-        this.indexSearcher = new IndexSearcher(leafReader);
+        this.indexSearcher = new IndexSearcher(indexReader);
         if (similarity != null) {
             this.indexSearcher.setSimilarity(similarity);
         } else {
