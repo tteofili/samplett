@@ -23,9 +23,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -50,6 +53,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.similarities.AfterEffectB;
 import org.apache.lucene.search.similarities.AfterEffectL;
 import org.apache.lucene.search.similarities.BM25Similarity;
@@ -168,10 +175,28 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
                 long endSplit = System.currentTimeMillis();
                 System.out.format("Splitting done in %ds %n", (endSplit - startSplit) / 1000);
             }
-            if (reader.leaves().size() > 0) {
-                throw new RuntimeException("not atomic");
+            LeafReader ar = null;
+//            if (reader.leaves().size() > 0) {
+//                for (LeafReaderContext context : reader.leaves()) {
+//                    if (context.isTopLevel) {
+//                        ar = context.reader();
+//                        break;
+//                    }
+//                }
+//                if (ar == null) {
+//                    List<LeafReader> subReaders = new LinkedList<>();
+//                    for (LeafReaderContext context : reader.leaves()) {
+//                        subReaders.add(context.reader());
+//                    }
+//                    ar = new ParallelLeafReader(subReaders.toArray(new LeafReader[subReaders.size()]));
+//                }
+//            } else {
+            ar = reader.leaves().get(0).reader();
+//            }
+
+            if (ar == null) {
+                throw new RuntimeException();
             }
-            final LeafReader ar = reader.leaves().get(0).reader();
 
             final long startTime = System.currentTimeMillis();
 
@@ -196,6 +221,7 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 2, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new LoggingBM25NBClassifier(ar, analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
 
             int maxdoc;
             LeafReader testLeafReader;
@@ -214,26 +240,7 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             ExecutorService service = Executors.newCachedThreadPool();
             List<Future<String>> futures = new LinkedList<>();
             for (Classifier<BytesRef> classifier : classifiers) {
-
-                futures.add(service.submit(() -> {
-                    ConfusionMatrixGenerator.ConfusionMatrix confusionMatrix;
-                    if (split) {
-                        confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(testLeafReader, classifier, CATEGORY_FIELD, BODY_FIELD, 60000 * 30);
-                    } else {
-                        confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(ar, classifier, CATEGORY_FIELD, BODY_FIELD, 60000 * 30);
-                    }
-
-                    final long endTime = System.currentTimeMillis();
-                    final int elapse = (int) (endTime - startTime) / 1000;
-
-                    return " * " + classifier + " \n    * accuracy = " + confusionMatrix.getAccuracy() +
-                            "\n    * precision = " + confusionMatrix.getPrecision() +
-                            "\n    * recall = " + confusionMatrix.getRecall() +
-                            "\n    * f1-measure = " + confusionMatrix.getF1Measure() +
-                            "\n    * avgClassificationTime = " + confusionMatrix.getAvgClassificationTime() +
-                            "\n    * time = " + elapse + " (sec)\n ";
-                }));
-
+                testClassifier(ar, startTime, testLeafReader, service, futures, classifier);
             }
             for (Future<String> f : futures) {
                 System.out.println(f.get());
@@ -260,6 +267,50 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
                 testReader.close();
             }
         }
+    }
+
+    private void testClassifier(LeafReader ar, long startTime, LeafReader testLeafReader, ExecutorService service, List<Future<String>> futures, Classifier<BytesRef> classifier) {
+        final LeafReader finalAr = ar;
+        futures.add(service.submit(() -> {
+            ConfusionMatrixGenerator.ConfusionMatrix confusionMatrix;
+            if (split) {
+                confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(testLeafReader, classifier, CATEGORY_FIELD, BODY_FIELD, 60000 * 30);
+            } else {
+                confusionMatrix = ConfusionMatrixGenerator.getConfusionMatrix(finalAr, classifier, CATEGORY_FIELD, BODY_FIELD, 60000 * 30);
+            }
+
+            final long endTime = System.currentTimeMillis();
+            final int elapse = (int) (endTime - startTime) / 1000;
+
+            if (classifier instanceof LoggingBM25NBClassifier) {
+                Map<String, Query> queriesPerClass = new HashMap<>();
+                Set<Map.Entry<String, Set<Query>>> entries = ((LoggingBM25NBClassifier) classifier).getDocs().entrySet();
+                for (Map.Entry<String, Set<Query>> entry : entries) {
+                    BooleanQuery.Builder builder = new BooleanQuery.Builder();
+                    for (Query q : entry.getValue()) {
+                        builder.add(new BooleanClause(q, BooleanClause.Occur.SHOULD));
+                    }
+                    queriesPerClass.put(entry.getKey(), builder.build());
+                }
+
+                QueryingClassifier queryingClassifier = new QueryingClassifier(queriesPerClass, new IndexSearcher(testLeafReader));
+                ConfusionMatrixGenerator.ConfusionMatrix qcm = ConfusionMatrixGenerator.getConfusionMatrix(testLeafReader, queryingClassifier, CATEGORY_FIELD, BODY_FIELD, 60000 * 30);
+                System.err.println(" * " + queryingClassifier + " \n    * accuracy = " + qcm.getAccuracy() +
+                        "\n    * precision = " + qcm.getPrecision() +
+                        "\n    * recall = " + qcm.getRecall() +
+                        "\n    * f1-measure = " + qcm.getF1Measure() +
+                        "\n    * avgClassificationTime = " + qcm.getAvgClassificationTime() +
+                        "\n    * time = " + elapse + " (sec)\n ");
+
+            }
+
+            return " * " + classifier + " \n    * accuracy = " + confusionMatrix.getAccuracy() +
+                    "\n    * precision = " + confusionMatrix.getPrecision() +
+                    "\n    * recall = " + confusionMatrix.getRecall() +
+                    "\n    * f1-measure = " + confusionMatrix.getF1Measure() +
+                    "\n    * avgClassificationTime = " + confusionMatrix.getAvgClassificationTime() +
+                    "\n    * time = " + elapse + " (sec)\n ";
+        }));
     }
 
     private void delete(Path... paths) throws IOException {

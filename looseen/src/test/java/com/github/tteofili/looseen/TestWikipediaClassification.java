@@ -43,8 +43,8 @@ import java.util.stream.Stream;
 
 import com.carrotsearch.randomizedtesting.annotations.TimeoutSuite;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.it.ItalianAnalyzer;
-import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.classification.CachingNaiveBayesClassifier;
 import org.apache.lucene.classification.Classifier;
 import org.apache.lucene.classification.KNearestNeighborClassifier;
