@@ -51,7 +51,7 @@ import org.apache.lucene.util.BytesRef;
 public class BM25NBClassifier implements Classifier<BytesRef> {
 
     /**
-     * {@link LeafReader} used to access the {@link Classifier}'s
+     * {@link IndexReader} used to access the {@link Classifier}'s
      * index
      */
     protected final IndexReader indexReader;

@@ -197,7 +197,6 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new BM25NBClassifier(reader, analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(reader, analyzer, null, 2, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(reader, analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new LoggingBM25NBClassifier(reader, analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
 
             int maxdoc;
 
