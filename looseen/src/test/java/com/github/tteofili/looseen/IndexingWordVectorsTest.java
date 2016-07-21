@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -34,6 +36,8 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -43,6 +47,7 @@ import org.apache.lucene.spatial.geopoint.document.GeoPointField;
 import org.apache.lucene.spatial.geopoint.search.GeoPointDistanceQuery;
 import org.apache.lucene.spatial.geopoint.search.GeoPointInBBoxQuery;
 import org.apache.lucene.spatial.geopoint.search.GeoPointInPolygonQuery;
+import org.apache.lucene.spatial3d.Geo3DPoint;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
@@ -55,11 +60,17 @@ public class IndexingWordVectorsTest {
 
     private static final String PREFIX = "/Users/teofili/data";
     private static final String INDEX = PREFIX + "/20n/index";
+
+    // 20n fields
     private static final String BODY_FIELD = "body";
     private static final String SUBJECT_FIELD = "subject";
+
+    // wvIndex fields
     private static final String WV_FIELD = "wv";
-    public static final String TERM_FIELD = "term";
-    public static final String CATEGORY_FIELD = "category";
+    private static final String DOCID_FIELD = "docid";
+    private static final String TERM_FIELD = "term";
+    private static final String CATEGORY_FIELD = "category";
+
     private boolean index = false;
 
     @Test
@@ -110,7 +121,7 @@ public class IndexingWordVectorsTest {
                         RealMatrix wv = network.getWeights()[0];
                         List<String> vocabulary = network.getVocabulary();
 
-                        index(classField.stringValue(), vocabulary, wv, indexWriter);
+                        index(classField.stringValue(), vocabulary, wv, indexWriter, i);
                     }
                     if (i % 100 == 0) {
                         System.out.println("processed " + i + " docs");
@@ -131,10 +142,11 @@ public class IndexingWordVectorsTest {
             // search
             Analyzer analyzer = new StandardAnalyzer();
 
-            String[] queries = new String[3];
+            String[] queries = new String[4];
             queries[0] = "Please enlighten me"; // rep.motorcycles
             queries[1] = "The primary objective of the"; // sci.space
             queries[2] = "glad to see that you've admitted"; // talk.politics.misc
+            queries[3] = "I think is what it means"; // comp.graphics
 
             IndexSearcher indexSearcher = new IndexSearcher(reader);
             for (String s : queries) {
@@ -147,14 +159,25 @@ public class IndexingWordVectorsTest {
                     }
                     tokenStream.end();
                 }
+                // for each term in the query
+                List<Polygon> ps = new LinkedList<>();
+                List<Query> bbqs = new LinkedList<>();
                 for (String r : result) {
+
                     TopDocs topDocs = indexSearcher.search(new TermQuery(new Term(TERM_FIELD, r)), 3);
-                    // get wv for this term, grouped by class
+
+                    // each result is a term with the given text, a class and lat,lon
 
                     ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+
+                    List<Double> lts = new LinkedList<>();
+                    List<Double> lgs = new LinkedList<>();
+
                     for (ScoreDoc scoreDoc : scoreDocs) {
                         Document document = reader.document(scoreDoc.doc);
                         IndexableField classField = document.getField(CATEGORY_FIELD);
+
+                        // get term occurrence's word vectors
                         IndexableField[] wvdFields = document.getFields(WV_FIELD);
 
                         Map<String, Long> classes = new HashMap<>();
@@ -171,8 +194,12 @@ public class IndexingWordVectorsTest {
                                 lons[i] = y;
                                 i++;
 
+                                lts.add(x);
+                                lgs.add(y);
+
                                 GeoPointDistanceQuery query = new GeoPointDistanceQuery(WV_FIELD, x, y, 10);
 
+                                // find terms close to this term with their assigned classes in order to find this terms's class
                                 TopDocs search = indexSearcher.search(query, 10);
                                 for (ScoreDoc sd : search.scoreDocs) {
                                     Document d = reader.document(sd.doc);
@@ -190,6 +217,11 @@ public class IndexingWordVectorsTest {
                                 System.err.println(e.getLocalizedMessage());
                             }
                         }
+                        // compare extracted classes and assigned class
+                        System.out.println(classes + " -> " + classField.stringValue());
+
+
+
                         try {
                             if (lats.length >= 4 && lons.length >= 4) {
                                 Query q = new GeoPointInPolygonQuery(WV_FIELD, new Polygon(lats, lons));
@@ -210,11 +242,77 @@ public class IndexingWordVectorsTest {
                         } catch (Exception e) {
                             System.err.println(e.getLocalizedMessage());
                         }
-                        // compare extracted classes and assigned class
-                        System.out.println(classes + " -> " + classField.stringValue());
+
+                        if (lats.length > 1) {
+                            Query query = Geo3DPoint.newPathQuery(WV_FIELD, lats, lons, 1);
+                            TopDocs docs = indexSearcher.search(query, 10);
+
+                            for (ScoreDoc sd : docs.scoreDocs) {
+                                Document d = reader.document(sd.doc);
+                                System.err.println(d.getField(TERM_FIELD).stringValue() + " is near the query" + query);
+                            }
+                        }
+                    }
+
+                    if (lts.size() >= 4) {
+                        double[] l1 = new double[lts.size()];
+                        double[] l2 = new double[lgs.size()];
+
+                        for (int i = 0; i < lts.size(); i++) {
+                            l1[i] = lts.get(i);
+                            l2[i] = lgs.get(i);
+                        }
+
+                        ps.add(new Polygon(l1, l2));
+
+                    } else if (lts.size() >= 2) {
+                        Collections.sort(lts);
+                        double minLat = lts.get(0);
+                        double maxLat = lts.get(lts.size()-1);
+
+                        Collections.sort(lgs);
+                        double minLong = lgs.get(0);
+                        double maxLong = lgs.get(lgs.size()-1);
+
+                        bbqs.add(new GeoPointInBBoxQuery(WV_FIELD, minLat, maxLat, minLong, maxLong));
                     }
 
                 }
+
+                if (ps.size() > 0) {
+                    Query q = new GeoPointInPolygonQuery(WV_FIELD, ps.toArray(new Polygon[ps.size()]));
+                    TopDocs search = indexSearcher.search(q, 10);
+                    System.err.println("query " + result.toString() + " encoded as " + q + " matched " + search.totalHits + " docs");
+                    for (ScoreDoc sd : search.scoreDocs) {
+                        Document d = reader.document(sd.doc);
+                        System.err.println("match " + d);
+                    }
+
+                    for (Polygon polygon : ps) {
+                        Query query = Geo3DPoint.newPathQuery(WV_FIELD, polygon.getPolyLats(), polygon.getPolyLons(), 1);
+                        TopDocs docs = indexSearcher.search(query, 10);
+
+                        for (ScoreDoc sd : docs.scoreDocs) {
+                            Document d = reader.document(sd.doc);
+                            System.err.println(d.getField(TERM_FIELD).stringValue() + " is near polygon path " + query);
+                        }
+                    }
+                }
+
+                if (bbqs.size() > 0) {
+                    BooleanQuery.Builder builder = new BooleanQuery.Builder();
+                    for (Query q : bbqs) {
+                        builder.add(new BooleanClause(q, BooleanClause.Occur.MUST));
+                    }
+                    BooleanQuery bbq = builder.build();
+                    TopDocs search = indexSearcher.search(bbq, 10);
+                    System.err.println("bb query " + bbq + " matched " + search.totalHits + " docs");
+                    for (ScoreDoc sd : search.scoreDocs) {
+                        Document d = reader.document(sd.doc);
+                        System.err.println("match " + d);
+                    }
+                }
+
             }
 
         } finally {
@@ -227,15 +325,17 @@ public class IndexingWordVectorsTest {
         }
     }
 
-    private void index(String category, List<String> vocabulary, RealMatrix wv, IndexWriter writer) throws IOException {
+    private void index(String category, List<String> vocabulary, RealMatrix wv, IndexWriter writer, int docid) throws IOException {
         for (int i = 0; i < wv.getColumnDimension(); i++) {
             double[] a = wv.getColumnVector(i).toArray();
             String term = vocabulary.get(i);
             Document document = new Document();
+            document.add(new StringField(DOCID_FIELD, new BytesRef(docid), Field.Store.YES));
             document.add(new TextField(TERM_FIELD, term, Field.Store.YES));
             document.add(new TextField(CATEGORY_FIELD, category, Field.Store.YES));
             double latitude = a[0];
             double longitude = a[1];
+//            double width = a[2];
 
             // check / adjust lat / lon
             try {
@@ -249,7 +349,9 @@ public class IndexingWordVectorsTest {
             } catch (IllegalArgumentException e) {
                 longitude = longitude % 180;
             }
-
+//            document.add(new Geo3DPoint(WV_FIELD, latitude, longitude));
+//            GeoPoint p = new GeoPoint(PlanetModel.WGS84, latitude, longitude);
+//            document.add(new Geo3DDocValuesField(WV_FIELD, p));
             document.add(new GeoPointField(WV_FIELD, latitude, longitude, Field.Store.YES));
 
             writer.addDocument(document);
