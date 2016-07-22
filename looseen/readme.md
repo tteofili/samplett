@@ -163,3 +163,53 @@ playing with Lucene stuff
     * f1-measure = 0.7249492487381611
     * avgClassificationTime = 224.9528349222278
     * time = 448 (sec)
+
+ * MinHashClassifier{min=5, hashCount=1, hashSize=100} 
+    * accuracy = 0.580658268996343
+    * precision = 0.7146579324705653
+    * recall = 0.7103056532493361
+    * f1-measure = 0.7124751462569745
+    * avgClassificationTime = 84.58585858585859
+    * time = 263 (sec)
+ 
+ * MinHashClassifier{min=10, hashCount=1, hashSize=100} 
+    * accuracy = 0.7701277068295391
+    * precision = 0.8479937273199326
+    * recall = 0.845846737404352
+    * f1-measure = 0.8469188716774162
+    * avgClassificationTime = 145.19364833462433
+    * time = 300 (sec)
+ 
+ * MinHashClassifier{min=15, hashCount=1, hashSize=100} 
+    * accuracy = 0.7238493723849372
+    * precision = 0.7929020257905379
+    * recall = 0.7960177294446539
+    * f1-measure = 0.7944568228348643
+    * avgClassificationTime = 202.7287405812702
+    * time = 301 (sec)
+ 
+ * MinHashClassifier{min=15, hashCount=3, hashSize=100} 
+    * accuracy = 0.7031358885017421
+    * precision = 0.7879206371526887
+    * recall = 0.7796528692915371
+    * f1-measure = 0.7837649501024745
+    * avgClassificationTime = 487.62568008705114
+    * time = 560 (sec)
+ 
+ * MinHashClassifier{min=15, hashCount=3, hashSize=300} 
+    * accuracy = 0.7031358885017421
+    * precision = 0.7879206371526887
+    * recall = 0.7796528692915371
+    * f1-measure = 0.7837649501024745
+    * avgClassificationTime = 488.0467899891186
+    * time = 561 (sec)
+ 
+ * MinHashClassifier{min=5, hashCount=3, hashSize=100} 
+    * accuracy = 0.5823553217320923
+    * precision = 0.7242290885618884
+    * recall = 0.7088771466675443
+    * f1-measure = 0.7164708898935142
+    * avgClassificationTime = 200.7290612703766
+    * time = 469 (sec)
+    
+    
