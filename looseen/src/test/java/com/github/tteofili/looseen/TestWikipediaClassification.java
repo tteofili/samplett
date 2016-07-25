@@ -53,6 +53,7 @@ import org.apache.lucene.classification.utils.ConfusionMatrixGenerator;
 import org.apache.lucene.classification.utils.DatasetSplitter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.SortedDocValuesField;
+import org.apache.lucene.document.SortedSetDocValuesField;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
@@ -98,7 +99,7 @@ public final class TestWikipediaClassification extends LuceneTestCase {
     private static final String CATEGORY_FIELD = "cat";
     private static final String TEXT_FIELD = "text";
 
-    private static boolean index = false;
+    private static boolean index = true;
     private static boolean split = true;
 
     @Test
@@ -207,15 +208,21 @@ public final class TestWikipediaClassification extends LuceneTestCase {
             classifiers.add(new KNearestNeighborClassifier(ar, new DFRSimilarity(new BasicModelP(), new AfterEffectL(), new NormalizationH3()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionSPL(), new LambdaDF(), new Normalization.NoNormalization()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new KNearestNeighborClassifier(ar, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, TEXT_FIELD));
+            classifiers.add(new MinHashClassifier(reader, TEXT_FIELD, CATEGORY_FIELD, 5, 1, 100));
+            classifiers.add(new MinHashClassifier(reader, TEXT_FIELD, CATEGORY_FIELD, 10, 1, 100));
+            classifiers.add(new MinHashClassifier(reader, TEXT_FIELD, CATEGORY_FIELD, 15, 1, 100));
+            classifiers.add(new MinHashClassifier(reader, TEXT_FIELD, CATEGORY_FIELD, 15, 3, 100));
+            classifiers.add(new MinHashClassifier(reader, TEXT_FIELD, CATEGORY_FIELD, 15, 3, 300));
+            classifiers.add(new MinHashClassifier(reader, TEXT_FIELD, CATEGORY_FIELD, 5, 3, 100));
             classifiers.add(new FuzzyLikeThisClassifier(ar, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(ar, new ClassicSimilarity(), analyzer, null, 1, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(ar, new BM25Similarity(), analyzer, null, 1, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
-            classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 1, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 2, CATEGORY_FIELD, TEXT_FIELD));
             classifiers.add(new BM25NBClassifier(ar, analyzer, null, 3, CATEGORY_FIELD, TEXT_FIELD));
+            classifiers.add(new CachingNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
+            classifiers.add(new SimpleNaiveBayesClassifier(ar, analyzer, null, CATEGORY_FIELD, TEXT_FIELD));
 
             int maxdoc;
             LeafReader testLeafReader;
@@ -343,7 +350,7 @@ public final class TestWikipediaClassification extends LuceneTestCase {
                         }
                         for (String cat : cats) {
                             page.add(new StringField(CATEGORY_FIELD, cat, StoredField.Store.YES));
-                            page.add(new SortedDocValuesField(CATEGORY_FIELD, new BytesRef(cat)));
+                            page.add(new SortedSetDocValuesField(CATEGORY_FIELD, new BytesRef(cat)));
                         }
                         indexWriter.addDocument(page);
                         cats.clear();

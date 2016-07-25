@@ -1,5 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.tteofili.looseen;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,8 +56,10 @@ import org.apache.lucene.util.BytesRef;
  * a {@link Classifier} based on LSH via queries on in memory sidecar index using {@link MinHashFilter} to index passed
  * reader's docs.
  */
-public class MinHashClassifier implements Classifier<BytesRef> {
+public class MinHashClassifier implements Classifier<BytesRef>, Closeable {
 
+    private static final String TEXT_FIELD = "text";
+    private static final String CLASS_FIELD = "class";
     private final RAMDirectory directory;
     private final int min;
     private final int hashCount;
@@ -61,8 +80,8 @@ public class MinHashClassifier implements Classifier<BytesRef> {
                 Document d = reader.document(i);
                 String textValue = d.getField(textField).stringValue();
                 String categoryValue = d.getField(categoryField).stringValue();
-                document.add(new TextField("text", textValue, Field.Store.NO));
-                document.add(new StringField("category", categoryValue, Field.Store.YES));
+                document.add(new TextField(TEXT_FIELD, textValue, Field.Store.NO));
+                document.add(new StringField(CLASS_FIELD, categoryValue, Field.Store.YES));
                 writer.addDocument(document);
             }
             writer.commit();
@@ -78,10 +97,10 @@ public class MinHashClassifier implements Classifier<BytesRef> {
         DirectoryReader reader = DirectoryReader.open(directory);
         IndexSearcher searcher = new IndexSearcher(reader);
         try {
-            TopDocs topDocs = searcher.search(buildQuery("text", text, min, hashCount, hashSize), 1);
+            TopDocs topDocs = searcher.search(buildQuery(TEXT_FIELD, text, min, hashCount, hashSize), 1);
             if (topDocs.totalHits > 0) {
                 Document document = reader.document(topDocs.scoreDocs[0].doc);
-                String category = document.getField("category").stringValue();
+                String category = document.getField(CLASS_FIELD).stringValue();
                 return new ClassificationResult<>(new BytesRef(category), topDocs.getMaxScore());
             } else {
                 return null;
@@ -142,6 +161,11 @@ public class MinHashClassifier implements Classifier<BytesRef> {
         ts.end();
         ts.close();
         return tokens;
+    }
+
+    @Override
+    public void close() {
+        directory.close();
     }
 
     @Override
