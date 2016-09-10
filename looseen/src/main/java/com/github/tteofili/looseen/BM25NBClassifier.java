@@ -145,7 +145,7 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
         Terms classes = MultiFields.getTerms(indexReader, classFieldName);
         TermsEnum classesEnum = classes.iterator();
         BytesRef next;
-        Collection<String[]> ngrams = tokenize(inputDocument, ngramSize);
+        Collection<String[]> ngrams = tokenize(inputDocument);
         while ((next = classesEnum.next()) != null) {
             if (next.length > 0) {
                 Term term = new Term(this.classFieldName, next);
@@ -168,7 +168,7 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
      * @return a <code>String</code> array of the resulting tokens
      * @throws IOException if tokenization fails
      */
-    protected Collection<String[]> tokenize(String text, int ngramSize) throws IOException {
+    protected Collection<String[]> tokenize(String text) throws IOException {
         Collection<String> result = new LinkedList<>();
         for (String textFieldName : textFieldNames) {
             try (TokenStream tokenStream = analyzer.tokenStream(textFieldName, text)) {
@@ -199,9 +199,7 @@ public class BM25NBClassifier implements Classifier<BytesRef> {
             for (int i = 0; i < sequence.length - size + 1; i++) {
                 String[] ngram = new String[size];
                 ngram[0] = sequence[i];
-                for (int j = 1; j < size; j++) {
-                    ngram[j] = sequence[i + j];
-                }
+                System.arraycopy(sequence, i + 1, ngram, 1, size - 1);
                 ngrams.add(ngram);
             }
         }

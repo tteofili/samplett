@@ -975,8 +975,8 @@ public class SGM {
             return this;
         }
 
-        public Builder useNesterovMomentum(boolean useNesterovMomentum) {
-            this.configuration.useNesterovMomentum = useNesterovMomentum;
+        public Builder useNesterovMomentum() {
+            this.configuration.useNesterovMomentum = true;
             return this;
         }
 
@@ -991,15 +991,12 @@ public class SGM {
         }
 
         public SGM build() throws Exception {
-//            System.out.println("reading fragments");
             Queue<List<byte[]>> fragments = getFragments(this.configuration.text, this.configuration.window);
-            assert !fragments.isEmpty() : "could not read fragments";
+            assert !fragments.isEmpty() : "could not read fragments for '" + this.configuration.text + "'";
             List<String> vocabulary = getVocabulary(fragments);
-//            System.out.println("vocabulary generated (" + vocabulary.size() + ")");
             assert !vocabulary.isEmpty() : "could not read vocabulary";
             this.configuration.vocabulary = vocabulary;
 
-//            System.out.println("creating training set");
             Collection<HotEncodedSample> trainingSet = createTrainingSet(vocabulary, fragments, this.configuration.window);
             fragments.clear();
             if (this.configuration.maxIterations == 0) {
@@ -1014,8 +1011,6 @@ public class SGM {
 
             this.configuration.inputs = next.getInputs().length;
             this.configuration.outputs = next.getOutputs().length;
-
-//            System.out.println("network layers: [" + configuration.inputs + "|" + configuration.vectorSize + "|" + configuration.outputs + "]");
 
             SGM network = new SGM(configuration);
             network.samples = trainingSet.toArray(new Sample[trainingSet.size()]);
@@ -1037,7 +1032,6 @@ public class SGM {
         }
 
         private Collection<HotEncodedSample> createTrainingSet(final List<String> vocabulary, Queue<List<byte[]>> fragments, int window) throws Exception {
-            long start = System.currentTimeMillis();
             Collection<HotEncodedSample> samples = new LinkedList<>();
             List<byte[]> fragment;
             while ((fragment = fragments.poll()) != null) {
@@ -1062,24 +1056,17 @@ public class SGM {
 
                 HotEncodedSample hotEncodedSample = new HotEncodedSample(inputs, doubles, vocabulary.size());
                 samples.add(hotEncodedSample);
-//        System.err.println("added: " + x + " -> " + hotEncodedSample);
             }
-
-            long end = System.currentTimeMillis();
-//            System.out.println("training set created in " + (end - start) / 60000 + " minutes");
 
             return samples;
         }
 
         private Queue<List<byte[]>> getFragments(String text, int w) throws IOException {
-            long start = System.currentTimeMillis();
             Queue<List<byte[]>> fragments = new ConcurrentLinkedDeque<>();
 
             Splitter splitter = Splitter.on(Pattern.compile("[\\n\\s]")).omitEmptyStrings().trimResults();
 
             addFragments(text, w, fragments, splitter);
-            long end = System.currentTimeMillis();
-//            System.out.println("fragments read in " + (end - start) / 60000 + " minutes (" + fragments.size() + ")");
             return fragments;
 
         }
@@ -1090,7 +1077,7 @@ public class SGM {
                 StringBuffer line = new StringBuffer();
                 for (int i = 0; i < buffer.limit(); i++) {
                     char ch = ((char) buffer.get());
-                    if (ch == '\r' || ch == '\n') {
+                    if (ch == '\r' || ch == '\n' || i + 1 == buffer.limit()) {
                         // create fragments for this line
                         String string = cleanString(line.toString());
                         List<String> split = splitter.splitToList(string);

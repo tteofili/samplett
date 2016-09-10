@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -90,51 +89,7 @@ public class IndexingWordVectorsTest {
         IndexReader reader = DirectoryReader.open(directory);
         try {
             if (index) {
-
-                long indexingStartTime = System.currentTimeMillis();
-
-                int md = reader.maxDoc();
-
-                for (int i = 0; i < md; i++) {
-                    Document doc = reader.document(i);
-
-                    IndexableField textField = doc.getField(BODY_FIELD);
-
-                    IndexableField classField = doc.getField(CATEGORY_FIELD);
-
-                    SGM network = null;
-                    try {
-                        network = SGM.newModel().
-                                fromText(textField.stringValue()).
-                                withWindow(3).
-                                withDimension(2).
-                                withAlpha(0.2).
-                                withLambda(0.0001).
-                                useNesterovMomentum(true).
-                                withMu(0.9).
-                                withMaxIterations(100).
-                                withBatchSize(1).build();
-                    } catch (Throwable e) {
-                        System.err.println(e.getLocalizedMessage() + "... skipping");
-                    }
-                    if (network != null) {
-                        RealMatrix wv = network.getWeights()[0];
-                        List<String> vocabulary = network.getVocabulary();
-
-                        index(classField.stringValue(), vocabulary, wv, indexWriter, i);
-                    }
-                    if (i % 100 == 0) {
-                        System.out.println("processed " + i + " docs");
-                    }
-                }
-                indexWriter.commit();
-
-                reader.close();
-
-
-                long indexingEndTime = System.currentTimeMillis();
-
-                System.out.println("word vectors indexed in " + (indexingEndTime - indexingStartTime) / 1000 + " seconds");
+                performIndexing(indexWriter, reader);
             }
 
             reader = DirectoryReader.open(wvIndex);
@@ -150,6 +105,8 @@ public class IndexingWordVectorsTest {
 
             IndexSearcher indexSearcher = new IndexSearcher(reader);
             for (String s : queries) {
+                // for a certain query
+
                 Collection<String> result = new LinkedList<>();
                 try (TokenStream tokenStream = analyzer.tokenStream(TERM_FIELD, s)) {
                     CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
@@ -180,7 +137,6 @@ public class IndexingWordVectorsTest {
                         // get term occurrence's word vectors
                         IndexableField[] wvdFields = document.getFields(WV_FIELD);
 
-                        Map<String, Long> classes = new HashMap<>();
 
                         double[] lats = new double[wvdFields.length];
                         double[] lons = new double[wvdFields.length];
@@ -196,31 +152,10 @@ public class IndexingWordVectorsTest {
 
                                 lts.add(x);
                                 lgs.add(y);
-
-                                GeoPointDistanceQuery query = new GeoPointDistanceQuery(WV_FIELD, x, y, 10);
-
-                                // find terms close to this term with their assigned classes in order to find this terms's class
-                                TopDocs search = indexSearcher.search(query, 10);
-                                for (ScoreDoc sd : search.scoreDocs) {
-                                    Document d = reader.document(sd.doc);
-                                    System.err.println(d.getField(TERM_FIELD).stringValue() + " is near to " + r);
-
-                                    String key = d.getField(CATEGORY_FIELD).stringValue();
-                                    Long aLong = classes.get(key);
-                                    if (aLong == null) {
-                                        aLong = 0L;
-                                    }
-                                    aLong++;
-                                    classes.put(key, aLong);
-                                }
                             } catch (Exception e) {
                                 System.err.println(e.getLocalizedMessage());
                             }
                         }
-                        // compare extracted classes and assigned class
-                        System.out.println(classes + " -> " + classField.stringValue());
-
-
 
                         try {
                             if (lats.length >= 4 && lons.length >= 4) {
@@ -268,11 +203,11 @@ public class IndexingWordVectorsTest {
                     } else if (lts.size() >= 2) {
                         Collections.sort(lts);
                         double minLat = lts.get(0);
-                        double maxLat = lts.get(lts.size()-1);
+                        double maxLat = lts.get(lts.size() - 1);
 
                         Collections.sort(lgs);
                         double minLong = lgs.get(0);
-                        double maxLong = lgs.get(lgs.size()-1);
+                        double maxLong = lgs.get(lgs.size() - 1);
 
                         bbqs.add(new GeoPointInBBoxQuery(WV_FIELD, minLat, maxLat, minLong, maxLong));
                     }
@@ -315,6 +250,283 @@ public class IndexingWordVectorsTest {
 
             }
 
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+            indexWriter.close();
+            wvIndex.close();
+            directory.close();
+        }
+    }
+
+    @Test
+    public void testWVSimpleTermProximity() throws Exception {
+        /* search for each term in the query individually, retrieve each term's wvs, search for nearest points and
+         aggregate the related classes */
+
+        Path mainIndexPath = Paths.get(INDEX + "/original");
+        Directory directory = FSDirectory.open(mainIndexPath);
+
+        Path wvPath = Paths.get(INDEX + "/wv");
+        if (index) {
+            delete(wvPath);
+        }
+
+        Directory wvIndex = FSDirectory.open(wvPath);
+
+        IndexWriter indexWriter = new IndexWriter(wvIndex, new IndexWriterConfig());
+        IndexReader reader = DirectoryReader.open(directory);
+        try {
+            if (index) {
+                performIndexing(indexWriter, reader);
+            }
+
+            reader = DirectoryReader.open(wvIndex);
+
+            // search
+            Analyzer analyzer = new StandardAnalyzer();
+
+            String[] queries = new String[4];
+            queries[0] = "Please enlighten me"; // rep.motorcycles
+            queries[1] = "The primary objective of the"; // sci.space
+            queries[2] = "glad to see that you've admitted"; // talk.politics.misc
+            queries[3] = "I think is what it means"; // comp.graphics
+
+            IndexSearcher indexSearcher = new IndexSearcher(reader);
+            for (String s : queries) {
+                System.err.println("****");
+                // for a certain query
+
+                Collection<String> result = new LinkedList<>();
+                try (TokenStream tokenStream = analyzer.tokenStream(TERM_FIELD, s)) {
+                    CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
+                    tokenStream.reset();
+                    while (tokenStream.incrementToken()) {
+                        result.add(charTermAttribute.toString());
+                    }
+                    tokenStream.end();
+                }
+                Map<String, Long> classes = new HashMap<>();
+                // for each term in the query
+                for (String r : result) {
+
+                    TopDocs topDocs = indexSearcher.search(new TermQuery(new Term(TERM_FIELD, r)), 100);
+
+                    // each result is a term with the given text, a class and lat,lon
+
+                    ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+
+                    for (ScoreDoc scoreDoc : scoreDocs) {
+                        Document document = reader.document(scoreDoc.doc);
+
+                        // get term occurrence's word vectors
+                        IndexableField[] wvdFields = document.getFields(WV_FIELD);
+
+                        int i = 0;
+                        for (IndexableField f : wvdFields) {
+                            long v = f.numericValue().longValue();
+                            try {
+                                double x = GeoPointField.decodeLatitude(v);
+                                double y = GeoPointField.decodeLongitude(v);
+                                i++;
+
+                                GeoPointDistanceQuery query = new GeoPointDistanceQuery(WV_FIELD, x, y, 7);
+
+                                // find terms close to this term with their assigned classes in order to find this terms's class
+                                TopDocs search = indexSearcher.search(query, 3);
+                                for (ScoreDoc sd : search.scoreDocs) {
+                                    Document d = reader.document(sd.doc);
+                                    System.err.println(d.getField(TERM_FIELD).stringValue() + " is near to " + r);
+
+                                    String key = d.getField(CATEGORY_FIELD).stringValue();
+                                    Long aLong = classes.get(key);
+                                    if (aLong == null) {
+                                        aLong = 0L;
+                                    }
+                                    aLong++;
+                                    classes.put(key, aLong);
+                                }
+                            } catch (Exception e) {
+                                System.err.println(e.getLocalizedMessage());
+                            }
+                        }
+                    }
+
+                }
+                System.err.println(classes);
+                System.err.println("*********************");
+                System.err.println("*********************");
+                System.err.println("*********************");
+            }
+
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+            indexWriter.close();
+            wvIndex.close();
+            directory.close();
+        }
+    }
+
+    private void performIndexing(IndexWriter indexWriter, IndexReader reader) throws IOException {
+        long indexingStartTime = System.currentTimeMillis();
+
+        int md = reader.maxDoc();
+
+        for (int i = 0; i < md; i++) {
+            Document doc = reader.document(i);
+
+            IndexableField textField = doc.getField(BODY_FIELD);
+
+            IndexableField classField = doc.getField(CATEGORY_FIELD);
+
+            SGM network = null;
+            try {
+                network = SGM.newModel().
+                        fromText(textField.stringValue()).
+                        withWindow(3).
+                        withDimension(2).
+                        withAlpha(0.05).
+                        withLambda(0.0001).
+                        useNesterovMomentum().
+                        withMu(0.8).
+                        withMaxIterations(100).
+                        withBatchSize(1).build();
+            } catch (Throwable e) {
+                System.err.println(e.getLocalizedMessage() + "... skipping");
+            }
+            if (network != null) {
+                RealMatrix wv = network.getWeights()[0];
+                List<String> vocabulary = network.getVocabulary();
+
+                index(classField.stringValue(), vocabulary, wv, indexWriter, i);
+            }
+            if (i % 100 == 0) {
+                System.out.println("processed " + i + " docs");
+            }
+        }
+        indexWriter.commit();
+
+        reader.close();
+
+        long indexingEndTime = System.currentTimeMillis();
+
+        System.out.println("word vectors indexed in " + (indexingEndTime - indexingStartTime) / 1000 + " seconds");
+    }
+
+    @Test
+    public void testWVQueryCentroidsSearch() throws Exception {
+
+        Path mainIndexPath = Paths.get(INDEX + "/original");
+        Directory directory = FSDirectory.open(mainIndexPath);
+
+        Path wvPath = Paths.get(INDEX + "/wv");
+        if (index) {
+            delete(wvPath);
+        }
+
+        Directory wvIndex = FSDirectory.open(wvPath);
+
+        IndexWriter indexWriter = new IndexWriter(wvIndex, new IndexWriterConfig());
+        IndexReader reader = DirectoryReader.open(directory);
+        try {
+            if (index) {
+                performIndexing(indexWriter, reader);
+            }
+
+            reader = DirectoryReader.open(wvIndex);
+
+            // search
+            Analyzer analyzer = new StandardAnalyzer();
+
+            String[] queries = new String[4];
+            queries[0] = "Please enlighten me"; // rep.motorcycles
+            queries[1] = "The primary objective of the"; // sci.space
+            queries[2] = "glad to see that you've admitted"; // talk.politics.misc
+            queries[3] = "I think is what it means"; // comp.graphics
+
+            IndexSearcher indexSearcher = new IndexSearcher(reader);
+            for (String s : queries) {
+                // for a certain query
+
+                Collection<String> result = new LinkedList<>();
+                try (TokenStream tokenStream = analyzer.tokenStream(TERM_FIELD, s)) {
+                    CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
+                    tokenStream.reset();
+                    while (tokenStream.incrementToken()) {
+                        result.add(charTermAttribute.toString());
+                    }
+                    tokenStream.end();
+                }
+
+                // for each term in the query
+                for (String r : result) {
+
+                    TopDocs topDocs = indexSearcher.search(new TermQuery(new Term(TERM_FIELD, r)), 3);
+
+                    // each result is a term with the given text, a class and lat,lon
+
+                    ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+
+                    List<Double> lts = new LinkedList<>();
+                    List<Double> lgs = new LinkedList<>();
+
+                    Map<String, Long> wvc = new HashMap<>();
+                    for (ScoreDoc scoreDoc : scoreDocs) {
+                        Document document = reader.document(scoreDoc.doc);
+
+                        // get term occurrence's word vectors
+                        IndexableField[] wvdFields = document.getFields(WV_FIELD);
+
+
+                        for (IndexableField f : wvdFields) {
+                            long v = f.numericValue().longValue();
+                            try {
+                                double x = GeoPointField.decodeLatitude(v);
+                                double y = GeoPointField.decodeLongitude(v);
+
+                                lts.add(x);
+                                lgs.add(y);
+                            } catch (Exception e) {
+                                System.err.println(e.getLocalizedMessage());
+                            }
+                        }
+
+                        // create wv query
+
+                        // find centroid
+                        double qlg = 0d;
+                        for (Double lg : lgs) {
+                            qlg += lg;
+                        }
+                        qlg /= lgs.size();
+
+                        double qlt = 0d;
+                        for (Double lt : lts) {
+                            qlt += lt;
+                        }
+                        qlt /= lts.size();
+
+
+                        GeoPointDistanceQuery wvq = new GeoPointDistanceQuery(WV_FIELD, qlt, qlg, 100);
+                        TopDocs wvr = indexSearcher.search(wvq, 5);
+                        for (ScoreDoc sd : wvr.scoreDocs) {
+                            Document d = reader.document(sd.doc);
+                            String key = d.getField(CATEGORY_FIELD).stringValue();
+                            Long aLong = wvc.get(key);
+                            if (aLong == null) {
+                                aLong = 0L;
+                            }
+                            aLong++;
+                            wvc.put(key, aLong);
+                        }
+
+                    }
+                    System.out.println("centroid for " + r + " near to " + wvc);
+                }
+            }
         } finally {
             if (reader != null) {
                 reader.close();
@@ -404,7 +616,8 @@ public class IndexingWordVectorsTest {
         String subject = "";
         FileInputStream stream = new FileInputStream(postFile);
         boolean inBody = false;
-        for (String line : IOUtils.readLines(stream)) {
+        List<String> strings = IOUtils.readLines(stream);
+        for (String line : strings) {
             if (line.startsWith("Subject:")) {
                 subject = line.substring(8);
             } else {
