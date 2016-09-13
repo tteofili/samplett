@@ -35,6 +35,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
+import com.carrotsearch.randomizedtesting.annotations.TimeoutSuite;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -79,9 +80,12 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.LuceneTestCase;
+import org.apache.lucene.util.TimeUnits;
 import org.junit.Test;
 
 @LuceneTestCase.SuppressSysoutChecks(bugUrl = "none")
+@TimeoutSuite(millis = 365 * 24 * TimeUnits.HOUR) // hopefully ~1 year is long enough ;)
+@LuceneTestCase.Monster("takes a lot!")
 public final class Test20NewsgroupsClassification extends LuceneTestCase {
 
     private static final String PREFIX = "/Users/teofili/data";
@@ -182,7 +186,6 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new KNearestNeighborClassifier(reader, new ClassicSimilarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new BM25Similarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, 0, 0, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, 2, 4, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new LMDirichletSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new BM25Similarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
@@ -190,12 +193,11 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new KNearestNeighborClassifier(reader, new DFRSimilarity(new BasicModelP(), new AfterEffectL(), new NormalizationH3()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new IBSimilarity(new DistributionSPL(), new LambdaDF(), new Normalization.NoNormalization()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 5, 1, 100));
-            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 10, 1, 100));
             classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 15, 1, 100));
-            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 15, 3, 100));
-            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 15, 3, 300));
-            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 5, 3, 100));
+            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 30, 3, 300));
+            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 10, 1, 100));
+            classifiers.add(new FuzzyLikeThisClassifier(reader, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(reader, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(reader, new ClassicSimilarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(reader, new BM25Similarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
