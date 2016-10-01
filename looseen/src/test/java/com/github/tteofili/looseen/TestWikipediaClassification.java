@@ -99,7 +99,7 @@ public final class TestWikipediaClassification extends LuceneTestCase {
     private static final String CATEGORY_FIELD = "cat";
     private static final String TEXT_FIELD = "text";
 
-    private static boolean index = true;
+    private static boolean index = false;
     private static boolean split = true;
 
     @Test

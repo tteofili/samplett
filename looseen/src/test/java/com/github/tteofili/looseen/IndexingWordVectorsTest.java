@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.carrotsearch.randomizedtesting.annotations.TimeoutSuite;
 import com.github.tteofili.looseen.yay.SGM;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -51,12 +52,17 @@ import org.apache.lucene.spatial3d.Geo3DPoint;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.LuceneTestCase;
+import org.apache.lucene.util.TimeUnits;
 import org.junit.Test;
 
 /**
  * Tests for using word vectors in Lucene
  */
-public class IndexingWordVectorsTest {
+@LuceneTestCase.SuppressSysoutChecks(bugUrl = "none")
+@TimeoutSuite(millis = 365 * 24 * TimeUnits.HOUR) // hopefully ~1 year is long enough ;)
+@LuceneTestCase.Monster("takes a lot!")
+public class IndexingWordVectorsTest extends LuceneTestCase {
 
     private static final String PREFIX = "/Users/teofili/data";
     private static final String INDEX = PREFIX + "/20n/index";
