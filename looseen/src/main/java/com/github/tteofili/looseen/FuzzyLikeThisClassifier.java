@@ -149,7 +149,7 @@ public class FuzzyLikeThisClassifier implements Classifier<BytesRef> {
         BooleanQuery.Builder bq = new BooleanQuery.Builder();
         FuzzyLikeThisQuery fuzzyLikeThisQuery = new FuzzyLikeThisQuery(300, analyzer);
         for (String fieldName : textFieldNames) {
-            fuzzyLikeThisQuery.addTerms(text, fieldName, 1f, 2);
+            fuzzyLikeThisQuery.addTerms(text, fieldName, 1f, 2); // make this parameters configurable
         }
         bq.add(fuzzyLikeThisQuery, BooleanClause.Occur.MUST);
         Query classFieldQuery = new WildcardQuery(new Term(classFieldName, "*"));
@@ -159,8 +159,6 @@ public class FuzzyLikeThisClassifier implements Classifier<BytesRef> {
         }
         return indexSearcher.search(bq.build(), k);
     }
-
-    //ranking of classes must be taken in consideration
 
     /**
      * build a list of classification results from search results

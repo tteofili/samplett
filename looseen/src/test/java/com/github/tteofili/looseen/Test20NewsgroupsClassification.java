@@ -85,7 +85,7 @@ import org.junit.Test;
 
 @LuceneTestCase.SuppressSysoutChecks(bugUrl = "none")
 @TimeoutSuite(millis = 365 * 24 * TimeUnits.HOUR) // hopefully ~1 year is long enough ;)
-@LuceneTestCase.Monster("takes a lot!")
+//@LuceneTestCase.Monster("takes a lot!")
 public final class Test20NewsgroupsClassification extends LuceneTestCase {
 
     private static final String PREFIX = "/Users/teofili/data";
@@ -183,30 +183,30 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             final long startTime = System.currentTimeMillis();
 
 
-            classifiers.add(new KNearestNeighborClassifier(reader, new ClassicSimilarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new BM25Similarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, 0, 0, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new LMDirichletSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new BM25Similarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new DFRSimilarity(new BasicModelG(), new AfterEffectB(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new DFRSimilarity(new BasicModelP(), new AfterEffectL(), new NormalizationH3()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new IBSimilarity(new DistributionSPL(), new LambdaDF(), new Normalization.NoNormalization()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new KNearestNeighborClassifier(reader, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 15, 1, 100));
-            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 30, 3, 300));
-            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 10, 1, 100));
-            classifiers.add(new FuzzyLikeThisClassifier(reader, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new FuzzyLikeThisClassifier(reader, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new FuzzyLikeThisClassifier(reader, new ClassicSimilarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new FuzzyLikeThisClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new ClassicSimilarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new BM25Similarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, 0, 0, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new LMDirichletSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new BM25Similarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new DFRSimilarity(new BasicModelG(), new AfterEffectB(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new DFRSimilarity(new BasicModelP(), new AfterEffectL(), new NormalizationH3()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new IBSimilarity(new DistributionSPL(), new LambdaDF(), new Normalization.NoNormalization()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new KNearestNeighborClassifier(reader, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 15, 1, 100));
+//            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 30, 3, 300));
+//            classifiers.add(new MinHashClassifier(reader, BODY_FIELD, CATEGORY_FIELD, 10, 1, 100));
+//            classifiers.add(new FuzzyLikeThisClassifier(reader, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new FuzzyLikeThisClassifier(reader, new IBSimilarity(new DistributionLL(), new LambdaTTF(), new NormalizationH1()), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new FuzzyLikeThisClassifier(reader, new ClassicSimilarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new FuzzyLikeThisClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(reader, new BM25Similarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new FuzzyLikeThisClassifier(reader, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new BM25NBClassifier(reader, analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new BM25NBClassifier(reader, analyzer, null, 2, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new BM25NBClassifier(reader, analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new CachingNaiveBayesClassifier(reader, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
-            classifiers.add(new SimpleNaiveBayesClassifier(reader, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new FuzzyLikeThisClassifier(reader, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new BM25NBClassifier(reader, analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new BM25NBClassifier(reader, analyzer, null, 2, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new BM25NBClassifier(reader, analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new CachingNaiveBayesClassifier(reader, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
+//            classifiers.add(new SimpleNaiveBayesClassifier(reader, analyzer, null, CATEGORY_FIELD, BODY_FIELD));
 
             int maxdoc;
 
@@ -268,28 +268,6 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
 
             final long endTime = System.currentTimeMillis();
             final int elapse = (int) (endTime - startTime) / 1000;
-
-            if (classifier instanceof LoggingBM25NBClassifier) {
-                Map<String, Query> queriesPerClass = new HashMap<>();
-                Set<Map.Entry<String, Set<Query>>> entries = ((LoggingBM25NBClassifier) classifier).getDocs().entrySet();
-                for (Map.Entry<String, Set<Query>> entry : entries) {
-                    BooleanQuery.Builder builder = new BooleanQuery.Builder();
-                    for (Query q : entry.getValue()) {
-                        builder.add(new BooleanClause(q, BooleanClause.Occur.SHOULD));
-                    }
-                    queriesPerClass.put(entry.getKey(), builder.build());
-                }
-
-                QueryingClassifier queryingClassifier = new QueryingClassifier(queriesPerClass, new IndexSearcher(testReader));
-                ConfusionMatrixGenerator.ConfusionMatrix qcm = ConfusionMatrixGenerator.getConfusionMatrix(testReader, queryingClassifier, CATEGORY_FIELD, BODY_FIELD, 60000 * 30);
-                System.err.println(" * " + queryingClassifier + " \n    * accuracy = " + qcm.getAccuracy() +
-                        "\n    * precision = " + qcm.getPrecision() +
-                        "\n    * recall = " + qcm.getRecall() +
-                        "\n    * f1-measure = " + qcm.getF1Measure() +
-                        "\n    * avgClassificationTime = " + qcm.getAvgClassificationTime() +
-                        "\n    * time = " + elapse + " (sec)\n ");
-
-            }
 
             return " * " + classifier + " \n    * accuracy = " + confusionMatrix.getAccuracy() +
                     "\n    * precision = " + confusionMatrix.getPrecision() +

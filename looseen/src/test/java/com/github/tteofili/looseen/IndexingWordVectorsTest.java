@@ -126,6 +126,11 @@ public class IndexingWordVectorsTest extends LuceneTestCase {
     }
 
     @Test
+    public void testLearningMarginClassifierAsGeoDistanceFromPath() throws Exception {
+
+    }
+
+    @Test
     public void testWVtoGeoIndexAndSearch() throws Exception {
 
         Path mainIndexPath = Paths.get(INDEX + "/original");
