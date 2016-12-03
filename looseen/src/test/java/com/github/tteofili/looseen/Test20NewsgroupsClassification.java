@@ -54,6 +54,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.similarities.AfterEffectB;
 import org.apache.lucene.search.similarities.AfterEffectL;
 import org.apache.lucene.search.similarities.AxiomaticF1EXP;
+import org.apache.lucene.search.similarities.AxiomaticF1LOG;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.BasicModelG;
 import org.apache.lucene.search.similarities.BasicModelP;
@@ -180,6 +181,7 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new KNearestNeighborClassifier(reader, new BM25Similarity(), analyzer, null, 1, 0, 0, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, 0, 0, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new AxiomaticF1EXP(), analyzer, null, 3, 0, 0, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new KNearestNeighborClassifier(reader, new AxiomaticF1LOG(), analyzer, null, 3, 0, 0, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new LMDirichletSimilarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new LMJelinekMercerSimilarity(0.3f), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new KNearestNeighborClassifier(reader, new BM25Similarity(), analyzer, null, 3, 1, 1, CATEGORY_FIELD, BODY_FIELD));
@@ -196,6 +198,8 @@ public final class Test20NewsgroupsClassification extends LuceneTestCase {
             classifiers.add(new FuzzyLikeThisClassifier(reader, new ClassicSimilarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(reader, new BM25Similarity(), analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new FuzzyLikeThisClassifier(reader, new BM25Similarity(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(reader, new AxiomaticF1EXP(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
+            classifiers.add(new FuzzyLikeThisClassifier(reader, new AxiomaticF1LOG(), analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(reader, analyzer, null, 1, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(reader, analyzer, null, 2, CATEGORY_FIELD, BODY_FIELD));
             classifiers.add(new BM25NBClassifier(reader, analyzer, null, 3, CATEGORY_FIELD, BODY_FIELD));

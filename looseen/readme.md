@@ -9,189 +9,221 @@ playing with Lucene stuff
     * precision = 0.6615133008363202
     * recall = 0.6415
     * f1-measure = 0.6513529558203736
-    * avgClassificationTime = 42.248
-    * time = 138 (sec)
+    * avgClassificationTime = 27.39
+    * time = 110 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=1, query=null, similarity=BM25(k1=1.2,b=0.75)} 
     * accuracy = 0.5467909645034063
     * precision = 0.7029182263932785
     * recall = 0.6839999999999999
     * f1-measure = 0.6933300863791036
-    * avgClassificationTime = 42.587
-    * time = 139 (sec)
+    * avgClassificationTime = 26.941
+    * time = 109 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=ClassicSimilarity} 
-    * accuracy = 0.5150869719559815
-    * precision = 0.6744788668277342
-    * recall = 0.6585
-    * f1-measure = 0.6663936613834724
-    * avgClassificationTime = 43.0
-    * time = 139 (sec)
+    * accuracy = 0.5165303945965162
+    * precision = 0.6773731713165202
+    * recall = 0.66
+    * f1-measure = 0.6685737424040111
+    * avgClassificationTime = 27.447
+    * time = 110 (sec)
+ 
+ * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=F1EXP} 
+    * accuracy = 0.5417867435158501
+    * precision = 0.6983143852880398
+    * recall = 0.6820000000000002
+    * f1-measure = 0.6900607801273632
+    * avgClassificationTime = 40.849
+    * time = 137 (sec)
+ 
+ * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=F1LOG} 
+    * accuracy = 0.5469534050179211
+    * precision = 0.6993125896986854
+    * recall = 0.6839999999999999
+    * f1-measure = 0.6915715434326974
+    * avgClassificationTime = 36.7255
+    * time = 129 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=LM Dirichlet(2000.000000)} 
-    * accuracy = 0.6877862595419847
-    * precision = 0.8005334847874422
-    * recall = 0.7955000000000001
-    * f1-measure = 0.7980088052265668
-    * avgClassificationTime = 44.885
-    * time = 143 (sec)
+    * accuracy = 0.6885496183206107
+    * precision = 0.8003351545026478
+    * recall = 0.796
+    * f1-measure = 0.7981616907792667
+    * avgClassificationTime = 28.0165
+    * time = 111 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=LM Jelinek-Mercer(0.300000)} 
-    * accuracy = 0.7025680337293982
-    * precision = 0.8082439960733113
-    * recall = 0.806
-    * f1-measure = 0.8071204383225141
-    * avgClassificationTime = 42.6465
-    * time = 139 (sec)
+    * accuracy = 0.7018014564967421
+    * precision = 0.8075731115827314
+    * recall = 0.8055
+    * f1-measure = 0.8065352236162758
+    * avgClassificationTime = 26.628
+    * time = 109 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=BM25(k1=1.2,b=0.75)} 
-    * accuracy = 0.6934807472359893
-    * precision = 0.8006648384042769
-    * recall = 0.799
-    * f1-measure = 0.7998315528685024
-    * avgClassificationTime = 38.679
-    * time = 131 (sec)
+    * accuracy = 0.6933638443935927
+    * precision = 0.8004833931769151
+    * recall = 0.7989999999999999
+    * f1-measure = 0.7997410087240737
+    * avgClassificationTime = 24.026
+    * time = 103 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=DFR GB1} 
-    * accuracy = 0.6858120958539369
-    * precision = 0.7957396713915428
-    * recall = 0.7934999999999999
-    * f1-measure = 0.7946182575423838
-    * avgClassificationTime = 45.194
-    * time = 144 (sec)
+    * accuracy = 0.6855728968405025
+    * precision = 0.7954320729532244
+    * recall = 0.7934999999999998
+    * f1-measure = 0.794464861817871
+    * avgClassificationTime = 28.844
+    * time = 113 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=DFR PL3(800.0)} 
-    * accuracy = 0.6882621951219512
-    * precision = 0.7984839968403343
-    * recall = 0.7955000000000001
-    * f1-measure = 0.7969892053440883
-    * avgClassificationTime = 45.86
-    * time = 145 (sec)
+    * accuracy = 0.6880244088482075
+    * precision = 0.7973816616538473
+    * recall = 0.7955
+    * f1-measure = 0.7964397194290511
+    * avgClassificationTime = 29.1
+    * time = 113 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=IB SPL-D} 
-    * accuracy = 0.5649097983728334
-    * precision = 0.7459576338968372
-    * recall = 0.6924999999999998
-    * f1-measure = 0.7182354895974744
-    * avgClassificationTime = 48.34
-    * time = 150 (sec)
+    * accuracy = 0.5643564356435643
+    * precision = 0.7470108015858785
+    * recall = 0.6919999999999998
+    * f1-measure = 0.7184539186609824
+    * avgClassificationTime = 31.1865
+    * time = 118 (sec)
  
  * KNearestNeighborClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=IB LL-L1} 
-    * accuracy = 0.7001533742331288
-    * precision = 0.806105817794377
-    * recall = 0.8045
-    * f1-measure = 0.805302108375186
-    * avgClassificationTime = 43.321
-    * time = 140 (sec)
+    * accuracy = 0.6996168582375479
+    * precision = 0.8056275448559236
+    * recall = 0.8039999999999999
+    * f1-measure = 0.8048129495971564
+    * avgClassificationTime = 27.0245
+    * time = 109 (sec)
  
  * MinHashClassifier{min=15, hashCount=1, hashSize=100} 
-    * accuracy = 0.7251051893408135
-    * precision = 0.7925096044794668
-    * recall = 0.7960928206072884
-    * f1-measure = 0.7942971714322676
-    * avgClassificationTime = 275.2777179763186
-    * time = 309 (sec)
+    * accuracy = 0.723463687150838
+    * precision = 0.7925230334378612
+    * recall = 0.795681683484373
+    * f1-measure = 0.7940992174711647
+    * avgClassificationTime = 308.46817691477884
+    * time = 341 (sec)
  
  * MinHashClassifier{min=30, hashCount=3, hashSize=300} 
-    * accuracy = 0.7001034126163392
-    * precision = 0.7280253955101635
-    * recall = 0.7251690401877424
-    * f1-measure = 0.7265944106658508
-    * avgClassificationTime = 1192.5853658536585
-    * time = 640 (sec)
-
+    * accuracy = 0.6991701244813278
+    * precision = 0.7244442368033682
+    * recall = 0.7232470635552394
+    * f1-measure = 0.7238451551760577
+    * avgClassificationTime = 934.8204081632653
+    * time = 513 (sec)
+ 
  * MinHashClassifier{min=10, hashCount=1, hashSize=100} 
-    * accuracy = 0.7701277068295391
-    * precision = 0.8479937273199326
-    * recall = 0.845846737404352
-    * f1-measure = 0.8469188716774162
-    * avgClassificationTime = 157.30441518202943
-    * time = 217 (sec)
+    * accuracy = 0.7709838799332963
+    * precision = 0.8492860877394117
+    * recall = 0.8465246411289309
+    * f1-measure = 0.8479031160737699
+    * avgClassificationTime = 222.35686578743213
+    * time = 342 (sec)
  
  * FuzzyLikeThisClassifier{textFieldNames=[body], classFieldName='category', k=1, query=null, similarity=LM Jelinek-Mercer(0.300000)} 
     * accuracy = 0.5187607573149742
     * precision = 0.7329905695421368
     * recall = 0.6492894248608535
     * f1-measure = 0.6886058211845795
-    * avgClassificationTime = 241.3677872553939
-    * time = 494 (sec)
+    * avgClassificationTime = 150.1881585549423
+    * time = 355 (sec)
  
  * FuzzyLikeThisClassifier{textFieldNames=[body], classFieldName='category', k=1, query=null, similarity=IB LL-L1} 
     * accuracy = 0.5280665280665281
     * precision = 0.7346825328324595
     * recall = 0.6583300350443209
     * f1-measure = 0.6944138032052934
-    * avgClassificationTime = 242.06823883592574
-    * time = 495 (sec)
+    * avgClassificationTime = 150.33617661816356
+    * time = 355 (sec)
  
  * FuzzyLikeThisClassifier{textFieldNames=[body], classFieldName='category', k=1, query=null, similarity=ClassicSimilarity} 
     * accuracy = 0.6752851711026616
     * precision = 0.7894131101641592
     * recall = 0.7858694083694082
     * f1-measure = 0.7876372733714722
-    * avgClassificationTime = 233.15955845459106
-    * time = 476 (sec)
+    * avgClassificationTime = 145.0551931761164
+    * time = 344 (sec)
  
  * FuzzyLikeThisClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=ClassicSimilarity} 
-    * accuracy = 0.7001153402537486
-    * precision = 0.8081116860303522
-    * recall = 0.804501752216038
-    * f1-measure = 0.8063026785943755
-    * avgClassificationTime = 233.46312092323132
-    * time = 477 (sec)
+    * accuracy = 0.6993464052287581
+    * precision = 0.8084578403707496
+    * recall = 0.8039915481344053
+    * f1-measure = 0.8062185087045278
+    * avgClassificationTime = 145.64224786753638
+    * time = 346 (sec)
  
  * FuzzyLikeThisClassifier{textFieldNames=[body], classFieldName='category', k=1, query=null, similarity=BM25(k1=1.2,b=0.75)} 
     * accuracy = 0.6887189292543021
     * precision = 0.7975274982047024
     * recall = 0.795797876726448
     * f1-measure = 0.7966617486772696
-    * avgClassificationTime = 234.20170597089813
-    * time = 479 (sec)
+    * avgClassificationTime = 145.8344204716508
+    * time = 346 (sec)
  
  * FuzzyLikeThisClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=BM25(k1=1.2,b=0.75)} 
-    * accuracy = 0.7028483448806775
-    * precision = 0.8081390656471626
-    * recall = 0.8063642547928263
-    * f1-measure = 0.8072506847021592
-    * avgClassificationTime = 234.59759157049675
-    * time = 480 (sec)
+    * accuracy = 0.7021931512120047
+    * precision = 0.808062361470481
+    * recall = 0.8058540507111935
+    * f1-measure = 0.806956695282603
+    * avgClassificationTime = 146.27145007526343
+    * time = 347 (sec)
+ 
+ * FuzzyLikeThisClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=F1EXP} 
+    * accuracy = 0.6099554234769688
+    * precision = 0.7438509915231809
+    * recall = 0.7363708513708513
+    * f1-measure = 0.7400920214095092
+    * avgClassificationTime = 159.07225288509784
+    * time = 372 (sec)
+ 
+ * FuzzyLikeThisClassifier{textFieldNames=[body], classFieldName='category', k=3, query=null, similarity=F1LOG} 
+    * accuracy = 0.6099554234769688
+    * precision = 0.7438509915231809
+    * recall = 0.7363708513708513
+    * f1-measure = 0.7400920214095092
+    * avgClassificationTime = 155.9613647767185
+    * time = 366 (sec)
  
  * BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75), ngramSize=1} 
-    * accuracy = 0.7309201918883559
-    * precision = 0.7962437894373874
-    * recall = 0.8168508887276783
-    * f1-measure = 0.8064157124189191
-    * avgClassificationTime = 1016.8769751693002
-    * time = 1831 (sec)
+    * accuracy = 0.6996939556235654
+    * precision = 0.7710115896176369
+    * recall = 0.79660511763127
+    * f1-measure = 0.7835994286132706
+    * avgClassificationTime = 384.97271349166243
+    * time = 817 (sec)
  
  * BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75), ngramSize=2} 
-    * accuracy = 0.734375
-    * precision = 0.787689655257609
-    * recall = 0.8019603262687807
-    * f1-measure = 0.7947609351366495
-    * avgClassificationTime = 1401.9828793774318
-    * time = 1832 (sec)
+    * accuracy = 0.7162899454403742
+    * precision = 0.7881340983006455
+    * recall = 0.8022026689190964
+    * f1-measure = 0.7951061563246424
+    * avgClassificationTime = 464.44235652615544
+    * time = 970 (sec)
  
  * BM25NBClassifier{similarity=BM25(k1=1.2,b=0.75), ngramSize=3} 
-    * accuracy = 0.7375713121434393
-    * precision = 0.8160048156752309
-    * recall = 0.7967147663171397
-    * f1-measure = 0.8062444249993956
-    * avgClassificationTime = 1753.3268482490273
-    * time = 1831 (sec)
+    * accuracy = 0.722397476340694
+    * precision = 0.7934184610630093
+    * recall = 0.8032573070645604
+    * f1-measure = 0.7983075701789704
+    * avgClassificationTime = 524.8223583460949
+    * time = 1084 (sec)
  
- * org.apache.lucene.classification.CachingNaiveBayesClassifier@32871e2 
-    * accuracy = 0.6037390029325513
-    * precision = 0.7464060413775376
-    * recall = 0.706
-    * f1-measure = 0.7256409711883911
-    * avgClassificationTime = 27.7965
-    * time = 69 (sec)
+ * org.apache.lucene.classification.CachingNaiveBayesClassifier@6975cad2 
+    * accuracy = 0.6035936927026035
+    * precision = 0.7462251923388931
+    * recall = 0.7058232323232323
+    * f1-measure = 0.7254621379727343
+    * avgClassificationTime = 31.55927963981991
+    * time = 118 (sec)
  
- * org.apache.lucene.classification.SimpleNaiveBayesClassifier@4ca030 
-    * accuracy = 0.602436323366556
-    * precision = 0.7455189876733195
-    * recall = 0.7053601596051811
-    * f1-measure = 0.7248837963111276
-    * avgClassificationTime = 350.53000504286433
-    * time = 707 (sec)
+ * org.apache.lucene.classification.SimpleNaiveBayesClassifier@576eb503 
+    * accuracy = 0.6036069193963931
+    * precision = 0.745871438373861
+    * recall = 0.7060443655723159
+    * f1-measure = 0.7254116596484205
+    * avgClassificationTime = 221.81005025125629
+    * time = 497 (sec)
