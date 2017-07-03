@@ -27,6 +27,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.en.EnglishMinimalStemFilter;
 import org.apache.lucene.analysis.minhash.MinHashFilter;
 import org.apache.lucene.analysis.minhash.MinHashFilterFactory;
 import org.apache.lucene.analysis.shingle.ShingleFilterFactory;
@@ -41,12 +42,14 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.ConstantScoreQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.RAMDirectory;
@@ -92,16 +95,64 @@ public class MinHashClassifier implements Classifier<BytesRef>, Closeable {
         BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
     }
 
+    List<ClassificationResult<BytesRef>> buildListFromTopDocs(IndexSearcher searcher, String categoryFieldName, TopDocs topDocs, int k) throws IOException {
+        Map<BytesRef, Integer> classCounts = new HashMap<>();
+        Map<BytesRef, Double> classBoosts = new HashMap<>(); // this is a boost based on class ranking positions in topDocs
+        float maxScore = topDocs.getMaxScore();
+        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+            IndexableField storableField = searcher.doc(scoreDoc.doc).getField(categoryFieldName);
+            if (storableField != null) {
+                BytesRef cl = new BytesRef(storableField.stringValue());
+                //update count
+                Integer count = classCounts.get(cl);
+                if (count != null) {
+                    classCounts.put(cl, count + 1);
+                } else {
+                    classCounts.put(cl, 1);
+                }
+                //update boost, the boost is based on the best score
+                Double totalBoost = classBoosts.get(cl);
+                double singleBoost = scoreDoc.score / maxScore;
+                if (totalBoost != null) {
+                    classBoosts.put(cl, totalBoost + singleBoost);
+                } else {
+                    classBoosts.put(cl, singleBoost);
+                }
+            }
+        }
+        List<ClassificationResult<BytesRef>> returnList = new ArrayList<>();
+        List<ClassificationResult<BytesRef>> temporaryList = new ArrayList<>();
+        int sumdoc = 0;
+        for (Map.Entry<BytesRef, Integer> entry : classCounts.entrySet()) {
+            Integer count = entry.getValue();
+            Double normBoost = classBoosts.get(entry.getKey()) / count; //the boost is normalized to be 0<b<1
+            temporaryList.add(new ClassificationResult<>(entry.getKey().clone(), (count * normBoost) / (double) k));
+            sumdoc += count;
+        }
+
+        //correction
+        if (sumdoc < k) {
+            for (ClassificationResult<BytesRef> cr : temporaryList) {
+                returnList.add(new ClassificationResult<>(cr.getAssignedClass(), cr.getScore() * k / (double) sumdoc));
+            }
+        } else {
+            returnList = temporaryList;
+        }
+        return returnList;
+    }
+
     @Override
     public ClassificationResult<BytesRef> assignClass(String text) throws IOException {
         DirectoryReader reader = DirectoryReader.open(directory);
         IndexSearcher searcher = new IndexSearcher(reader);
         try {
-            TopDocs topDocs = searcher.search(buildQuery(TEXT_FIELD, text, min, hashCount, hashSize), 1);
+            int k = 3;
+            TopDocs topDocs = searcher.search(buildQuery(TEXT_FIELD, text, min, hashCount, hashSize), k);
             if (topDocs.totalHits > 0) {
-                Document document = reader.document(topDocs.scoreDocs[0].doc);
-                String category = document.getField(CLASS_FIELD).stringValue();
-                return new ClassificationResult<>(new BytesRef(category), topDocs.getMaxScore());
+                return buildListFromTopDocs(searcher, CLASS_FIELD, topDocs, k).get(0);
+//                Document document = reader.document(topDocs.scoreDocs[0].doc);
+//                String category = document.getField(CLASS_FIELD).stringValue();
+//                return new ClassificationResult<>(new BytesRef(category), topDocs.getMaxScore());
             } else {
                 return null;
             }
